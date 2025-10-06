@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ use 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Internet</title>
+</head>
+<body>
+<main>
+ <div class="container">
+  <form class="nav-bar">
+   <button type="button" class="btn-back" id="browser_back">
+    <img src="icon/arrow-left.svg" width="24" height="24" alt="back">
+   </button>
+   <button type="button" class="btn-home" id="browser_home">
+    <img src="icon/home.svg" width="24" height="24" alt="home">
+   </button>
+   <input type="text" class="url-input" id="browser_address_bar">
+   <button type="submit" class="btn-search" id="browser_search">
+    <img src="icon/search.svg" width="24" height="24" alt="search">
+   </button>
+  </form>
+  <iframe class="content-frame" src="website/glimp.web/"></iframe>
+ </div>
+</main>
+<style>
+ :root {
+  --pal_black: #000000;
+  --pal_white: #ffffff;
+  --navbar_gap: 0.5rem;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+ }
+ main {
+  width: 100%;
+  height: 100%;
+ }
+ .container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+ }
+ .nav-bar {
+  display: flex;
+  padding: var(--navbar_gap);
+  gap: var(--navbar_gap);
+  background: var(--pal_black);
+ }
+ .btn-home,
+ .btn-back,
+ .btn-search {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+ }
+ .btn-home:hover,
+ .btn-home:active,
+ .btn-home:focus,
+ .btn-back:hover,
+ .btn-back:active,
+ .btn-back:focus,
+ .btn-search:hover,
+ .btn-search:active,
+ .btn-search:focus {
+  background: transparent;
+  outline: none;
+ }
+ .btn-home img,
+ .btn-back img,
+ .btn-search img {
+  filter: invert(1);
+ }
+ .url-input {
+  flex: 1;
+  background: var(--pal_white);
+  color: var(--pal_black);
+  border: none;
+  padding: 4px 8px;
+  border-radius: 0.25rem;
+ }
+ .content-frame {
+  flex: 1;
+  border: none;
+ }
+</style>
+<script>
+ const HOME = 'glimp.web';
+ const frame = document.querySelector('.content-frame');
+ const input = document.querySelector('.url-input');
+ const navForm = document.querySelector('.nav-bar');
+ const btnHome = document.getElementById('browser_home');
+ const btnBack = document.getElementById('browser_back');
+
+ function sanitizePath(input) {
+  if (!input.startsWith('web://')) {
+   input = 'web://' + input.replace(/^web:\/+/, '');
+  }
+  input = input.replace(/^web:\/\/+/, 'web://');
+  input = input.replace(/([^:])\/\/+/g, '$1/');
+  if (input.endsWith('/') && input !== 'web://') {
+   input = input.slice(0, -1);
+  }
+  return input;
+ }
+
+ function pathToSrc(path) {
+  path = path.replace(/^web:\/\//, '');
+  if (path === '') return 'website/' + HOME + '/index.html';
+
+  if (path.endsWith('/')) path = path.slice(0, -1);
+
+  const slashIndex = path.indexOf('/');
+  let domain, childPath;
+
+  if (slashIndex === -1) {
+   domain = path;
+   childPath = '';
+  } else {
+   domain = path.substring(0, slashIndex);
+   childPath = path.substring(slashIndex + 1);
+  }
+
+  let finalPath = 'website/' + domain;
+
+  if (childPath === '' || !childPath.includes('.')) {
+   finalPath += (childPath ? '/' + childPath : '') + '/index.html';
+  } else {
+   finalPath += '/' + childPath;
+  }
+
+  return finalPath;
+ }
+
+ frame.addEventListener('load', () => {
+  try {
+   const path = frame.contentWindow.location.pathname;
+   let displayPath = path.replace(/^.*\/website\//, '');
+   input.value = sanitizePath(displayPath);
+  } catch(e) {
+   input.value = '[blocked]';
+  }
+ });
+
+ navForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const sanitized = sanitizePath(input.value.trim());
+  input.value = sanitized;
+  frame.src = pathToSrc(sanitized);
+ });
+
+ btnHome.addEventListener('click', () => {
+  frame.src = 'website/' + HOME + '/';
+ });
+
+ btnBack.addEventListener('click', () => {
+  frame.contentWindow.history.back();
+ });
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ use 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glimp - the search engine!</title>
+</head>
+<body>
+<main>
+ <ul id="list"></ul>
+</main>
+<style>
+ :root {
+  --pal_black: #000000;
+  --pal_dark: #55415f;
+  --pal_gray: #646964;
+  --pal_red: #d77355;
+  --pal_blue: #508cd7;
+  --pal_green: #64b964;
+  --pal_yellow: #e6c86e;
+  --pal_white: #dcf5ff;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ /* style contents */
+</style>
+<script>
+ fetch('../../weblist.txt')
+  .then(response => response.text())
+  .then(data => {
+   const lines = data.trim().split('\n');
+   const list = document.getElementById('list');
+   lines.forEach(line => {
+    const fetchPath = '../' + line + '/index.html';
+    const linkPath = '../' + line;
+    fetch(fetchPath)
+     .then(response => response.text())
+     .then(html => {
+      const match = html.match(/<title>(.*?)<\/title>/);
+      const title = match ? match[1] : line;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = linkPath;
+      a.textContent = title;
+      li.appendChild(a);
+      list.appendChild(li);
+     });
+   });
+  });
+</script>
+</body>
+</html>

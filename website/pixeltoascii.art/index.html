@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ use 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pixel-art to ASCII</title>
+</head>
+<body>
+<main>
+ <div id="toast_copy">copied
+to
+clipboard</div>
+ <div class="container">
+  <label for="in_image" class="file_label">open pixel-art image</label>
+  <input type="file" accept=".png,.bmp" id="in_image">
+  <div class="input_row">
+   <input type="text" id="in_main" value="█">
+   <input type="text" id="in_sub" value="░">
+  </div>
+  <div class="output_wrapper">
+   <textarea id="output"></textarea>
+   <input type="range" id="output_scale" min="0" max="100" value="16" step="2">
+  </div>
+  <button id="output_copy">copy</button>
+ </div>
+</main>
+<style>
+ :root {
+  --pal_black: #000000;
+  --pal_dark: #55415f;
+  --pal_gray: #646964;
+  --pal_red: #d77355;
+  --pal_blue: #508cd7;
+  --pal_green: #64b964;
+  --pal_yellow: #e6c86e;
+  --pal_white: #dcf5ff;
+  --item_gap: 2rem;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Courier New', Courier, 'Lucida Console', Monaco, monospace;
+  font-size: 1.125rem;
+ }
+ html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+ }
+ main {
+  width: 100%;
+  height: 100%;
+  background: var(--pal_yellow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+ }
+ #toast_copy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--pal_green);
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--pal_white);
+  font-weight: bold;
+  font-size: 48px;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: pre;
+  text-align: center;
+ }
+ #toast_copy.show {
+  opacity: 1;
+  pointer-events: all;
+ }
+ #toast_copy.fade {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 1, 1);
+ }
+ .container {
+  width: 100%;
+  height: 100%;
+  max-width: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--item_gap);
+  gap: var(--item_gap);
+ }
+ #in_image {
+  width: 100%;
+  display: none;
+ }
+ .file_label {
+  cursor: pointer;
+  background: var(--pal_blue);
+  color: var(--pal_white);
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+ }
+ #output_copy {
+  cursor: pointer;
+  background: var(--pal_green);
+  color: var(--pal_white);
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  border: none;
+ }
+ .input_row {
+  width: 100%;
+  display: flex;
+  gap: var(--item_gap);
+ }
+ .input_row input {
+  flex: 1;
+  min-width: 0;
+  background: var(--pal_dark);
+  color: var(--pal_white);
+  border: none;
+  padding: 1rem;
+ }
+ .output_wrapper {
+  flex: 1;
+  background: var(--pal_black);
+  padding: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+ }
+ #output {
+  flex: 1;
+  overflow: auto;
+  resize: none;
+  background: transparent;
+  color: var(--pal_white);
+  border: none;
+  padding: 0;
+  white-space: pre;
+ }
+ #output_scale {
+  width: 100%;
+  height: 1rem;
+  appearance: none;
+  background: var(--pal_white);
+  outline: none;
+  cursor: pointer;
+ }
+ #output_scale::-webkit-slider-thumb {
+  appearance: none;
+  width: 0;
+  height: 0;
+ }
+ #output_scale::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  border: none;
+  background: transparent;
+ }
+ #output_scale::-webkit-slider-runnable-track {
+  height: 1rem;
+  background: linear-gradient(to right, var(--pal_red) 0%, var(--pal_red) var(--fill), var(--pal_white) var(--fill), var(--pal_white) 100%);
+ }
+ #output_scale::-moz-range-track {
+  height: 1rem;
+  background: var(--pal_white);
+ }
+ #output_scale::-moz-range-progress {
+  height: 1rem;
+  background: var(--pal_red);
+ }
+</style>
+<script>
+ const fileInput = document.getElementById('in_image');
+ const fileLabel = document.querySelector('.file_label');
+ const outputScale = document.getElementById('output_scale');
+ const output = document.getElementById('output');
+ const inMain = document.getElementById('in_main');
+ const inSub = document.getElementById('in_sub');
+ const outputCopy = document.getElementById('output_copy');
+ const toastCopy = document.getElementById('toast_copy');
+
+ let imageData = null;
+
+ output.style.fontSize = outputScale.value + 'px';
+
+ fileInput.addEventListener('change', function(e) {
+  if (e.target.files.length > 0) {
+   fileLabel.textContent = e.target.files[0].name;
+   loadImage(e.target.files[0]);
+  }
+ });
+
+ outputScale.addEventListener('input', function(e) {
+  let val = parseInt(e.target.value);
+  if (val < 6) val = 6;
+  if (val > 98) val = 98;
+  e.target.value = val;
+  output.style.fontSize = val + 'px';
+ });
+
+ inMain.addEventListener('input', convertToAscii);
+ inSub.addEventListener('input', convertToAscii);
+
+ outputCopy.addEventListener('click', function() {
+  navigator.clipboard.writeText(output.value);
+  toastCopy.classList.add('show');
+  setTimeout(function() {
+   toastCopy.classList.add('fade');
+   toastCopy.classList.remove('show');
+  }, 0);
+  setTimeout(function() {
+   toastCopy.classList.remove('fade');
+  }, 500);
+ });
+
+ function loadImage(file) {
+  const img = new Image();
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+   img.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    imageData = ctx.getImageData(0, 0, img.width, img.height);
+    convertToAscii();
+   };
+   img.src = e.target.result;
+  };
+
+  reader.readAsDataURL(file);
+ }
+
+ function convertToAscii() {
+  if (!imageData) return;
+
+  const mainChar = inMain.value || '█';
+  const subChar = inSub.value || '░';
+  const data = imageData.data;
+  const width = imageData.width;
+  const height = imageData.height;
+  let result = '';
+
+  for (let y = 0; y < height; y++) {
+   for (let x = 0; x < width; x++) {
+    const i = (y * width + x) * 4;
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+    if (a < 128 || luminance < 128) {
+     result += subChar;
+    } else {
+     result += mainChar;
+    }
+   }
+   result += '\n';
+  }
+
+  output.value = result;
+ }
+</script>
+</body>
+</html>
