@@ -12,170 +12,58 @@ by CatMeowByte
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Local Internet</title>
+<link rel="stylesheet" href="/icon/material-icons.css">
 </head>
 <body>
 <main>
  <div class="container">
   <form class="nav-bar">
-   <button type="button" class="btn-back" id="browser_back">
-    <img src="icon/arrow-left.svg" width="24" height="24" alt="back">
-   </button>
-   <button type="button" class="btn-home" id="browser_home">
-    <img src="icon/home.svg" width="24" height="24" alt="home">
-   </button>
+   <button type="button" class="btn-back" id="browser_back"><span class="material-icons">arrow_back</span></button>
+   <button type="button" class="btn-home" id="browser_home"><span class="material-icons">home</span></button>
    <input type="text" class="url-input" id="browser_address_bar">
-   <button type="submit" class="btn-search" id="browser_search">
-    <img src="icon/search.svg" width="24" height="24" alt="search">
-   </button>
+   <button type="submit" class="btn-search" id="browser_search"><span class="material-icons">search</span></button>
+   <button type="button" class="btn-fullscreen" id="browser_fullscreen"><span class="material-icons">fullscreen</span></button>
   </form>
   <iframe class="content-frame" src="website/glimp.web/"></iframe>
  </div>
 </main>
 <style>
  :root {
-  --pal_black: #000000;
-  --pal_white: #ffffff;
+  --pal_black: #000000; --pal_white: #ffffff;
   --navbar_gap: 0.5rem;
  }
- * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
- }
- html, body {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
- }
- main {
-  width: 100%;
-  height: 100%;
- }
- .container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
- }
- .nav-bar {
-  display: flex;
-  padding: var(--navbar_gap);
-  gap: var(--navbar_gap);
-  background: var(--pal_black);
- }
- .btn-home,
- .btn-back,
- .btn-search {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  pointer-events: auto;
- }
- .btn-home:hover,
- .btn-home:active,
- .btn-home:focus,
- .btn-back:hover,
- .btn-back:active,
- .btn-back:focus,
- .btn-search:hover,
- .btn-search:active,
- .btn-search:focus {
-  background: transparent;
-  outline: none;
- }
- .btn-home img,
- .btn-back img,
- .btn-search img {
-  filter: invert(1);
- }
- .url-input {
-  flex: 1;
-  background: var(--pal_white);
-  color: var(--pal_black);
-  border: none;
-  padding: 4px 8px;
-  border-radius: 0.25rem;
- }
- .content-frame {
-  flex: 1;
-  border: none;
- }
+ *{margin:0;padding:0;box-sizing:border-box;}
+ html,body{width:100vw;height:100vh;overflow:hidden;}
+ main{width:100%;height:100%;}
+ .container{width:100%;height:100%;display:flex;flex-direction:column;}
+ .nav-bar{display:flex;padding:var(--navbar_gap);gap:var(--navbar_gap);background:var(--pal_black);}
+ .btn-home,.btn-back,.btn-search,.btn-fullscreen{flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;pointer-events:auto;}
+ .btn-home:hover,.btn-home:active,.btn-home:focus,.btn-back:hover,.btn-back:active,.btn-back:focus,.btn-search:hover,.btn-search:active,.btn-search:focus,.btn-fullscreen:hover,.btn-fullscreen:active,.btn-fullscreen:focus{background:transparent;outline:none;}
+ .btn-home .material-icons,.btn-back .material-icons,.btn-search .material-icons,.btn-fullscreen .material-icons{color:var(--pal_white);}
+ .url-input{flex:1;background:var(--pal_white);color:var(--pal_black);border:none;padding:4px 8px;border-radius:0.25rem;}
+ .content-frame{flex:1;border:none;}
+ .nav-bar.nav-bar-hidden{display:none;}
 </style>
 <script>
- const HOME = 'glimp.web';
- const frame = document.querySelector('.content-frame');
- const input = document.querySelector('.url-input');
- const navForm = document.querySelector('.nav-bar');
- const btnHome = document.getElementById('browser_home');
- const btnBack = document.getElementById('browser_back');
-
- function sanitizePath(input) {
-  if (!input.startsWith('web://')) {
-   input = 'web://' + input.replace(/^web:\/+/, '');
-  }
-  input = input.replace(/^web:\/\/+/, 'web://');
-  input = input.replace(/([^:])\/\/+/g, '$1/');
-  if (input.endsWith('/') && input !== 'web://') {
-   input = input.slice(0, -1);
-  }
-  return input;
- }
-
- function pathToSrc(path) {
-  path = path.replace(/^web:\/\//, '');
-  if (path === '') return 'website/' + HOME + '/index.html';
-
-  if (path.endsWith('/')) path = path.slice(0, -1);
-
-  const slashIndex = path.indexOf('/');
-  let domain, childPath;
-
-  if (slashIndex === -1) {
-   domain = path;
-   childPath = '';
-  } else {
-   domain = path.substring(0, slashIndex);
-   childPath = path.substring(slashIndex + 1);
-  }
-
-  let finalPath = 'website/' + domain;
-
-  if (childPath === '' || !childPath.includes('.')) {
-   finalPath += (childPath ? '/' + childPath : '') + '/index.html';
-  } else {
-   finalPath += '/' + childPath;
-  }
-
-  return finalPath;
- }
-
- frame.addEventListener('load', () => {
-  try {
-   const path = frame.contentWindow.location.pathname;
-   let displayPath = path.replace(/^.*\/website\//, '');
-   input.value = sanitizePath(displayPath);
-  } catch(e) {
-   input.value = '[blocked]';
-  }
- });
-
- navForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const sanitized = sanitizePath(input.value.trim());
-  input.value = sanitized;
-  frame.src = pathToSrc(sanitized);
- });
-
- btnHome.addEventListener('click', () => {
-  frame.src = 'website/' + HOME + '/';
- });
-
- btnBack.addEventListener('click', () => {
-  frame.contentWindow.history.back();
+ const $=sel=>document.querySelector(sel);
+ const $on=(el,ev,fn)=>el.addEventListener(ev,fn);
+ const HOME='glimp.web';
+ const frame=$('.content-frame');
+ const input=$('.url-input');
+ const navForm=$('.nav-bar');
+ const btnHome=$('#browser_home');
+ const btnBack=$('#browser_back');
+ const btnFullscreen=$('#browser_fullscreen');
+ const sanitizePath=input=>{if(!input.startsWith('web://'))input='web://'+input.replace(/^web:\/+/,'');input=input.replace(/^web:\/\/+/,'web://');input=input.replace(/([^:])\/\/+/g,'$1/');if(input.endsWith('/')&&input!=='web://')input=input.slice(0,-1);return input;};
+ const pathToSrc=path=>{path=path.replace(/^web:\/\//,'');if(path==='')return'website/'+HOME+'/index.html';if(path.endsWith('/'))path=path.slice(0,-1);const slashIndex=path.indexOf('/');let domain,childPath;if(slashIndex===-1){domain=path;childPath='';}else{domain=path.substring(0,slashIndex);childPath=path.substring(slashIndex+1);}let finalPath='website/'+domain;if(childPath===''||!childPath.includes('.')){finalPath+=(childPath?'/'+childPath:'')+'/index.html';}else{finalPath+='/'+childPath;}return finalPath;};
+ $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let displayPath=path.replace(/^.*\/website\//,'');input.value=sanitizePath(displayPath);const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href='/icon/material-icons.css';frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src='/inject.js';frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
+ $on(navForm,'submit',e=>{e.preventDefault();const sanitized=sanitizePath(input.value.trim());input.value=sanitized;frame.src=pathToSrc(sanitized);});
+ $on(btnHome,'click',()=>{frame.src='website/'+HOME+'/';});
+ $on(btnBack,'click',()=>{frame.contentWindow.history.back();});
+ $on(btnFullscreen,'click',()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}});
+ $on(window,'message',e=>{
+  if(e.data.action==='requestFullscreen'){navForm.classList.add('nav-bar-hidden');frame.contentWindow.postMessage({action:'fullscreenState',value:true},'*');}
+  if(e.data.action==='exitFullscreen'){navForm.classList.remove('nav-bar-hidden');frame.contentWindow.postMessage({action:'fullscreenState',value:false},'*');}
  });
 </script>
 </body>

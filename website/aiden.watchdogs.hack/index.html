@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<title>The Fox</title>
+<title>WatchDogs Hacking Interface</title>
 </head>
 <body>
 <main>
@@ -15,14 +14,14 @@
      <div class="title"><span class="material-icons">wifi</span></div>
      <div class="subtitle">Network</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Discovery</div><div class="subtitle">Enumerate nearby WiFi networks and display SSID, signal strength, channel, and security details</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Enumeration</div><div class="subtitle">Identify and list devices currently connected to target networks</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Beacons</div><div class="subtitle">Passively capture and analyze beacon frames broadcast by access points</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Probes</div><div class="subtitle">Monitor probe requests from devices searching for known networks</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Signal Analysis</div><div class="subtitle">Real-time monitoring and graphing of WiFi signal strength from surrounding networks</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Handshake</div><div class="subtitle">Isolate and record EAPOL/PMKID frames for WPA/WPA2 security testing</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Deauthenticate</div><div class="subtitle">Force disconnect clients from target network in broadcast, targeted, or custom modes</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spoofing</div><div class="subtitle">Broadcast fake WiFi networks with random or custom-defined SSIDs</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Discovery</div><div class="subtitle">Passive 802.11 beacon/probe frame capture across 2.4/5 GHz bands with RSSI/dBm conversion, channel enumeration, WPA/WPA2/WPA3 cipher suite extraction via IE parsing, BSSID/SSID mapping, TSF clock analysis, and regulatory domain identification through Country IE decoding.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Enumeration</div><div class="subtitle">ARP spoofing, gratuitous ARP injection, IPv4/IPv6 NDP exploitation, DHCP transaction interception, MAC correlation, and passive traffic sniffing to derive client-AP associations with temporal connection state inference.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Beacons</div><div class="subtitle">802.11 management frame capture with millisecond timestamping, IE payload extraction including vendor-specific extensions, beacon interval analysis, TSF clock skew detection, TIM bitmap parsing, and Country IE regulatory domain mapping.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Probes</div><div class="subtitle">Directed/broadcast probe request frame collection with sequence analysis, hidden SSID reconnaissance via response correlation, device fingerprinting through Supported Rates/HT Capability parsing, and roaming behavior pattern inference.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Signal Analysis</div><div class="subtitle">Real-time RSSI trending with exponential moving average filtering, multipath propagation characterization, Friis path-loss modeling, per-channel spectral density visualization, and interference source identification via frequency occupancy analysis.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Handshake</div><div class="subtitle">IEEE 802.1X EAPOL frame capture and sequencing validation, PMKID extraction from Key frames, WPA2/WPA3 four-way handshake isolation, cryptographic key material observation for offline dictionary attacks, and TSF synchronization verification.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Deauthenticate</div><div class="subtitle">Crafted 802.11 deauth frame transmission with spoofed SA/BSSID, frame control bit manipulation, broadcast flood mode exceeding reassociation latency, targeted unicast with sequence exploitation, and custom Reason Code injection (1–53) for social engineering obfuscation.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Spoof</div><div class="subtitle">Arbitrary SSID IE injection, multi-SSID rapid alternation at MAC layer, spoofed BSSID with custom OUI prefixes, beacon interval manipulation for synchronization disruption, and RSN IE crafting for WPA/WPA2/Open simulation.</div></div></li>
      </ul>
     </div>
    </li>
@@ -31,12 +30,12 @@
      <div class="title"><span class="material-icons">bluetooth</span></div>
      <div class="subtitle">Wireless</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Scanning</div><div class="subtitle">Passively discover nearby Bluetooth and BLE devices with signal strength and device info</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Monitoring</div><div class="subtitle">Capture Bluetooth Classic and BLE packets from surrounding communications</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Skimmers</div><div class="subtitle">Identify suspicious Bluetooth devices matching known card skimming signatures</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Flooding</div><div class="subtitle">Transmit high volume of random BLE beacon frames</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spamming</div><div class="subtitle">Generate fake device pairing notifications for Windows, Samsung, or Google devices</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jamming</div><div class="subtitle">Interfere with 2.4GHz wireless devices such as mice, keyboards, and controllers</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">79-channel Bluetooth Classic frequency-hop sweep (2.402–2.480 GHz) and 37 BLE advertising channel enumeration with BD_ADDR extraction, Local Name/Shortened Name EIR parsing, TX Power/RSSI conversion to path-loss distance estimation, and device class/capability mapping.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Monitor</div><div class="subtitle">ACL/SCO link layer packet capture with LAP/UAP exploitation for frequency hopping prediction, LMP command/response interception, GATT ATT operation eavesdropping, TDD slot analysis, and intra-connection traffic decryption where key material is observable.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Skimmers</div><div class="subtitle">Signature matching against HC-05/HC-06/NRF52/CSR8810 payment peripheral profiles, PM_ADDR extraction and cloning-capable hardware database correlation, magnetic stripe reader/POS spoofing heuristics, and temporal proximity analysis with known compromise locations.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Flood</div><div class="subtitle">Rapid BLE advertisement packet generation across all channels with arbitrary MAC randomization per packet, PDU length maximization (255 octets), advertising interval compression below 20ms thresholds to saturate receiver buffers, and multi-role simultaneous broadcasting.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Spam</div><div class="subtitle">OS-specific device pairing notification injection (Windows BLE GATT solicitation, Samsung Nearby emulation, Google Fast Pair GATT simulation) with MSD field manipulation, spoofed GAP device naming, and notification stacking for cumulative UI disruption/credential prompting.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">Continuous 2.4 GHz ISM carrier transmission with power amplification to EIRP saturation, frequency-hop prediction via FFT spectral analysis for predictive narrowband jamming on next hops, and interrupt-pattern modulation to selectively disable frequency-dependent peripherals while minimizing collateral disruption.</div></div></li>
      </ul>
     </div>
    </li>
@@ -45,26 +44,26 @@
      <div class="title"><span class="material-icons">cell_tower</span></div>
      <div class="subtitle">Radio Frequency</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Scanning</div><div class="subtitle">Monitor 315MHz, 433MHz, and 868MHz bands for active signals</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Monitoring</div><div class="subtitle">Real-time spectrum analysis and power level detection</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Recording</div><div class="subtitle">Capture raw RF waveforms and protocol data from target devices</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Replay</div><div class="subtitle">Retransmit recorded signals to test device responses and compatibility</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jamming</div><div class="subtitle">Transmit constant interference signal across frequency range</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Pulse Jam</div><div class="subtitle">Transmit periodic interference signals for selective disruption</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">Heterodyne receiver tuning across 315/433/868 MHz discrete channels with PLL frequency synthesis, AGC envelope detection, Higher-Order Statistics modulation classification (FSK/OOK/GFSK discrimination), SNR computation via spectral analysis, and duty cycle inference through temporal occupancy mapping.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Monitor</div><div class="subtitle">Real-time I/Q demodulation with QAM constellation observation, FFT spectral density via Welch windowing, ACPR measurement for bandwidth characterization, phase continuity tracking for modulation index determination, and bitstream extraction through matched filtering.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Record</div><div class="subtitle">Direct RF waveform ADC digitization at Nyquist rate, complex baseband down-conversion via SDR IF processing, IQ sample recording at 8/16/32-bit quantization with timestamp correlation, and bitstream extraction against protocol templates (RF433 remotes, automotive keyless entry, industrial control).</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Replay</div><div class="subtitle">Vector signal generation via IFFT waveform reconstruction, DAC synthesis with frequency translation through LO mixing, sub-microsecond timing synchronization to match modulation envelope, and frequency offset compensation for stability maintenance.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">Continuous unmodulated carrier transmission at target frequency with power amplification to noise floor saturation, dynamic frequency hopping prediction via ML temporal pattern analysis, narrowband Gaussian noise generation, and duty cycle modulation for selective disruption below regulatory observability.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Pulse Jam</div><div class="subtitle">Gated RF carrier with microsecond pulse width control, periodic pulse train synchronized to target transmission timing via trigger detection, frequency agility for multi-channel sequential disruption, and power ramping to exceed device sensitivity thresholds.</div></div></li>
      </ul>
     </div>
    </li>
    <li>
     <div class="panel-menu">
      <div class="title"><span class="material-icons">contactless</span></div>
-     <div class="subtitle">RFID / NFC</div>
+     <div class="subtitle">RFID/NFC</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Reading</div><div class="subtitle">Extract data from both high-frequency (HF) and low-frequency (LF) RFID/NFC tags</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Scanning</div><div class="subtitle">Enumerate and identify RFID/NFC devices in proximity</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Duplication</div><div class="subtitle">Clone RFID tag data to blank cards and tags</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Writing</div><div class="subtitle">Write custom data and standardized NFC records to tags</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Emulation</div><div class="subtitle">Device presents as RFID/NFC tag to interact with readers</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spoofing</div><div class="subtitle">Emulate gaming and authentication device tokens</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Read</div><div class="subtitle">13.56 MHz (ISO14443 Type A/B) and 125/134 kHz (EM4100/FDX-B) inductive coupling with resonant impedance matching, Manchester/Biphase demodulation, CRC validation across APDU sequences, NDEF record parsing with MIME type classification, and Type 1–4 tag EEPROM sector mapping.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">Sequential tag enumeration via variable-inductance loop energization, NFCIP-1 peer-to-peer mode advertisement, anti-collision cascade protocol for simultaneous tag identification, FIO parsing across 106/212/424 kbit/s data rates, and RSS field strength proximity mapping.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Duplicate</div><div class="subtitle">Memory sector-by-sector readout via authentication bypass or default credential exploitation, cryptographic key extraction through physical access or manufacturer master keys, writable tag provisioning with byte-level precision, UID spoofing through writable segments, and sector protection bit manipulation.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Write</div><div class="subtitle">Memory address mapping with page boundary calculation, NDEF TLV encoding serialization, URI/MIME record formatting per RFC 3986, sector authentication with derived session keys, and write-protect flag commitment with CRC recalculation.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Emulate</div><div class="subtitle">ISO14443 coil impedance tuning simulation, APDU command response state machine implementation, challenge/response protocol emulation with known cryptographic material, memory bank virtualization, and power supply brownout simulation for realistic offline behavior.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Spoof</div><div class="subtitle">Gaming device token hardware ID emulation (Amiibo/NFC card) with encrypted media key simulation, EMV/NFC Fast Transaction Protocol replication for financial auth spoofing, transit card credential fabrication with expiration/balance data, and polyglot tag emulation supporting simultaneous Type A/B protocol responses.</div></div></li>
      </ul>
     </div>
    </li>
@@ -73,10 +72,32 @@
      <div class="title"><span class="material-icons">settings_remote</span></div>
      <div class="subtitle">Infrared</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Control</div><div class="subtitle">Replay IR power control signals effective on most televisions and devices</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Protocols</div><div class="subtitle">Transmit IR signals across NEC, Sony SIRC, Samsung, Philips RC5/RC6 and other standards</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Capture</div><div class="subtitle">Passively record infrared signals from remote controls and devices</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jamming</div><div class="subtitle">Transmit infrared noise to disrupt device communications</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Control</div><div class="subtitle">38 kHz carrier modulation with duty cycle synthesis, generic discrete IR code library transmission across RC5/RC6/SIRC/NEC/Samsung/Philips variants, power on/off macro execution across TV/AV/climate control categories, and received power calibration against ambient sunlight/artificial IR interference.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Protocols</div><div class="subtitle">Manchester encoded RC5 toggle bit state machine, SIRC variable-length 12/15/20-bit packets, NEC 42 kHz legacy compatibility, Samsung 38 kHz 32-bit address capability, Philips RC6 Mode 0/6 toggle mechanism, and regional manufacturer variant templates (Panasonic/Mitsubishi/Sanyo/Toshiba).</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Capture</div><div class="subtitle">Photoreceptor IR reception with AGC envelope detection/demodulation, carrier frequency extraction via zero-crossing interval averaging, pulse train decoding with inter-symbol timing calibration, protocol heuristic matching, and bitstream interpretation with checksum validation.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">38 kHz modulated noise with Gaussian envelope distribution, continuous carrier transmission exceeding receiver saturation, 30–60 kHz frequency sweep across common IR carriers, duty cycle variation to disrupt PLL demodulation synchronization, and diffuse reflection spatial transmission.</div></div></li>
+     </ul>
+    </div>
+   </li>
+   <li>
+    <div class="panel-menu">
+     <div class="title"><span class="material-icons">directions_car</span></div>
+     <div class="subtitle">Vehicle</div>
+     <ul class="carousel-v container-submenu">
+      <li><div class="panel-submenu"><div class="title">Diagnostics</div><div class="subtitle">OBD-II/CAN-FD bus packet capture via 16-pin DLC, DTC enumeration through UDS service exploitation, ECU firmware extraction, and real-time PID polling with engine/brake/wheel speed sensor data.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Access</div><div class="subtitle">Central locking CAN command injection, PEPS 125 kHz RF replay attacks, body control module frame spoofing, immobilizer bypass via OEM seed/key exploitation or EEPROM IC cloning, and seatbelt pretensioner relay activation.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Override</div><div class="subtitle">CAN FD message injection for fuel injector PWM manipulation, ignition timing injection, ABS module spoofing with wheel speed sensor falsification, ESC yaw rate data injection, hydraulic pressure ADC manipulation, and engine starter motor relay suppression.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Track</div><div class="subtitle">GPS/GNSS coordinate extraction from navigation ECU, cellular triangulation via E-UTRAN/IMSI correlation, OBD-II telematics exfiltration through unencrypted CAN-to-cellular gateways, OnStar/eCall modem interception, and vehicle event data recorder (EDR) forensics.</div></div></li>
+     </ul>
+    </div>
+   </li>
+   <li>
+    <div class="panel-menu">
+     <div class="title"><span class="material-icons">electric_bolt</span></div>
+     <div class="subtitle">Electrical Grid</div>
+     <ul class="carousel-v container-submenu">
+      <li><div class="panel-submenu"><div class="title">Overload</div><div class="subtitle">Load tap changer stepper motor injection for over-voltage, capacitor bank deactivation, protective relay threshold modification to prevent shutdown during cascade faults, triggering thermal destruction of transformer windings.</div></div></li>
+      <li><div class="panel-submenu"><div class="title">Blackout</div><div class="subtitle">SCADA RTU/IED command injection via Modbus/DNP3 to open circuit breaker trip coils, disable protective relay coordination, and suppress recloser restoration for sustained power isolation.</div></div></li>
      </ul>
     </div>
    </li>
@@ -99,14 +120,14 @@
  .carousel-h li{width:100%;height:100%;flex-shrink:0;display:flex;}
  .carousel-v{list-style:none;overflow:hidden;cursor:grab;display:flex;flex-direction:column;}
  .carousel-v li{width:100%;height:100%;flex-shrink:0;display:flex;}
- .panel-menu{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:2vmin;padding:2vmin;}
- .panel-menu>.title{font-size:60vmin;line-height:0;}
- .title .material-icons{font-size:inherit;}
- .panel-menu>.subtitle{font-size:10vmin;line-height:1.4;text-align:center;font-weight:bold;}
- .container-submenu{height:30vmin;flex:0 0 auto;}
- .panel-submenu{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:2vmin;padding:2vmin 6vmin;}
+ .panel-menu{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:2vmin;padding:6vmin;}
+ .panel-menu>.title{width:100%;height:60vmin;display:flex;align-items:center;justify-content:center;container-type:size;}
+ .title .material-icons{font-size:100cqmin;}
+ .panel-menu>.subtitle{font-size:6vmin;text-align:center;font-weight:bold;}
+ .container-submenu{width:80vmin;height:30vmin;}
+ .panel-submenu{display:flex;flex-direction:column;align-items:center;width:100%;height:100%;gap:2vmin;}
  .panel-submenu>.title{font-size:6vmin;font-weight:bold;}
- .panel-submenu>.subtitle{font-size:3vmin;line-height:1.4;text-align:center;color:var(--col-cyan);}
+ .panel-submenu>.subtitle{font-size:2vmin;line-height:1.4;text-align:center;color:var(--col-cyan);}
  #button{width:100%;height:15vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,var(--col-cyan) 0%,var(--col-cyan) var(--progress),var(--col-void) var(--progress),var(--col-void) 100%);border:1vmin solid var(--col-white);font-size:6vmin;font-weight:bold;cursor:grab;}
  #button.pressed{border-color:var(--col-cyan);}
  @keyframes blink_twice{0%{opacity:0;}25%{opacity:1;}50%{opacity:0;}75%{opacity:1;}100%{opacity:1;}}
@@ -127,7 +148,7 @@
   const set_scroll=v=>h?el.scrollLeft=v:el.scrollTop=v;
   const client_size=()=>h?el.clientWidth:el.clientHeight;
   const orig_items=Array.from($$(':scope>li',el)),cnt=orig_items.length;orig_items.map(i=>i.cloneNode(true)).reverse().forEach(i=>el.insertBefore(i,el.firstChild));orig_items.map(i=>i.cloneNode(true)).forEach(i=>el.appendChild(i));
-  const sz=client_size();
+  let sz=client_size();
   set_scroll(cnt*sz);
   let drag=false,start=0,scr=0,curr=scroll(),tgt=curr;
   const update_scale=()=>{const center=scroll()+client_size()/2;$$(':scope>li',el).forEach((item,i)=>{const dist=Math.abs(center-(i*sz+sz/2))/sz;item.style.transform=`scale(${dist<0.5?side_scale+(center_scale-side_scale)*(1-dist*2):side_scale})`;});};
@@ -141,6 +162,7 @@
   $on(el,'touchstart',e=>{e.stopPropagation();drag=true;start=h?e.touches[0].pageX:e.touches[0].pageY;scr=scroll();});
   $on(document,'touchmove',e=>move(h?e.touches[0].pageX:e.touches[0].pageY));
   $on(document,'touchend',()=>{drag=false;snap();});
+  $on(window,'resize',()=>{const idx=Math.round(scroll()/sz);sz=client_size();set_scroll(idx*sz);tgt=idx*sz;curr=idx*sz;update_scale();});
   snap();
   curr=tgt;
   step();
