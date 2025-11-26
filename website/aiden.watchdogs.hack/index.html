@@ -8,20 +8,26 @@
 <body>
 <main>
  <div class="container">
-  <ul class="carousel-h">
+  <div id="topbar">
+   <span id="topbar-item-clock">1:23 AM</span>
+   <span style="flex-grow:1;"></span>
+   <span class="material-icons">signal_cellular_alt</span>
+   <span class="material-icons" id="topbar-item-fullscreen">fullscreen</span>
+  </div>
+  <ul class="carousel-h container-menu">
    <li>
     <div class="panel-menu">
      <div class="title"><span class="material-icons">wifi</span></div>
      <div class="subtitle">Network</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Discovery</div><div class="subtitle">Passive 802.11 beacon/probe frame capture across 2.4/5 GHz bands with RSSI/dBm conversion, channel enumeration, WPA/WPA2/WPA3 cipher suite extraction via IE parsing, BSSID/SSID mapping, TSF clock analysis, and regulatory domain identification through Country IE decoding.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Enumeration</div><div class="subtitle">ARP spoofing, gratuitous ARP injection, IPv4/IPv6 NDP exploitation, DHCP transaction interception, MAC correlation, and passive traffic sniffing to derive client-AP associations with temporal connection state inference.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Beacons</div><div class="subtitle">802.11 management frame capture with millisecond timestamping, IE payload extraction including vendor-specific extensions, beacon interval analysis, TSF clock skew detection, TIM bitmap parsing, and Country IE regulatory domain mapping.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Probes</div><div class="subtitle">Directed/broadcast probe request frame collection with sequence analysis, hidden SSID reconnaissance via response correlation, device fingerprinting through Supported Rates/HT Capability parsing, and roaming behavior pattern inference.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Signal Analysis</div><div class="subtitle">Real-time RSSI trending with exponential moving average filtering, multipath propagation characterization, Friis path-loss modeling, per-channel spectral density visualization, and interference source identification via frequency occupancy analysis.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Handshake</div><div class="subtitle">IEEE 802.1X EAPOL frame capture and sequencing validation, PMKID extraction from Key frames, WPA2/WPA3 four-way handshake isolation, cryptographic key material observation for offline dictionary attacks, and TSF synchronization verification.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Deauthenticate</div><div class="subtitle">Crafted 802.11 deauth frame transmission with spoofed SA/BSSID, frame control bit manipulation, broadcast flood mode exceeding reassociation latency, targeted unicast with sequence exploitation, and custom Reason Code injection (1–53) for social engineering obfuscation.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spoof</div><div class="subtitle">Arbitrary SSID IE injection, multi-SSID rapid alternation at MAC layer, spoofed BSSID with custom OUI prefixes, beacon interval manipulation for synchronization disruption, and RSN IE crafting for WPA/WPA2/Open simulation.</div></div></li>
+      <li data-description="Passively captures beacon/probe frames across 2.4/5 GHz bands by converting RSSI/dBm while extracting WPA/WPA2/WPA3 cipher suites via IE parsing and decoding Country IE regulatory domains."><div class="panel-submenu"><div class="title">Discovery</div></div></li>
+      <li data-description="Derives client-AP associations through ARP/NDP spoofing and DHCP interception by correlating passive traffic for connection state inference."><div class="panel-submenu"><div class="title">Enumeration</div></div></li>
+      <li data-description="Captures 802.11 management frames by extracting IE/vendor extensions while detecting TSF clock skew and parsing TIM bitmap data."><div class="panel-submenu"><div class="title">Beacons</div></div></li>
+      <li data-description="Collects probe requests to perform hidden SSID reconnaissance through response correlation enabling device fingerprinting via Supported Rates/HT parsing."><div class="panel-submenu"><div class="title">Probes</div></div></li>
+      <li data-description="Applies real-time RSSI trending through exponential filtering and Friis path-loss modeling to analyze per-channel spectral density for interference identification."><div class="panel-submenu"><div class="title">Signal Analysis</div></div></li>
+      <li data-description="Isolates EAPOL frames and extracts PMKID from WPA2/WPA3 four-way handshakes thereby enabling offline cryptographic key observation."><div class="panel-submenu"><div class="title">Handshake</div></div></li>
+      <li data-description="Transmits spoofed 802.11 deauth frames by manipulating SA/BSSID and executing broadcast flood mode while injecting custom Reason Codes for reassociation disruption."><div class="panel-submenu"><div class="title">Deauthenticate</div></div></li>
+      <li data-description="Injects spoofed SSID/BSSID frames using custom OUI prefixes and RSN IE crafting by manipulating beacon intervals to simulate WPA/WPA2/Open networks."><div class="panel-submenu"><div class="title">Spoof</div></div></li>
      </ul>
     </div>
    </li>
@@ -30,12 +36,12 @@
      <div class="title"><span class="material-icons">bluetooth</span></div>
      <div class="subtitle">Wireless</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">79-channel Bluetooth Classic frequency-hop sweep (2.402–2.480 GHz) and 37 BLE advertising channel enumeration with BD_ADDR extraction, Local Name/Shortened Name EIR parsing, TX Power/RSSI conversion to path-loss distance estimation, and device class/capability mapping.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Monitor</div><div class="subtitle">ACL/SCO link layer packet capture with LAP/UAP exploitation for frequency hopping prediction, LMP command/response interception, GATT ATT operation eavesdropping, TDD slot analysis, and intra-connection traffic decryption where key material is observable.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Skimmers</div><div class="subtitle">Signature matching against HC-05/HC-06/NRF52/CSR8810 payment peripheral profiles, PM_ADDR extraction and cloning-capable hardware database correlation, magnetic stripe reader/POS spoofing heuristics, and temporal proximity analysis with known compromise locations.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Flood</div><div class="subtitle">Rapid BLE advertisement packet generation across all channels with arbitrary MAC randomization per packet, PDU length maximization (255 octets), advertising interval compression below 20ms thresholds to saturate receiver buffers, and multi-role simultaneous broadcasting.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spam</div><div class="subtitle">OS-specific device pairing notification injection (Windows BLE GATT solicitation, Samsung Nearby emulation, Google Fast Pair GATT simulation) with MSD field manipulation, spoofed GAP device naming, and notification stacking for cumulative UI disruption/credential prompting.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">Continuous 2.4 GHz ISM carrier transmission with power amplification to EIRP saturation, frequency-hop prediction via FFT spectral analysis for predictive narrowband jamming on next hops, and interrupt-pattern modulation to selectively disable frequency-dependent peripherals while minimizing collateral disruption.</div></div></li>
+      <li data-description="Sweeps 79 Bluetooth Classic and 37 BLE advertising channels by extracting BD_ADDR through Local Name EIR parsing while converting TX Power/RSSI for device class mapping."><div class="panel-submenu"><div class="title">Scan</div></div></li>
+      <li data-description="Captures ACL/SCO link-layer packets exploiting LAP/UAP for frequency hopping prediction while intercepting LMP/GATT operations and decrypting traffic via observable key material."><div class="panel-submenu"><div class="title">Monitor</div></div></li>
+      <li data-description="Signature matches HC-05/HC-06/NRF52/CSR8810 peripherals by extracting PM_ADDR then correlating cloning capability with proximity to compromise locations."><div class="panel-submenu"><div class="title">Skimmers</div></div></li>
+      <li data-description="Generates rapid BLE advertisements across all channels through MAC randomization with 255-octet PDU maximization and sub-20ms interval compression for buffer saturation."><div class="panel-submenu"><div class="title">Flood</div></div></li>
+      <li data-description="Injects OS-specific pairing notifications across Windows/Samsung/Google devices through GATT solicitation with MSD field manipulation and notification stacking for UI disruption."><div class="panel-submenu"><div class="title">Spam</div></div></li>
+      <li data-description="Transmits continuous 2.4 GHz ISM carrier achieving EIRP saturation for FFT-predicted narrowband jamming on next frequency hops via interrupt-pattern modulation."><div class="panel-submenu"><div class="title">Jam</div></div></li>
      </ul>
     </div>
    </li>
@@ -44,12 +50,12 @@
      <div class="title"><span class="material-icons">cell_tower</span></div>
      <div class="subtitle">Radio Frequency</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">Heterodyne receiver tuning across 315/433/868 MHz discrete channels with PLL frequency synthesis, AGC envelope detection, Higher-Order Statistics modulation classification (FSK/OOK/GFSK discrimination), SNR computation via spectral analysis, and duty cycle inference through temporal occupancy mapping.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Monitor</div><div class="subtitle">Real-time I/Q demodulation with QAM constellation observation, FFT spectral density via Welch windowing, ACPR measurement for bandwidth characterization, phase continuity tracking for modulation index determination, and bitstream extraction through matched filtering.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Record</div><div class="subtitle">Direct RF waveform ADC digitization at Nyquist rate, complex baseband down-conversion via SDR IF processing, IQ sample recording at 8/16/32-bit quantization with timestamp correlation, and bitstream extraction against protocol templates (RF433 remotes, automotive keyless entry, industrial control).</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Replay</div><div class="subtitle">Vector signal generation via IFFT waveform reconstruction, DAC synthesis with frequency translation through LO mixing, sub-microsecond timing synchronization to match modulation envelope, and frequency offset compensation for stability maintenance.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">Continuous unmodulated carrier transmission at target frequency with power amplification to noise floor saturation, dynamic frequency hopping prediction via ML temporal pattern analysis, narrowband Gaussian noise generation, and duty cycle modulation for selective disruption below regulatory observability.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Pulse Jam</div><div class="subtitle">Gated RF carrier with microsecond pulse width control, periodic pulse train synchronized to target transmission timing via trigger detection, frequency agility for multi-channel sequential disruption, and power ramping to exceed device sensitivity thresholds.</div></div></li>
+      <li data-description="Heterodyne tuning across 315/433/868 MHz channels using PLL synthesis with AGC envelope detection for HOS modulation classification (FSK/OOK/GFSK) and duty cycle inference via temporal analysis."><div class="panel-submenu"><div class="title">Scan</div></div></li>
+      <li data-description="Real-time I/Q demodulation observes QAM constellations through FFT spectral density via Welch windowing while measuring ACPR and extracting bitstreams through matched filtering."><div class="panel-submenu"><div class="title">Monitor</div></div></li>
+      <li data-description="Records RF waveforms by digitizing at Nyquist rate via ADC then down-converting baseband with 8/16/32-bit IQ quantization for RF433/automotive/industrial protocol template matching."><div class="panel-submenu"><div class="title">Record</div></div></li>
+      <li data-description="Reconstructs signals through IFFT waveform generation and DAC synthesis with LO mixing while maintaining sub-microsecond timing synchronization and frequency offset compensation."><div class="panel-submenu"><div class="title">Replay</div></div></li>
+      <li data-description="Transmits continuous unmodulated carriers with dynamic frequency-hop prediction via ML pattern analysis enabling duty cycle modulation for selective disruption."><div class="panel-submenu"><div class="title">Jam</div></div></li>
+      <li data-description="Transmits gated RF pulses with microsecond width control synchronized via trigger detection for frequency-agile multi-channel sequential disruption."><div class="panel-submenu"><div class="title">Pulse Jam</div></div></li>
      </ul>
     </div>
    </li>
@@ -58,12 +64,12 @@
      <div class="title"><span class="material-icons">contactless</span></div>
      <div class="subtitle">RFID/NFC</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Read</div><div class="subtitle">13.56 MHz (ISO14443 Type A/B) and 125/134 kHz (EM4100/FDX-B) inductive coupling with resonant impedance matching, Manchester/Biphase demodulation, CRC validation across APDU sequences, NDEF record parsing with MIME type classification, and Type 1–4 tag EEPROM sector mapping.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Scan</div><div class="subtitle">Sequential tag enumeration via variable-inductance loop energization, NFCIP-1 peer-to-peer mode advertisement, anti-collision cascade protocol for simultaneous tag identification, FIO parsing across 106/212/424 kbit/s data rates, and RSS field strength proximity mapping.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Duplicate</div><div class="subtitle">Memory sector-by-sector readout via authentication bypass or default credential exploitation, cryptographic key extraction through physical access or manufacturer master keys, writable tag provisioning with byte-level precision, UID spoofing through writable segments, and sector protection bit manipulation.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Write</div><div class="subtitle">Memory address mapping with page boundary calculation, NDEF TLV encoding serialization, URI/MIME record formatting per RFC 3986, sector authentication with derived session keys, and write-protect flag commitment with CRC recalculation.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Emulate</div><div class="subtitle">ISO14443 coil impedance tuning simulation, APDU command response state machine implementation, challenge/response protocol emulation with known cryptographic material, memory bank virtualization, and power supply brownout simulation for realistic offline behavior.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Spoof</div><div class="subtitle">Gaming device token hardware ID emulation (Amiibo/NFC card) with encrypted media key simulation, EMV/NFC Fast Transaction Protocol replication for financial auth spoofing, transit card credential fabrication with expiration/balance data, and polyglot tag emulation supporting simultaneous Type A/B protocol responses.</div></div></li>
+      <li data-description="Extracts data from 13.56 MHz ISO14443 Type A/B and 125/134 kHz EM4100/FDX-B tags through Manchester demodulation while parsing NDEF records from EEPROM sectors."><div class="panel-submenu"><div class="title">Read</div></div></li>
+      <li data-description="Enumerates tags by energizing variable-inductance coils to trigger anti-collision cascade protocol then parsing FIO across 106/212/424 kbit/s rates with RSS proximity mapping."><div class="panel-submenu"><div class="title">Scan</div></div></li>
+      <li data-description="Clones tag memory through authentication bypass exploiting default credentials then provisions blank tags with spoofed UIDs via writable segment manipulation."><div class="panel-submenu"><div class="title">Duplicate</div></div></li>
+      <li data-description="Writes NDEF/TLV encoded records to tags through sector authentication using derived session keys while recalculating CRC across page boundaries."><div class="panel-submenu"><div class="title">Write</div></div></li>
+      <li data-description="Emulates ISO14443 tags by implementing APDU state machine execution with challenge/response protocol while simulating power-limited offline behavior."><div class="panel-submenu"><div class="title">Emulate</div></div></li>
+      <li data-description="Emulates gaming tokens and financial payment cards through encrypted media key simulation enabling polyglot Type A/B protocol support."><div class="panel-submenu"><div class="title">Spoof</div></div></li>
      </ul>
     </div>
    </li>
@@ -72,10 +78,10 @@
      <div class="title"><span class="material-icons">settings_remote</span></div>
      <div class="subtitle">Infrared</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Control</div><div class="subtitle">38 kHz carrier modulation with duty cycle synthesis, generic discrete IR code library transmission across RC5/RC6/SIRC/NEC/Samsung/Philips variants, power on/off macro execution across TV/AV/climate control categories, and received power calibration against ambient sunlight/artificial IR interference.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Protocols</div><div class="subtitle">Manchester encoded RC5 toggle bit state machine, SIRC variable-length 12/15/20-bit packets, NEC 42 kHz legacy compatibility, Samsung 38 kHz 32-bit address capability, Philips RC6 Mode 0/6 toggle mechanism, and regional manufacturer variant templates (Panasonic/Mitsubishi/Sanyo/Toshiba).</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Capture</div><div class="subtitle">Photoreceptor IR reception with AGC envelope detection/demodulation, carrier frequency extraction via zero-crossing interval averaging, pulse train decoding with inter-symbol timing calibration, protocol heuristic matching, and bitstream interpretation with checksum validation.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Jam</div><div class="subtitle">38 kHz modulated noise with Gaussian envelope distribution, continuous carrier transmission exceeding receiver saturation, 30–60 kHz frequency sweep across common IR carriers, duty cycle variation to disrupt PLL demodulation synchronization, and diffuse reflection spatial transmission.</div></div></li>
+      <li data-description="Transmits 38 kHz modulated IR codes across RC5/RC6/SIRC/NEC/Samsung/Philips variants while synthesizing duty cycles with ambient interference calibration."><div class="panel-submenu"><div class="title">Control</div></div></li>
+      <li data-description="Supports RC5 Manchester encoding through SIRC 12/15/20-bit packet variants alongside NEC 42 kHz legacy compatibility, Samsung 38 kHz address capability, and RC6 Mode 0/6 toggle across regional manufacturer templates."><div class="panel-submenu"><div class="title">Protocols</div></div></li>
+      <li data-description="Captures IR signals through AGC envelope detection by extracting zero-crossing frequency data then decoding pulse trains with timing calibration for protocol heuristic bitstream validation."><div class="panel-submenu"><div class="title">Capture</div></div></li>
+      <li data-description="Transmits 38 kHz modulated noise while sweeping 30–60 kHz carriers with duty cycle variation to disrupt PLL demodulation synchronization."><div class="panel-submenu"><div class="title">Jam</div></div></li>
      </ul>
     </div>
    </li>
@@ -84,10 +90,10 @@
      <div class="title"><span class="material-icons">directions_car</span></div>
      <div class="subtitle">Vehicle</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Diagnostics</div><div class="subtitle">OBD-II/CAN-FD bus packet capture via 16-pin DLC, DTC enumeration through UDS service exploitation, ECU firmware extraction, and real-time PID polling with engine/brake/wheel speed sensor data.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Access</div><div class="subtitle">Central locking CAN command injection, PEPS 125 kHz RF replay attacks, body control module frame spoofing, immobilizer bypass via OEM seed/key exploitation or EEPROM IC cloning, and seatbelt pretensioner relay activation.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Override</div><div class="subtitle">CAN FD message injection for fuel injector PWM manipulation, ignition timing injection, ABS module spoofing with wheel speed sensor falsification, ESC yaw rate data injection, hydraulic pressure ADC manipulation, and engine starter motor relay suppression.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Track</div><div class="subtitle">GPS/GNSS coordinate extraction from navigation ECU, cellular triangulation via E-UTRAN/IMSI correlation, OBD-II telematics exfiltration through unencrypted CAN-to-cellular gateways, OnStar/eCall modem interception, and vehicle event data recorder (EDR) forensics.</div></div></li>
+      <li data-description="Captures CAN-FD traffic via 16-pin DLC encompassing UDS DTC enumeration through ECU firmware extraction and real-time PID polling."><div class="panel-submenu"><div class="title">Diagnostics</div></div></li>
+      <li data-description="Injects CAN commands to unlock doors while spoofing body control modules and bypassing immobilizers through OEM seed/key exploitation or EEPROM cloning."><div class="panel-submenu"><div class="title">Access</div></div></li>
+      <li data-description="Injects CAN FD messages that manipulate fuel/ignition timing while spoofing ABS/ESC telemetry with falsified sensor data and suppressed starter relays."><div class="panel-submenu"><div class="title">Override</div></div></li>
+      <li data-description="Extracts GPS/GNSS coordinates from navigation ECUs by exploiting unencrypted CAN-to-cellular gateways for telematics exfiltration and modem interception."><div class="panel-submenu"><div class="title">Track</div></div></li>
      </ul>
     </div>
    </li>
@@ -96,13 +102,16 @@
      <div class="title"><span class="material-icons">electric_bolt</span></div>
      <div class="subtitle">Electrical Grid</div>
      <ul class="carousel-v container-submenu">
-      <li><div class="panel-submenu"><div class="title">Overload</div><div class="subtitle">Load tap changer stepper motor injection for over-voltage, capacitor bank deactivation, protective relay threshold modification to prevent shutdown during cascade faults, triggering thermal destruction of transformer windings.</div></div></li>
-      <li><div class="panel-submenu"><div class="title">Blackout</div><div class="subtitle">SCADA RTU/IED command injection via Modbus/DNP3 to open circuit breaker trip coils, disable protective relay coordination, and suppress recloser restoration for sustained power isolation.</div></div></li>
+      <li data-description="Injects LTC stepper motor commands that induce phase-to-ground over-voltage through tap changer position manipulation whilst deactivating switched capacitor banks to trigger winding thermal runaway."><div class="panel-submenu"><div class="title">Overload</div></div></li>
+      <li data-description="Injects Modbus/DNP3 commands that trip RTU/IED circuit breaker coils by disabling protective relay coordination and suppressing automatic recloser restoration logic for sustained outage duration."><div class="panel-submenu"><div class="title">Blackout</div></div></li>
      </ul>
     </div>
    </li>
   </ul>
-  <div id="button">HACK</div>
+  <div id="bottombar">
+   <div id="description" data-settle-duration="500" data-settle-rate="25"></div>
+   <div id="button">HACK</div>
+  </div>
  </div>
 </main>
 <style>
@@ -115,20 +124,26 @@
  }
  *{margin:0;padding:0;box-sizing:border-box;}
  main{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;font-family:monospace;color:var(--col-white);overflow:hidden;user-select:none;background:var(--col-void);}
+ #topbar{width:100%;height:8vmin;display:flex;align-items:center;justify-content:center;padding:1vmin 2vmin;background:var(--col-gray);}
+ #topbar *{display: flex;}
+ #topbar .material-icons{font-size:6vmin;}
+ #topbar-item-clock{font-size:4vmin;font-weight:bold;color:var(--col-white);}
+ #topbar-item-fullscreen{color:var(--col-white);}
  .container{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
  .carousel-h{list-style:none;overflow:hidden;cursor:grab;display:flex;width:100%;height:100%;}
  .carousel-h li{width:100%;height:100%;flex-shrink:0;display:flex;}
  .carousel-v{list-style:none;overflow:hidden;cursor:grab;display:flex;flex-direction:column;}
  .carousel-v li{width:100%;height:100%;flex-shrink:0;display:flex;}
  .panel-menu{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;gap:2vmin;padding:6vmin;}
- .panel-menu>.title{width:100%;height:60vmin;display:flex;align-items:center;justify-content:center;container-type:size;}
+ .panel-menu>.title{width:100%;height:80vmin;display:flex;align-items:center;justify-content:center;container-type:size;}
  .title .material-icons{font-size:100cqmin;}
  .panel-menu>.subtitle{font-size:6vmin;text-align:center;font-weight:bold;}
- .container-submenu{width:80vmin;height:30vmin;}
- .panel-submenu{display:flex;flex-direction:column;align-items:center;width:100%;height:100%;gap:2vmin;}
+ .container-submenu{height:12vmin;}
+ .panel-submenu{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;}
  .panel-submenu>.title{font-size:6vmin;font-weight:bold;}
- .panel-submenu>.subtitle{font-size:2vmin;line-height:1.4;text-align:center;color:var(--col-cyan);}
- #button{width:100%;height:15vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,var(--col-cyan) 0%,var(--col-cyan) var(--progress),var(--col-void) var(--progress),var(--col-void) 100%);border:1vmin solid var(--col-white);font-size:6vmin;font-weight:bold;cursor:grab;}
+ #bottombar{padding:8vmin; padding-top: 0;display:flex;flex-direction:column;gap:4vmin;justify-content:end;}
+ #description{font-size:2vmin;line-height:1.25;text-align:center;color:var(--col-cyan);}
+ #button{width:100%;height:12vmin;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,var(--col-cyan) 0%,var(--col-cyan) var(--progress),var(--col-void) var(--progress),var(--col-void) 100%);border:1vmin solid var(--col-white);font-size:6vmin;font-weight:bold;cursor:grab;}
  #button.pressed{border-color:var(--col-cyan);}
  @keyframes blink_twice{0%{opacity:0;}25%{opacity:1;}50%{opacity:0;}75%{opacity:1;}100%{opacity:1;}}
  .blink{animation:blink_twice 400ms steps(1) 1;}
@@ -143,32 +158,39 @@
  const tog=(el,c)=>el.classList.toggle(c);
  const set=(el,k,v)=>el.style.setProperty(k,v);
  const carousel=(el,h)=>{
-  const ease=0.1,center_scale=1,side_scale=0.8;
+  const ease=0.1,center_scale=1,side_scale=0.75,swipe_threshold=0.20;
   const scroll=()=>h?el.scrollLeft:el.scrollTop;
   const set_scroll=v=>h?el.scrollLeft=v:el.scrollTop=v;
   const client_size=()=>h?el.clientWidth:el.clientHeight;
   const orig_items=Array.from($$(':scope>li',el)),cnt=orig_items.length;orig_items.map(i=>i.cloneNode(true)).reverse().forEach(i=>el.insertBefore(i,el.firstChild));orig_items.map(i=>i.cloneNode(true)).forEach(i=>el.appendChild(i));
   let sz=client_size();
   set_scroll(cnt*sz);
-  let drag=false,start=0,scr=0,curr=scroll(),tgt=curr;
+  let drag=false,start=0,scr=scroll(),curr=scroll(),tgt=curr;
   const update_scale=()=>{const center=scroll()+client_size()/2;$$(':scope>li',el).forEach((item,i)=>{const dist=Math.abs(center-(i*sz+sz/2))/sz;item.style.transform=`scale(${dist<0.5?side_scale+(center_scale-side_scale)*(1-dist*2):side_scale})`;});};
+  const update_active=()=>{const center_idx=Math.floor((scroll()+client_size()/2)/sz);const real_idx=center_idx%cnt;orig_items.forEach(item=>item.removeAttribute('data-active'));orig_items[real_idx].setAttribute('data-active','true');};
   const move=pos=>{if(!drag)return;const d=pos-start;set_scroll(scr-d);curr=scroll();update_scale();wrap();};
-  const wrap=()=>{const s=scroll();if(s<1.5*sz)set_scroll(s+cnt*sz);else if(s>=(2.5+cnt)*sz)set_scroll(s-cnt*sz);};
-  const snap=()=>{tgt=Math.round(scroll()/sz)*sz;curr=scroll();};
-  const step=()=>{if(!drag){curr+=(tgt-curr)*ease;set_scroll(curr);}update_scale();wrap();requestAnimationFrame(step);};
+  const wrap=()=>{const s=scroll();if(s<1.5*sz){const offset=cnt*sz;set_scroll(s+offset);scr+=offset;curr+=offset;tgt+=offset;}else if(s>=(2.5+cnt)*sz){const offset=cnt*sz;set_scroll(s-offset);scr-=offset;curr-=offset;tgt-=offset;}};
+  const snap=()=>{const movement=(scroll()-scr)/sz;const abs_movement=Math.abs(movement);const snap_offset=(abs_movement%1>=swipe_threshold?Math.ceil(abs_movement):Math.floor(abs_movement))*(movement>=0?1:-1);tgt=(Math.round(scr/sz)+snap_offset)*sz;curr=scroll();};
+  const step=()=>{if(!drag){curr+=(tgt-curr)*ease;set_scroll(curr);}update_scale();update_active();wrap();requestAnimationFrame(step);};
   $on(el,'mousedown',e=>{e.stopPropagation();drag=true;start=h?e.pageX:e.pageY;scr=scroll();});
   $on(document,'mousemove',e=>move(h?e.pageX:e.pageY));
   $on(document,'mouseup',()=>{drag=false;snap();});
   $on(el,'touchstart',e=>{e.stopPropagation();drag=true;start=h?e.touches[0].pageX:e.touches[0].pageY;scr=scroll();});
   $on(document,'touchmove',e=>move(h?e.touches[0].pageX:e.touches[0].pageY));
   $on(document,'touchend',()=>{drag=false;snap();});
-  $on(window,'resize',()=>{const idx=Math.round(scroll()/sz);sz=client_size();set_scroll(idx*sz);tgt=idx*sz;curr=idx*sz;update_scale();});
-  snap();
-  curr=tgt;
+  const recalculate=()=>{const idx=Math.round(scroll()/sz);sz=client_size();set_scroll(idx*sz);tgt=idx*sz;curr=idx*sz;update_scale();update_active();};
+  $on(window,'resize',recalculate);
+  recalculate();
   step();
  };
  $$('.carousel-h').forEach(el=>carousel(el,true));
  $$('.carousel-v').forEach(el=>carousel(el,false));
+ const desc=$('description');
+ const settle_duration=parseInt(desc.dataset.settleDuration)||500;
+ const settle_rate=parseInt(desc.dataset.settleRate)||25;
+ let current_desc='',typewriter_active=false;
+ const update_desc=()=>{const active=document.querySelector('.container-menu [data-active="true"] .container-submenu [data-active="true"]');const new_desc=active?.dataset.description||'';if(new_desc!==current_desc&&!typewriter_active){current_desc=new_desc;typewriter_active=true;const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';const total_ticks=settle_duration/settle_rate;const chars_per_tick=new_desc.length/total_ticks;let progress=0;const type=()=>{progress+=chars_per_tick;const settled=Math.floor(progress);if(settled<new_desc.length){let text=new_desc.substring(0,settled);for(let i=settled;i<new_desc.length;i++){text+=new_desc[i]===' '?' ':chars[Math.floor(Math.random()*chars.length)];}desc.textContent=text;setTimeout(type,settle_rate);}else{desc.textContent=new_desc;typewriter_active=false;}};type();}requestAnimationFrame(update_desc);};
+ update_desc();
  const btn=$('button'),main=document.querySelector('main'),titles=()=>Array.from($$('.panel-menu > .title'));
  let btn_timeout,btn_start,inverted_triggered=false;
  const btn_press=()=>{add(btn,'pressed');titles().forEach(t=>{add(t,'blink');$on(t,'animationend',()=>rm(t,'blink'),{once:true});});btn_start=Date.now();btn_timeout=setInterval(()=>{const elapsed=Date.now()-btn_start,pct=Math.min((elapsed/2000)*100,100);set(btn,'--progress',pct+'%');if(pct>=100&&!inverted_triggered){[0,50,100,150,200].forEach(t=>setTimeout(()=>tog(main,'inverted'),t));inverted_triggered=true;}if(pct>=100)clearInterval(btn_timeout);},16);};
@@ -178,6 +200,12 @@
  $on(btn,'touchstart',btn_press);
  $on(document,'touchend',btn_reset);
  document.addEventListener('contextmenu',e=>e.preventDefault());
+ const fs_btn=$('topbar-item-fullscreen');
+ const toggle_fs=()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();fs_btn.textContent='fullscreen_exit';}else{document.exitFullscreen();fs_btn.textContent='fullscreen';}};
+ $on(fs_btn,'click',toggle_fs);
+ $on(document,'fullscreenchange',()=>{fs_btn.textContent=document.fullscreenElement?'fullscreen_exit':'fullscreen';});
+ const clock=$('topbar-item-clock');
+ setInterval(()=>{const d=new Date();clock.textContent=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});},1000);
 </script>
 </body>
 </html>
