@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<!--
+Random Name Generator
+by CatMeowByte
+
++ use 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
++ script uses snake_case
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>"What is WHAT?" Random Sentence Generator</title>
+</head>
+<body>
+<main>
+ <div class="container">
+  <div class="copy-notifier">Copied!</div>
+  <div class="output-group">
+   <textarea class="result-display" readonly></textarea>
+   <div class="char-count"></div>
+  </div>
+  <div class="controls">
+   <button class="btn-the">Use The</button>
+   <select class="owned-select">
+    <option value="-1">Never Owned</option>
+    <option value="0" selected>Optionally Owned</option>
+    <option value="1">Always Owned</option>
+   </select>
+  </div>
+  <div class="complexity-buttons">
+   <button class="btn-less">Less</button>
+   <button class="btn-more">More</button>
+  </div>
+  <div class="action-buttons">
+   <button class="btn-generate">Generate</button>
+   <button class="btn-copy"><span class="material-icons">content_copy</span></button>
+  </div>
+ </div>
+</main>
+<style>
+ @font-face {
+  font-family: 'Jost';
+  src: url('/font/Jost-500-Medium.ttf') format('truetype');
+  font-fallback: monospace;
+ }
+ :root {
+  --color-white: #f0f0dc; --color-yellow: #fac800; --color-green: #10c840; --color-blue: #00a0c8; --color-red: #d24040; --color-brown: #a0694b; --color-gray: #736464; --color-black: #101820;
+ }
+ * { margin: 0; padding: 0; box-sizing: border-box; }
+ body { background-color: var(--color-brown); }
+ main { display: flex; justify-content: center; align-items: center; min-height: 100vh; font-size: 2rem; font-family: 'Jost', monospace; }
+ .container { position: relative; display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 2rem; background-color: var(--color-white); width: 100%; max-width: 600px; }
+ .copy-notifier { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--color-green); color: var(--color-black); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 500ms; }
+ .output-group { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+ .result-display { flex: 1; padding: 0.75rem; background-color: var(--color-gray); color: var(--color-white); border: none; outline: none; }
+ .char-count { font-size: 1rem; color: var(--color-gray); text-align: right; }
+ .controls { display: flex; gap: 0.5rem; width: 100%; }
+ .btn-the { flex: 1; padding: 0.75rem; background-color: var(--color-gray); color: var(--color-white); border: none; cursor: pointer; }
+ .btn-the.active { background-color: var(--color-blue); }
+ .owned-select { flex: 1; padding: 0.5rem; background-color: var(--color-yellow); border: none; cursor: pointer; }
+ .complexity-buttons { display: flex; gap: 0.5rem; width: 100%; }
+ .btn-less, .btn-more { flex: 1; padding: 0.75rem; background-color: var(--color-yellow); border: none; cursor: pointer; }
+ .btn-less:disabled { background-color: var(--color-gray); cursor: not-allowed; color: var(--color-white); }
+ .action-buttons { display: flex; gap: 0.5rem; width: 100%; }
+ .btn-copy, .btn-generate { padding: 0.75rem; border: none; cursor: pointer; }
+ .btn-copy { flex: 0; background-color: var(--color-red); color: var(--color-white); }
+ .btn-generate { flex: 1; background-color: var(--color-green); color: var(--color-black); }
+ /* style contents */
+</style>
+<script>
+ const adjectives_data = `
+other
+such
+first
+many
+new
+more
+same
+own
+good
+different
+great
+long
+high
+social
+little
+much
+important
+small
+most
+large
+old
+political
+few
+general
+second
+possible
+public
+last
+american
+several
+human
+right
+early
+certain
+economic
+least
+common
+present
+next
+local
+best
+particular
+young
+various
+necessary
+whole
+only
+true
+able
+major
+full
+low
+free
+available
+real
+white
+similar
+total
+special
+less
+short
+specific
+single
+self
+national
+individual
+due
+clear
+black
+personal
+higher
+better
+third
+natural
+greater
+open
+non
+difficult
+current
+further
+main
+physical
+foreign
+lower
+strong
+private
+likely
+international
+significant
+late
+british
+basic
+hard
+modern
+simple
+normal
+sure
+military
+central
+poor
+religious
+original
+effective
+following
+direct
+final
+english
+cultural
+big
+recent
+complete
+german
+financial
+red
+positive
+primary
+appropriate
+french
+western
+legal
+european
+equal
+larger
+average
+historical
+critical
+wide
+traditional
+additional
+active
+complex
+former
+independent
+entire
+medical
+useful
+actual
+close
+moral
+relative
+bad
+deep
+constant
+previous
+easy
+serious
+negative
+potential
+fine
+industrial
+subject
+future
+internal
+initial
+well
+federal
+essential
+dead
+indian
+dark
+left
+popular
+successful
+standard
+year
+past
+ready
+sexual
+african
+professional
+wrong
+very
+proper
+separate
+heavy
+civil
+responsible
+considerable
+light
+cold
+above
+chinese
+older
+practical
+external
+one
+mental
+sufficient
+interesting
+upper
+scientific
+key
+christian
+annual
+domestic
+limited
+japanese
+smaller
+southern
+earlier
+commercial
+female
+impossible
+powerful
+green
+later
+like
+clinical
+jewish
+blue
+ancient
+educational
+typical
+rich
+technical
+environmental
+formal
+male
+top
+aware
+hot
+south
+beautiful
+variable
+obvious
+secondary
+enough
+urban
+regular
+relevant
+greatest
+spiritual
+time
+double
+happy
+term
+latter
+democratic
+multiple
+soviet
+dependent
+correct
+northern
+middle
+rural
+official
+anti
+fundamental
+two
+immediate
+numerous
+overall
+half
+russian
+psychological
+usual
+native
+regional
+highest
+north
+agricultural
+literary
+broad
+perfect
+experimental
+fourth
+global
+net
+ordinary
+related
+apparent
+nuclear
+daily
+principal
+east
+contemporary
+severe
+reasonable
+subsequent
+dry
+worth
+longer
+emotional
+intellectual
+unique
+pure
+familiar
+solid
+brief
+famous
+fresh
+day
+corresponding
+characteristic
+maximum
+detailed
+outside
+theoretical
+fair
+opposite
+capable
+visual
+interested
+joint
+ill
+adequate
+based
+pre
+substantial
+west
+unable
+structural
+soft
+greek
+false
+largest
+inner
+divine
+mean
+extensive
+excellent
+rapid
+absolute
+consistent
+continuous
+spanish
+administrative
+strange
+willing
+wild
+alternative
+slow
+distinct
+safe
+permanent
+front
+corporate
+academic
+thin
+nineteenth
+mere
+universal
+functional
+unknown
+careful
+eastern
+narrow
+evident
+sound
+classical
+minor
+weak
+suitable
+chief
+liberal
+extreme
+yellow
+parallel
+warm
+mixed
+flat
+italian
+huge
+holy
+contrary
+vast
+dangerous
+three
+stable
+chemical
+valuable
+rare
+worse
+visible
+criminal
+sensitive
+mechanical
+state
+radical
+extra
+superior
+conventional
+thick
+dominant
+post
+collective
+younger
+efficient
+roman
+ethnic
+linear
+organic
+oral
+century
+creative
+colonial
+vertical
+dynamic
+empty
+minimum
+cognitive
+biological
+communist
+conscious
+logical
+afraid
+equivalent
+quick
+near
+concrete
+mass
+acute
+sharp
+easier
+quiet
+brown
+adult
+accurate
+ideal
+partial
+irish
+bright
+identical
+conservative
+magnetic
+frequent
+electronic
+fixed
+square
+fat
+cross
+clean
+back
+organizational
+constitutional
+genetic
+ultimate
+secret
+vital
+dramatic
+objective
+round
+alive
+straight
+unusual
+chronic
+rational
+electric
+mutual
+class
+competitive
+revolutionary
+statistical
+random
+musical
+crucial
+racial
+sudden
+acid
+content
+temporary
+sick
+line
+remarkable
+exact
+valid
+empirical
+helpful
+nice
+comprehensive
+united
+level
+fifth
+nervous
+expensive
+prominent
+healthy
+liquid
+institutional
+silent
+sweet
+catholic
+strategic
+molecular
+comparative
+called
+electrical
+raw
+acceptable
+scale
+latin
+philosophical
+violent
+senior
+asian
+all
+desirable
+sacred
+tall
+steady
+`;
+
+ const nouns_data = `
+time
+people
+way
+life
+years
+world
+man
+state
+work
+system
+new
+part
+number
+case
+government
+day
+states
+men
+children
+women
+example
+power
+information
+development
+order
+group
+place
+use
+data
+law
+god
+water
+university
+war
+point
+year
+figure
+process
+fact
+york
+family
+school
+form
+house
+others
+end
+chapter
+research
+history
+home
+table
+control
+hand
+value
+course
+study
+area
+united
+book
+things
+period
+press
+times
+society
+country
+problem
+something
+nature
+level
+person
+body
+business
+education
+company
+city
+john
+court
+problems
+effect
+words
+policy
+section
+days
+name
+child
+interest
+service
+side
+action
+analysis
+line
+rate
+head
+terms
+question
+members
+land
+age
+party
+view
+position
+sense
+type
+london
+nothing
+cases
+studies
+father
+death
+community
+health
+groups
+results
+language
+conditions
+act
+production
+model
+change
+students
+mother
+knowledge
+century
+theory
+church
+field
+program
+role
+class
+systems
+room
+changes
+experience
+woman
+mind
+structure
+money
+result
+kind
+matter
+management
+air
+eyes
+areas
+evidence
+function
+word
+growth
+office
+market
+services
+method
+energy
+percent
+art
+values
+countries
+night
+reason
+population
+treatment
+effects
+thing
+force
+rights
+science
+trade
+food
+situation
+king
+care
+support
+activity
+face
+relationship
+material
+idea
+movement
+means
+president
+patients
+love
+source
+america
+basis
+surface
+paper
+heart
+culture
+space
+light
+activities
+story
+practice
+amount
+property
+approach
+national
+size
+organization
+questions
+report
+union
+department
+income
+books
+behavior
+plan
+ways
+capital
+addition
+price
+series
+anything
+response
+workers
+blood
+cells
+today
+journal
+factors
+design
+account
+attention
+methods
+hands
+industry
+moment
+cost
+need
+performance
+committee
+relations
+months
+fig
+types
+decision
+son
+test
+forms
+pressure
+levels
+job
+purpose
+term
+center
+range
+issues
+quality
+letter
+hours
+parts
+lines
+south
+association
+difference
+project
+distribution
+lord
+character
+college
+disease
+resources
+parents
+river
+wife
+england
+product
+labor
+text
+tax
+board
+general
+region
+loss
+stage
+security
+right
+authority
+ground
+music
+town
+patient
+india
+council
+influence
+subject
+solution
+products
+army
+door
+points
+issue
+william
+feet
+review
+rule
+elements
+discussion
+bank
+forces
+training
+cell
+respect
+species
+importance
+friends
+works
+rules
+everything
+application
+degree
+events
+washington
+environment
+voice
+north
+street
+differences
+europe
+member
+schools
+west
+march
+condition
+materials
+volume
+cent
+object
+one
+ideas
+sea
+truth
+costs
+individuals
+may
+earth
+presence
+june
+status
+james
+building
+persons
+programs
+road
+vol
+unit
+literature
+american
+administration
+direction
+temperature
+spirit
+list
+technology
+image
+morning
+operation
+extent
+factor
+statement
+oil
+set
+economy
+concept
+reference
+ability
+george
+expression
+page
+risk
+rates
+july
+student
+congress
+success
+increase
+staff
+france
+numbers
+agreement
+fire
+author
+china
+friend
+rest
+peace
+laws
+commission
+length
+pattern
+sources
+someone
+april
+manner
+task
+date
+interests
+site
+minutes
+computer
+functions
+flow
+freedom
+processes
+politics
+cause
+relation
+choice
+sir
+note
+principle
+context
+library
+understanding
+communication
+existence
+future
+justice
+principles
+meaning
+reasons
+construction
+phase
+article
+wall
+failure
+parties
+step
+strength
+plant
+opinion
+instance
+box
+needs
+nation
+week
+companies
+weight
+code
+paul
+robert
+lot
+police
+car
+distance
+religion
+exchange
+news
+reality
+meeting
+thomas
+base
+access
+teachers
+pain
+front
+effort
+middle
+goods
+memory
+units
+output
+picture
+october
+january
+variety
+sample
+december
+september
+families
+faith
+features
+miles
+division
+speech
+characteristics
+film
+examples
+east
+minister
+procedure
+teacher
+stock
+investment
+africa
+david
+nations
+marriage
+equipment
+germany
+efforts
+aspects
+capacity
+return
+august
+impact
+girl
+district
+letters
+`;
+
+ const adjectives = adjectives_data.trim().split('\n').filter(w => w);
+ const nouns = nouns_data.trim().split('\n').filter(w => w);
+
+ const joiners = ['because', 'while', 'when', 'then', 'unless', 'so', 'yet'];
+
+ let complexity = 1;
+ let use_the = true;
+ let is_owned = 0;
+
+ const get_use_the = () => use_the;
+ const get_complexity = () => complexity;
+ const get_is_owned = () => is_owned;
+
+ const random_adj = () => adjectives[Math.floor(Math.random() * adjectives.length)];
+ const random_noun = () => nouns[Math.floor(Math.random() * nouns.length)];
+ const random_joiner = () => joiners[Math.floor(Math.random() * joiners.length)];
+
+ const create_simple = () => `${use_the ? 'the ' : ''}${random_adj()} ${random_noun()}`;
+
+ const create_complex = (has_ownership) => `${create_simple()}${has_ownership ? ` of ${create_simple()}` : ''} is ${random_adj()}`;
+
+ const create_sentence = (level) => {
+  if (level === 1) return create_simple();
+  let result = '';
+  let last_joiner = null;
+  for (let i = 1; i < level; i++) {
+   if (i > 1) {
+    let joiner = random_joiner();
+    while (joiner === last_joiner) joiner = random_joiner();
+    last_joiner = joiner;
+    result += ` ${joiner} `;
+   }
+   result += create_complex(is_owned === 1 ? true : is_owned === -1 ? false : Math.random() > 0.5);
+  }
+  return result;
+ };
+
+ const generate = () => {
+  const sentence = create_sentence(complexity);
+  document.querySelector('.result-display').value = sentence;
+  document.querySelector('.char-count').textContent = `${sentence.length} characters`;
+  document.querySelector('.btn-less').disabled = complexity === 1;
+ };
+
+ document.querySelector('.btn-generate').addEventListener('click', generate);
+ document.querySelector('.btn-copy').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.querySelector('.result-display').value);
+  const notifier = document.querySelector('.copy-notifier');
+  notifier.style.transition = 'none';
+  notifier.style.opacity = '1';
+  notifier.style.pointerEvents = 'all';
+  setTimeout(() => {
+   notifier.style.transition = 'opacity 500ms';
+   notifier.style.opacity = '0';
+   setTimeout(() => {
+    notifier.style.pointerEvents = 'none';
+   }, 500);
+  }, 0);
+ });
+ document.querySelector('.btn-the').addEventListener('click', (e) => {
+  use_the = !use_the;
+  e.target.classList.toggle('active', use_the);
+  generate();
+ });
+ document.querySelector('.owned-select').addEventListener('change', (e) => {
+  is_owned = parseInt(e.target.value);
+ });
+ document.querySelector('.btn-less').addEventListener('click', () => {
+  if (complexity > 1) complexity--;
+  generate();
+ });
+ document.querySelector('.btn-more').addEventListener('click', () => {
+  complexity++;
+  generate();
+ });
+
+ document.querySelector('.btn-the').classList.add('active');
+ generate();
+</script>
+</body>
+</html>
