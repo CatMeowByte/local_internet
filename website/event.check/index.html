@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>input tester</title>
+</head>
+<body>
+<main>
+ <div id="display"></div>
+</main>
+<style>
+ :root {
+  --color-black: #292b30;
+  --color-white: #cfab4a;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ main {
+  background: var(--color-black);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+ }
+ #display {
+  color: var(--color-white);
+  font-size: 1rem;
+  font-family: monospace;
+  white-space: pre;
+  line-height: 1.4;
+  outline: 0.125rem solid transparent;
+  padding: 1.5rem;
+ }
+</style>
+<script>
+ const $display = document.getElementById('display');
+ function format_event(type, e) {
+  let output = type + ' {\n';
+  if (type.includes('key')) {
+   output += ` key: '${e.key}'\n`;
+   output += ` code: '${e.code}'\n`;
+   output += ` shiftKey: ${e.shiftKey}\n`;
+   output += ` ctrlKey: ${e.ctrlKey}\n`;
+   output += ` altKey: ${e.altKey}\n`;
+   output += ` metaKey: ${e.metaKey}\n`;
+   output += ` repeat: ${e.repeat}\n`;
+   output += ` location: ${e.location}\n`;
+  } else if (type.includes('pointer')) {
+   output += ` pointerId: ${e.pointerId}\n`;
+   output += ` pointerType: '${e.pointerType}'\n`;
+   output += ` button: ${e.button}\n`;
+   output += ` buttons: ${e.buttons}\n`;
+   output += ` clientX: ${Math.round(e.clientX)}\n`;
+   output += ` clientY: ${Math.round(e.clientY)}\n`;
+   output += ` pageX: ${Math.round(e.pageX)}\n`;
+   output += ` pageY: ${Math.round(e.pageY)}\n`;
+   output += ` screenX: ${Math.round(e.screenX)}\n`;
+   output += ` screenY: ${Math.round(e.screenY)}\n`;
+   output += ` offsetX: ${Math.round(e.offsetX)}\n`;
+   output += ` offsetY: ${Math.round(e.offsetY)}\n`;
+   output += ` pressure: ${e.pressure}\n`;
+   output += ` width: ${Math.round(e.width)}\n`;
+   output += ` height: ${Math.round(e.height)}\n`;
+   output += ` isPrimary: ${e.isPrimary}\n`;
+   if (type === 'pointermove') {
+    output += ` movementX: ${Math.round(e.movementX)}\n`;
+    output += ` movementY: ${Math.round(e.movementY)}\n`;
+   }
+   output += ` shiftKey: ${e.shiftKey}\n`;
+   output += ` ctrlKey: ${e.ctrlKey}\n`;
+   output += ` altKey: ${e.altKey}\n`;
+   output += ` metaKey: ${e.metaKey}\n`;
+  }
+  output += '}';
+  return output;
+ }
+ function flash_outline() {
+  $display.style.outlineColor = 'var(--color-white)';
+  setTimeout(() => { $display.style.outlineColor = 'transparent'; }, 0);
+ }
+ window.addEventListener('keydown', (e) => { $display.textContent = format_event('keydown', e); flash_outline(); });
+ window.addEventListener('keyup', (e) => { $display.textContent = format_event('keyup', e); flash_outline(); });
+ window.addEventListener('pointerdown', (e) => { $display.textContent = format_event('pointerdown', e); flash_outline(); });
+ window.addEventListener('pointerup', (e) => { $display.textContent = format_event('pointerup', e); flash_outline(); });
+ window.addEventListener('pointermove', (e) => { $display.textContent = format_event('pointermove', e); flash_outline(); });
+</script>
+</body>
+</html>
