@@ -67,11 +67,12 @@
    set_scr(cnt*size);
    let drag=false,strt=0,scr=scroll(),curr=scroll(),tgt=curr;
    const upd_scl=()=>{const ctr=scroll()+client_sz()/2;$$(':scope>li',elem).forEach((item,i)=>{const dist=Math.abs(ctr-(i*size+size/2))/size;item.style.transform=`scale(${dist<0.5?side_scl+(ctr_scl-side_scl)*(1-dist*2):side_scl})`;});};
-   const move=pos=>{if(!drag)return;const delta=pos-strt;set_scr(scr-delta);curr=scroll();upd_scl();wrap();};
+   const upd_actv=()=>{if(cnt===0)return;const center_idx=Math.floor((scroll()+client_sz()/2)/size);const real_idx=center_idx%cnt;orig_itm.forEach(item=>item.removeAttribute('data-active'));if(real_idx>=0&&real_idx<cnt)orig_itm[real_idx].setAttribute('data-active','true');};
+   const move=pos=>{if(!drag)return;const delta=pos-strt;set_scr(scr-delta);curr=scroll();upd_scl();upd_actv();wrap();};
    const wrap=()=>{const s=scroll(),wrap_low=(cnt-0.5)*size,wrap_high=(2*cnt-0.5)*size;if(s<wrap_low||s>=wrap_high){const dir=s<wrap_low?1:-1,off=cnt*size*dir;set_scr(s+off);scr+=off;curr+=off;tgt+=off;}};
    const snap=()=>{const move_val=(scroll()-scr)/size,abs_move=Math.abs(move_val),snap_off=(abs_move%1>=swipe_thr?Math.ceil(abs_move):Math.floor(abs_move))*(move_val>=0?1:-1);tgt=(Math.round(scr/size)+snap_off)*size;curr=scroll();};
-   const step=()=>{if(!drag){curr+=(tgt-curr)*ease;set_scr(curr);}upd_scl();wrap();on_raf(step);};
-   const recalc=()=>{const idx=Math.round(scroll()/size);size=client_sz();set_scr(idx*size);tgt=idx*size;curr=idx*size;upd_scl();};
+   const step=()=>{if(!drag){curr+=(tgt-curr)*ease;set_scr(curr);}upd_scl();upd_actv();wrap();on_raf(step);};
+   const recalc=()=>{const idx=Math.round(scroll()/size);size=client_sz();set_scr(idx*size);tgt=idx*size;curr=idx*size;upd_scl();upd_actv();};
    $on(window,'resize',recalc);
    recalc();
    step();
