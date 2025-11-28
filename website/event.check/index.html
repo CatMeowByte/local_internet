@@ -18,6 +18,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
  }
  main {
   background: var(--color-black);
@@ -89,6 +90,7 @@
  window.addEventListener('pointerdown', (e) => { $display.textContent = format_event('pointerdown', e); flash_outline(); });
  window.addEventListener('pointerup', (e) => { $display.textContent = format_event('pointerup', e); flash_outline(); });
  window.addEventListener('pointermove', (e) => { $display.textContent = format_event('pointermove', e); flash_outline(); });
+ window.addEventListener('contextmenu', (e) => { e.preventDefault(); });
 </script>
 </body>
 </html>
