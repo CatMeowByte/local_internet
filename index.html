@@ -12,7 +12,7 @@ by CatMeowByte
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Local Internet</title>
-<link rel="stylesheet" href="/icon/material-icons.css">
+<link rel="stylesheet" href="icon/material-icons.css">
 </head>
 <body>
 <main>
@@ -56,7 +56,7 @@ by CatMeowByte
  const btnFullscreen=$('#browser_fullscreen');
  const sanitizePath=input=>{if(!input.startsWith('web://'))input='web://'+input.replace(/^web:\/+/,'');input=input.replace(/^web:\/\/+/,'web://');input=input.replace(/([^:])\/\/+/g,'$1/');if(input.endsWith('/')&&input!=='web://')input=input.slice(0,-1);return input;};
  const pathToSrc=path=>{path=path.replace(/^web:\/\//,'');if(path==='')return'website/'+HOME+'/index.html';if(path.endsWith('/'))path=path.slice(0,-1);const slashIndex=path.indexOf('/');let domain,childPath;if(slashIndex===-1){domain=path;childPath='';}else{domain=path.substring(0,slashIndex);childPath=path.substring(slashIndex+1);}let finalPath='website/'+domain;if(childPath===''||!childPath.includes('.')){finalPath+=(childPath?'/'+childPath:'')+'/index.html';}else{finalPath+='/'+childPath;}return finalPath;};
- $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let displayPath=path.replace(/^.*\/website\//,'');input.value=sanitizePath(displayPath);const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href='/icon/material-icons.css';frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src='/inject.js';frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
+ $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let displayPath=path.replace(/^.*\/website\//,'');input.value=sanitizePath(displayPath);const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href=new URL('icon/material-icons.css',window.location.href).href;frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src=new URL('inject.js',window.location.href).href;frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
  $on(navForm,'submit',e=>{e.preventDefault();const sanitized=sanitizePath(input.value.trim());input.value=sanitized;frame.src=pathToSrc(sanitized);});
  $on(btnHome,'click',()=>{frame.src='website/'+HOME+'/';});
  $on(btnBack,'click',()=>{frame.contentWindow.history.back();});
