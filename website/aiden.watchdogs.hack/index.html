@@ -3,53 +3,261 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carousel System</title>
+<title>Aiden Pearce Interface</title>
 </head>
 <body>
 <main>
  <div class="bar-notification">
   <span id="clock">12:00 AM</span>
   <span style="flex-grow:1;"></span>
-  <span id="battery">100%</span>
-  <span id="signal">▓▓▓</span>
-  <span id="fullscreen-btn">⛶</span>
+  <span class="material-icons" id="button-fullscreen">fullscreen</span>
+  <span class="material-icons">network_cell</span>
+  <span class="material-icons"  style="padding: 0 0.5rem; transform: rotate(90deg)  scale(2);">battery_6_bar</span>
  </div>
- <div class="container-hack">
-  <div class="container-stack">
-   <div class="progress-hack"></div>
-   <div class="container-menu">
-    <ul class="carousel-h carousel-menu">
-     <li>
-      <div class="panel-menu">
-       <div class="title">Network</div>
-       <div class="icon-grow"><div class="icon">#</div></div>
-       <ul class="carousel-v carousel-submenu">
-        <li class="subtitle" data-description="Network discovery and enumeration capabilities.">Discovery</li>
-        <li class="subtitle" data-description="Device and AP association analysis.">Enumeration</li>
-        <li class="subtitle" data-description="802.11 beacon frame capture.">Beacons</li>
-       </ul>
-      </div>
-     </li>
-     <li>
-      <div class="panel-menu">
-       <div class="title">Wireless</div>
-       <div class="icon-grow"><div class="icon">#</div></div>
-       <ul class="carousel-v carousel-submenu">
-        <li class="subtitle" data-description="Bluetooth and BLE scanning across channels.">Scan</li>
-        <li class="subtitle" data-description="Monitor ACL and SCO link layer packets.">Monitor</li>
-        <li class="subtitle" data-description="Identify and target Bluetooth peripherals.">Skimmers</li>
-       </ul>
-      </div>
-     </li>
-    </ul>
+ <div class="container-main">
+  <div class="container-hack">
+   <div class="container-stack">
+    <div class="progress-hack"></div>
+    <div class="container-menu">
+     <ul class="carousel-h carousel-menu">
+      <li>
+       <div class="panel-menu">
+        <div class="title">Network</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">wifi</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Passively captures beacon/probe frames across 2.4/5 GHz bands by converting RSSI/dBm while extracting WPA/WPA2/WPA3 cipher suites via IE parsing and decoding Country IE regulatory domains.">Discover</li>
+         <li class="subtitle" data-description="Derives client-AP associations through ARP/NDP spoofing and DHCP interception by correlating passive traffic for connection state inference.">Enumerate</li>
+         <li class="subtitle" data-description="Captures 802.11 management frames by extracting IE/vendor extensions while detecting TSF clock skew and parsing TIM bitmap data.">Capture Beacons</li>
+         <li class="subtitle" data-description="Collects probe requests to perform hidden SSID reconnaissance through response correlation enabling device fingerprinting via Supported Rates/HT parsing.">Collect Probes</li>
+         <li class="subtitle" data-description="Applies real-time RSSI trending through exponential filtering and Friis path-loss modeling to analyze per-channel spectral density for interference identification.">Analyze Signal</li>
+         <li class="subtitle" data-description="Isolates EAPOL frames and extracts PMKID from WPA2/WPA3 four-way handshakes enabling offline cryptographic key observation." data-hack-mode="log">Extract Handshake</li>
+         <li class="subtitle" data-description="Transmits spoofed 802.11 deauth frames by manipulating SA/BSSID and executing broadcast flood mode while injecting custom Reason Codes for reassociation disruption.">Deauthenticate</li>
+         <li class="subtitle" data-description="Injects spoofed SSID/BSSID frames using custom OUI prefixes and RSN IE crafting by manipulating beacon intervals to simulate WPA/WPA2/Open networks.">Spoof</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Wireless</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">bluetooth</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Sweeps 79 Bluetooth Classic and 37 BLE advertising channels by extracting BD_ADDR through Local Name EIR parsing while converting TX Power/RSSI for device class mapping.">Scan</li>
+         <li class="subtitle" data-description="Captures ACL/SCO link-layer packets exploiting LAP/UAP for frequency hopping prediction while intercepting LMP/GATT operations and decrypting traffic via observable key material.">Monitor</li>
+         <li class="subtitle" data-description="Signature matches HC-05/HC-06/NRF52/CSR8810 peripherals by extracting PM_ADDR then correlating cloning capability with proximity to compromise locations.">Detect Skimmers</li>
+         <li class="subtitle" data-description="Generates rapid BLE advertisements across all channels through MAC randomization with 255-octet PDU maximization and sub-20ms interval compression for buffer saturation.">Flood</li>
+         <li class="subtitle" data-description="Injects OS-specific pairing notifications across Windows/Samsung/Google devices through GATT solicitation with MSD field manipulation and notification stacking for UI disruption.">Spam</li>
+         <li class="subtitle" data-description="Transmits continuous 2.4 GHz ISM carrier achieving EIRP saturation for FFT-predicted narrowband jamming on next frequency hops via interrupt-pattern modulation.">Jam</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Radio Frequency</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">cell_tower</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Heterodyne tuning across 315/433/868 MHz channels using PLL synthesis with AGC envelope detection for HOS modulation classification (FSK/OOK/GFSK) and duty cycle inference via temporal analysis.">Scan</li>
+         <li class="subtitle" data-description="Real-time I/Q demodulation observes QAM constellations through FFT spectral density via Welch windowing while measuring ACPR and extracting bitstreams through matched filtering.">Monitor</li>
+         <li class="subtitle" data-description="Records RF waveforms by digitizing at Nyquist rate via ADC then down-converting baseband with 8/16/32-bit IQ quantization for RF433/automotive/industrial protocol template matching.">Record</li>
+         <li class="subtitle" data-description="Reconstructs signals through IFFT waveform generation and DAC synthesis with LO mixing while maintaining sub-microsecond timing synchronization and frequency offset compensation.">Replay</li>
+         <li class="subtitle" data-description="Transmits continuous unmodulated carriers with dynamic frequency-hop prediction via ML pattern analysis enabling duty cycle modulation for selective disruption.">Jam</li>
+         <li class="subtitle" data-description="Transmits gated RF pulses with microsecond width control synchronized via trigger detection for frequency-agile multi-channel sequential disruption.">Pulse Jam</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">RFID/NFC</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">cast</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Extracts data from 13.56 MHz ISO14443 Type A/B and 125/134 kHz EM4100/FDX-B tags through Manchester demodulation while parsing NDEF records from EEPROM sectors.">Read</li>
+         <li class="subtitle" data-description="Enumerates tags by energizing variable-inductance coils to trigger anti-collision cascade protocol then parsing FIO across 106/212/424 kbit/s rates with RSS proximity mapping.">Scan</li>
+         <li class="subtitle" data-description="Clones tag memory through authentication bypass exploiting default credentials then provisions blank tags with spoofed UIDs via writable segment manipulation.">Duplicate</li>
+         <li class="subtitle" data-description="Writes NDEF/TLV encoded records to tags through sector authentication using derived session keys while recalculating CRC across page boundaries.">Write</li>
+         <li class="subtitle" data-description="Emulates ISO14443 tags by implementing APDU state machine execution with challenge/response protocol while simulating power-limited offline behavior.">Emulate</li>
+         <li class="subtitle" data-description="Emulates gaming tokens and financial payment cards through encrypted media key simulation enabling polyglot Type A/B protocol support.">Spoof</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Infrared</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">podcasts</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Transmits 38 kHz modulated IR codes across RC5/RC6/SIRC/NEC/Samsung/Philips variants while synthesizing duty cycles with ambient interference calibration.">Transmit</li>
+         <li class="subtitle" data-description="Supports RC5 Manchester encoding through SIRC 12/15/20-bit packet variants alongside NEC 42 kHz legacy compatibility, Samsung 38 kHz address capability, and RC6 Mode 0/6 toggle across regional manufacturer templates.">Encode Protocols</li>
+         <li class="subtitle" data-description="Captures IR signals through AGC envelope detection by extracting zero-crossing frequency data then decoding pulse trains with timing calibration for protocol heuristic bitstream validation.">Capture</li>
+         <li class="subtitle" data-description="Transmits 38 kHz modulated noise while sweeping 30–60 kHz carriers with duty cycle variation to disrupt PLL demodulation synchronization.">Jam</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Cellular</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">phone_android</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Synthesizes eNodeB signals from eUTRA downlink replication with fabricated SIB broadcasts and RRC parameters establishing rogue attachment through OpenBTS cell framework.">Spoof Basestation</li>
+         <li class="subtitle" data-description="Recovers IMSI through S1AP interception of 3GPP AKA authentication vectors correlating TMSI-to-IMSI mapping within HSS query simulation." data-hack-mode="log">Extract IMSI</li>
+         <li class="subtitle" data-description="Decrypts A5/1 encrypted traffic using LFSR state recovery and Kraken rainbow tables enabling OTA decryption of Um-plane signaling and user-plane extraction." data-hack-mode="log">Intercept</li>
+         <li class="subtitle" data-description="Saturates EARFCN bands with AWGN from software-defined transceiver achieving SNR degradation through wideband RF power amplification across LTE/5G spectrum.">Jam</li>
+         <li class="subtitle" data-description="Derives position from OTDOA timing-advance extraction of LTE-M PRS correlation reconstructing ToA vectors across base-station measurement reports enabling meter-level geolocation.">Triangulate</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Satellite</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">satellite_alt</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Synthesizes L1/L2 PRN code replicas from direct-sequence spread spectrum with artificial ephemeris injection and pseudo-range falsification through coherent clock-bias modulation.">Spoof GPS</li>
+         <li class="subtitle" data-description="Achieves EIRP saturation across S/Ku/Ka downlink bands from CW carrier amplification with phase-coherent synthesis suppressing receiver acquisition loop lock.">Jam Signal</li>
+         <li class="subtitle" data-description="Injects narrowband interference on satellite command/telemetry from PLL frequency synthesis with carrier-phase modulation enabling selective band denial through matched-filter disruption.">Jam Frequency</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Sensors</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">router</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Extracts device signatures from passive ZigBee NWK beacon snooping correlating IEEE/NWK address pairs with descriptor TLVs and reconstructing topology from neighbor table interception.">Enumerate</li>
+         <li class="subtitle" data-description="Injects lock state from mesh TCLK extraction within ZigBee handshake interception crafting Door Lock cluster frames and manipulating solenoid state variables.">Unlock Smart Lock</li>
+         <li class="subtitle" data-description="Injects Level Control cluster frames from group addressing spoofing ZigBee command frames and modulating brightness/power state through mesh hop forwarding.">Toggle Lighting</li>
+         <li class="subtitle" data-description="Injects thermostat commands from mesh key extraction within beacon interception reconstructing CRC-validated HVAC setpoint frames.">Trigger HVAC</li>
+         <li class="subtitle" data-description="Injects IAS Zone alarm from sensor state falsification reconstructing smoke detector cluster frames with manipulated alert attributes through APDU execution.">Trigger Smoke</li>
+         <li class="subtitle" data-description="Spoofs coordinator from IEEE address cloning and TCLK derivation from master encryption key establishing rogue trust relationships within mesh topology." data-hack-mode="log">Impersonate</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Industrial</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">precision_manufacturing</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Extracts device signatures from ISM passive sweeps correlating OOK/FSK modulation with duty-cycle variance and frequency-hop prediction across 315/433/868 MHz.">Enumerate</li>
+         <li class="subtitle" data-description="Reconstructs OOK/FSK command frames from pulse-width synthesis and envelope shaping across 433 MHz ISM triggering manufacturing state-machine execution.">Control Machinery</li>
+         <li class="subtitle" data-description="Injects priority E-stop frames with symbol-timing alignment and CRC bypass forcing safety relay activation.">Trigger Emergency Stop</li>
+         <li class="subtitle" data-description="Desynchronizes hoist controller with FSK carrier deviation and phase-discriminator corruption injecting falsified load-cell ADC values into motor command state registers.">Control Crane/Hoist</li>
+        </ul>
+       </div>
+      </li>
+      <li>
+       <div class="panel-menu">
+        <div class="title">Automotive</div>
+        <div class="icon-grow"><div class="icon"><span class="material-icons">directions_car</span></div></div>
+        <ul class="carousel-v carousel-submenu">
+         <li class="subtitle" data-description="Manipulates UWB ToA/TDoA through phase-discriminator desynchronization and CSS correlation-peak injection reconstructing proximity verification within distance-bounding gate.">Emulate Keyfob</li>
+         <li class="subtitle" data-description="Corrupts brake ECU from CAN FD frame injection spoofing wheel-speed sensor ADC output and modulating ABS pressure-modulation valve solenoid duty-cycle.">Force Brake</li>
+         <li class="subtitle" data-description="Corrupts brake redundancy through falsified pressure sensor ADC output preventing fail-safe ABS engagement during deceleration.">Disable Brake</li>
+         <li class="subtitle" data-description="Spoofs throttle position through ECM CAN injection reconstructing TPS setpoint frames and modulating fuel injection pulse-width independent of pedal state.">Accelerate</li>
+         <li class="subtitle" data-description="Spoofs EPS control from CAN ID injection crafting steering angle setpoint frames and leveraging arbitration priority to override legitimate ECU commands.">Drift</li>
+         <li class="subtitle" data-description="Suppresses ignition from CAN FD injection falsifying PKE authentication state and disabling spark-timing enable through EMS gate-control signals.">Disable Ignition</li>
+         <li class="subtitle" data-description="Injects door-lock control frames from BCM CAN spoofing central-locking solenoid driver outputs and manipulating lock-release relay state.">Toggle Lock</li>
+         <li class="subtitle" data-description="Forces alarm state-machine from BCM CAN FD injection spoofing security-module HMAC challenge-response.">Trip Alarm</li>
+        </ul>
+       </div>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="description"></div>
+  </div>
+  <div class="container-log">
+   <div id="log">
+NICU Remote Access Gateway v3.9.8
+Initiating connection to infrastructure management service
+Service endpoint: facility-ctrl.local:4829
+Primary node address: 192.168.1.254
+Gateway protocol version: 3.2
+Establishing preliminary connection to gateway... INITIATED
+Gateway response received: SERVICE_READY
+Protocol version verification
+Local client protocol: 3.9.8
+Remote daemon protocol: 3.9.8
+Protocol compatibility check... MATCHED
+Transport security initialization
+Security protocol: TLS 1.3
+Session ID generation in progress... COMPLETE
+Session ID: 0x8F4C2A9B7D1F5E3C
+Requesting NICU daemon server certificate
+Certificate request transmitted
+Server certificate received: 2048-bit RSA
+Certificate information extraction
+Subject: NICU-X4200-Management-Service
+Issuer: Facility Infrastructure Authority
+Validity window: 2024-03-15 to 2027-03-15
+Certificate extensions enumeration
+Basic constraints: CA=FALSE
+Key usage: digitalSignature, keyEncipherment
+Extended key usage: serverAuth
+Alternative name: facility-ctrl.local
+Alternative name: 192.168.1.254
+Subject key identifier: 0xA2F8C1D4B6E7...A5F3
+Authority key identifier: 0x7C3F8A4D9B2E...C1D6
+Fingerprint SHA256: A7F3:2B8C:9E1D:4F6A:C2E5:7B9D:1A4C:6F8E
+Fingerprint SHA1: 4A2F:7C9E:1B3D:5F8A:C2E4:6B9D
+Validating certificate against facility CA store... PASSED
+Signature algorithm: sha256WithRSAEncryption
+Signature verification result: VALID
+Certificate chain depth: 3 levels
+Proceeding with ECDH key exchange
+Curve selection: secp256r1 (P-256)
+Generating ephemeral key pair for session... CREATED
+Client public key transmitted to service
+Server ephemeral public key received
+Performing ECDH computation with server public key
+Shared secret derivation: 32 bytes
+KDF function: HKDF-SHA256
+Key expansion processing... COMPLETE
+Session master secret: 48 bytes
+Client encryption key: 32 bytes
+Server encryption key: 32 bytes
+HMAC authentication key: 32 bytes
+IV value for AES-GCM: 12 bytes
+Cipher state initialization
+AEAD cipher: AES-256-GCM
+Authentication tag length: 16 bytes
+Sequence number initialized: 0
+Encrypted record transmission enabled
+Submitting facility credentials for authentication
+Credential type: USERNAME_PASSWORD
+Username field: facility_admin
+Password field: HASHED
+Password hash method: PBKDF2
+Hash function: HMAC-SHA512
+Iteration count: 150000
+Salt: 0x4F8A2B7CD1E5A3F6
+Derived key length: 32 bytes
+Authentication response processing... SUCCESS
+Facility authorization database lookup
+User facility ID: FAC-2847-EAST
+User role: INFRASTRUCTURE_ADMIN
+User privilege tier: TIER_2
+Role permissions load in progress... COMPLETE
+Assigned permissions: DAEMON_MONITOR, CONFIG_METADATA_READ, LOG_READ
+Denied permissions: FIRMWARE_MODIFICATION, FACTORY_RESET
+Session binding completion
+Session token issued: 128 bytes
+Token encryption: AES-256-GCM
+Token HMAC: SHA256
+Token validity: 3600 seconds
+Token issuance timestamp: 2024-11-15 14:32:47 UTC
+Token expiration: 2024-11-15 15:32:47 UTC
+Loading configuration metadata
+Daemon build version: 4.7.2
+Build timestamp: 2024-09-22 18:44:12 UTC
+Build system: GCC 11.2.0
+Optimization level: O2
+Configuration schema version: 2.1
+System readiness check... NOMINAL
+Ready for command execution
    </div>
   </div>
-  <div class="description"></div>
  </div>
 </main>
 <style>
  :root {
   --hack-progress-width: 1rem;
+  --log-text-size: 1rem;
   --col-void: #1a1c2c; --col-purple: #5d275d; --col-red: #b13e53; --col-orange: #ef7d57;
   --col-yellow: #ffcd75; --col-lime: #a7f070; --col-green: #38b764; --col-teal: #257179;
   --col-navy: #29366f; --col-blue: #3b5dc9; --col-cyan: #41a6f6; --col-cyan-light: #73eff7;
@@ -58,11 +266,16 @@
  }
  *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
  main{width:100vw;height:100vh;display:flex;flex-direction:column;background:var(--col-void);font-family:monospace;color:var(--col-white);}
- .bar-notification{width:100%;height:4rem;display:flex;align-items:center;gap:1rem;padding:0.5rem 1rem;background:var(--col-gray-dark);border-bottom:0.1rem solid var(--col-gray);}
+ .material-icons{font-size:inherit;}
+ .bar-notification{width:100%;height:2rem;display:flex;align-items:center;gap:1rem;padding:0.5rem;background:var(--col-gray);}
  #clock{font-weight:bold;}
- #battery,#signal,#fullscreen-btn{cursor:pointer;}
- .container-hack{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;padding:3rem;}
- .container-stack{position:relative;width:30rem;height:30rem;}
+ .container-main{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;padding:3rem;}
+ .container-hack{position:absolute;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;padding:3rem;}
+ .container-log{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--col-void);color:var(--col-white);padding:2rem;visibility:hidden;pointer-events:none;}
+ #log{height:calc(round(down,calc(100% - var(--log-text-size)),var(--log-text-size)));width:calc(round(down,100%,1ch));font-family:monospace;font-size:var(--log-text-size);line-height:1;overflow:auto;white-space:pre-wrap;scrollbar-width:none;}
+ #log::-webkit-scrollbar{display:none;}
+ .container-stack{position:relative;width:90cqmin;height:90cqmin;aspect-ratio:1;margin-top:-6rem;}
+ @media(orientation:landscape){.container-stack{width:60cqmin;height:60cqmin;}}
  .progress-hack{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg,var(--col-cyan) 0deg,var(--col-cyan) var(--progress-fill),transparent var(--progress-fill));}
  .container-menu{position:absolute;inset:var(--hack-progress-width);display:flex;align-items:center;justify-content:center;}
  .carousel-h,.carousel-h>li,.carousel-v,.carousel-v>li{list-style:none;overflow:hidden;display:flex;}
@@ -71,12 +284,12 @@
  .carousel-menu{border-radius:50%;background:var(--col-void);}
  .carousel-submenu{flex-direction:column;}
  .panel-menu{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
- .panel-menu>.title{font-size:1.5rem;font-weight:bold;text-align:center;height:3rem;display:flex;align-items:center;justify-content:center;}
+ .panel-menu>.title{font-size:1.5rem;font-weight:bold;text-align:center;height:3rem;display:flex;align-items:center;justify-content:center;color:var(--col-gray-light);}
  .icon-grow{flex:1;width:100%;display:flex;align-items:center;justify-content:center;container-type:size;}
  .icon{font-size:100cqmin;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
  .panel-menu>.carousel-submenu{height:3rem;}
- .subtitle{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:bold;}
- .description{padding:2rem;text-align:center;font-size:1rem;color:var(--col-cyan);height:0;line-height:1.5;width:100%;max-width:40rem;}
+ .subtitle{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:bold;color:var(--col-gray-light);}
+ .description{text-align:center;font-size:1rem;color:var(--col-cyan);height:0;line-height:1.25;width:100%;max-width:40rem;}
  @keyframes blink{0%{opacity:0;}25%{opacity:1;}50%{opacity:0;}75%{opacity:1;}}
  .blink{animation:blink 400ms steps(1) 1;}
  .inverted{--col-void:#f4f4f4;--col-cyan:#b13e53;--col-white:#1a1c2c;}
@@ -84,6 +297,7 @@
 <script>
  const $=id=>document.getElementById(id);
  const $$=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+ const $q=(sel,ctx=document)=>ctx.querySelector(sel);
  const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
  const set=(el,key,val)=>el.style.setProperty(key,val);
  const on_raf=fn=>requestAnimationFrame(fn);
@@ -126,19 +340,69 @@
  })();
 
  (function description(){
-  const desc_elem=document.querySelector('.description'),chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',dur=500,rate=25;
+  const desc_elem=$q('.description'),chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',dur=500,rate=25;
   let curr_desc='',typing=false;
-  const upd_desc=()=>{const menu_active=document.querySelector('.carousel-menu > li[data-active="true"]');if(menu_active){const submenu=menu_active.querySelector('.carousel-submenu');if(submenu){const sub_active=submenu.querySelector('li[data-active="true"]');if(sub_active){const new_desc=sub_active.dataset.description||'';if(new_desc!==curr_desc&&!typing){curr_desc=new_desc;typing=true;const ticks=dur/rate,chars_per=new_desc.length/ticks;let prog=0;const type=()=>{prog+=chars_per;const settled=Math.floor(prog);if(settled<new_desc.length){let txt=new_desc.substring(0,settled);for(let i=settled;i<new_desc.length;i++){txt+=new_desc[i]===' '?' ':chars[Math.floor(Math.random()*chars.length)];}desc_elem.textContent=txt;setTimeout(type,rate);}else{desc_elem.textContent=new_desc;typing=false;}};type();}}}}on_raf(upd_desc);};
+  const upd_desc=()=>{const menu_active=$q('.carousel-menu > li[data-active="true"]');if(menu_active){const submenu=menu_active.querySelector('.carousel-submenu');if(submenu){const sub_active=submenu.querySelector('li[data-active="true"]');if(sub_active){const new_desc=sub_active.dataset.description||'';if(new_desc!==curr_desc&&!typing){curr_desc=new_desc;typing=true;const ticks=dur/rate,chars_per=new_desc.length/ticks;let prog=0;const type=()=>{prog+=chars_per;const settled=Math.floor(prog);if(settled<new_desc.length){let txt=new_desc.substring(0,settled);for(let i=settled;i<new_desc.length;i++){txt+=new_desc[i]===' '?' ':chars[Math.floor(Math.random()*chars.length)];}desc_elem.textContent=txt;setTimeout(type,rate);}else{desc_elem.textContent=new_desc;typing=false;}};type();}}}}on_raf(upd_desc);};
   upd_desc();
  })();
 
- (function progress(){
-  const menu=document.querySelector('.container-menu'),root=document.documentElement;
-  let progress=0,is_holding=false,hold_timer=null,hold_start=0,hack_triggered=false,drag_sx=0,drag_sy=0;
+ (function log_animate(){
+  const log_elem=$q('#log'),log_lines=log_elem.textContent.trim().split('\n');
+  let anim_id=null,delay_min=5,delay_max=50;
+  window.animate_log=(on_done)=>{
+   if(anim_id)clearTimeout(anim_id);
+   log_elem.textContent='';
+   let idx=0;
+   const append=()=>{
+    if(idx>=log_lines.length){
+     on_done?.();
+     return;
+    }
+    log_elem.textContent+=log_lines[idx++]+'\n';
+    log_elem.scrollTop=log_elem.scrollHeight;
+    anim_id=setTimeout(append,Math.random()*(delay_max-delay_min)+delay_min);
+   };
+   append();
+  };
+ })();
+
+ (function hack(){
+  const main=$q('main'),container_log=$q('.container-log'),log_elem=$q('#log'),root=document.documentElement;
   const inverted_dur=300;
-  const hack=()=>{const main=document.querySelector('main');[0,1,2,3].forEach(i=>setTimeout(()=>main.classList.toggle('inverted'),i*inverted_dur/4));console.log('hack triggered');};
-  const upd_progress=()=>{if(is_holding){const elapsed=Date.now()-hold_start;progress=Math.min((elapsed/2000)*100,100);if(progress>=100&&!hack_triggered){hack_triggered=true;hack();}set(root,'--progress-fill',progress+'%');}on_raf(upd_progress);};
-  const init_hold=evt=>{is_holding=false;hack_triggered=false;drag_sx=evt.clientX;drag_sy=evt.clientY;hold_timer=setTimeout(()=>{is_holding=true;hold_start=Date.now();menu.style.pointerEvents='none';const active_menu=document.querySelector('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');icon.addEventListener('animationend',()=>icon.classList.remove('blink'),{once:true});}}},200);upd_progress();};
+
+  const flash=()=>{
+    [0,1,2,3].forEach(i=>setTimeout(()=>main.classList.toggle('inverted'),i*inverted_dur/4));
+  };
+
+  const log_hack=()=>{
+    main.classList.toggle('inverted');
+    setTimeout(()=>{
+      log_elem.textContent='';
+      container_log.style.visibility='visible';
+      container_log.style.pointerEvents='auto';
+      main.classList.toggle('inverted');
+      window.animate_log(()=>{
+        container_log.style.visibility='hidden';
+        container_log.style.pointerEvents='none';
+        flash();
+      });
+    },100);
+  };
+
+  window.hack_trigger=()=>{
+    const active=$q('.carousel-menu > li[data-active="true"]');
+    const mode=active?.dataset.hackMode||'simple';
+
+    if(mode==='log')log_hack();
+    else flash();
+  };
+ })();
+
+ (function progress(){
+  const menu=$q('.container-menu'),root=document.documentElement;
+  let progress=0,is_holding=false,hold_timer=null,hold_start=0,hack_triggered=false,drag_sx=0,drag_sy=0;
+  const upd_progress=()=>{if(is_holding){const elapsed=Date.now()-hold_start;progress=Math.min((elapsed/2000)*100,100);if(progress>=100&&!hack_triggered){hack_triggered=true;window.hack_trigger();end_hold();}set(root,'--progress-fill',progress+'%');}on_raf(upd_progress);};
+  const init_hold=evt=>{is_holding=false;hack_triggered=false;drag_sx=evt.clientX;drag_sy=evt.clientY;hold_timer=setTimeout(()=>{is_holding=true;hold_start=Date.now();menu.style.pointerEvents='none';const active_menu=$q('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');$on(icon,'animationend',()=>icon.classList.remove('blink'),{once:true});}}},200);upd_progress();};
   const check_hold=evt=>{if(is_holding)return;const dx=Math.abs(evt.clientX-drag_sx),dy=Math.abs(evt.clientY-drag_sy);if(dx>10||dy>10){is_holding=false;hack_triggered=false;clearTimeout(hold_timer);}};
   const end_hold=()=>{is_holding=false;progress=0;hack_triggered=false;menu.style.pointerEvents='';set(root,'--progress-fill','0%');clearTimeout(hold_timer);};
   $on(menu,'pointerdown',init_hold);
@@ -148,7 +412,7 @@
 
  setInterval(()=>{const d=new Date();$('clock').textContent=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});},1000);
 
- $on($('fullscreen-btn'),'click',()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}});
+ $on($('button-fullscreen'),'click',()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}});
 </script>
 </body>
 </html>
