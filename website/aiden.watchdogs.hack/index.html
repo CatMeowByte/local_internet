@@ -7,13 +7,6 @@
 </head>
 <body>
 <main>
- <div class="bar-notification">
-  <span id="clock">12:00 AM</span>
-  <span style="flex-grow:1;"></span>
-  <span class="material-icons" id="button-fullscreen">fullscreen</span>
-  <span class="material-icons">network_cell</span>
-  <span class="material-icons"  style="padding: 0 0.5rem; transform: rotate(90deg)  scale(2);">battery_6_bar</span>
- </div>
  <div class="container-main">
   <div class="container-hack">
    <div class="container-stack">
@@ -253,6 +246,9 @@ Ready for command execution
    </div>
   </div>
  </div>
+ <div class="option-overlay">
+  <span class="material-icons" id="button-fullscreen">fullscreen</span>
+ </div>
 </main>
 <style>
  :root {
@@ -267,8 +263,7 @@ Ready for command execution
  *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
  main{width:100vw;height:100vh;display:flex;flex-direction:column;background:var(--col-void);font-family:monospace;color:var(--col-white);}
  .material-icons{font-size:inherit;}
- .bar-notification{width:100%;height:2rem;display:flex;align-items:center;gap:1rem;padding:0.5rem;background:var(--col-gray);}
- #clock{font-weight:bold;}
+ .option-overlay{position:fixed;top:0;right:0;padding:1rem;font-size:2rem;color:var(--col-gray);}
  .container-main{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;padding:3rem;}
  .container-hack{position:absolute;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2rem;padding:3rem;}
  .container-log{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--col-void);color:var(--col-white);padding:2rem;visibility:hidden;pointer-events:none;}
@@ -276,12 +271,12 @@ Ready for command execution
  #log::-webkit-scrollbar{display:none;}
  .container-stack{position:relative;width:90cqmin;height:90cqmin;aspect-ratio:1;margin-top:-6rem;}
  @media(orientation:landscape){.container-stack{width:60cqmin;height:60cqmin;}}
- .progress-hack{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg,var(--col-cyan) 0deg,var(--col-cyan) var(--progress-fill),transparent var(--progress-fill));}
+ .progress-hack{position:absolute;width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg,var(--col-cyan) 0deg,var(--col-cyan) var(--progress-fill),transparent var(--progress-fill));-webkit-mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)));mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)));}
  .container-menu{position:absolute;inset:var(--hack-progress-width);display:flex;align-items:center;justify-content:center;}
  .carousel-h,.carousel-h>li,.carousel-v,.carousel-v>li{list-style:none;overflow:hidden;display:flex;}
  .carousel-h>li,.carousel-v>li{flex-shrink:0;width:100%;height:100%;}
  .carousel-menu,.carousel-submenu{width:100%;height:100%;cursor:grab;}
- .carousel-menu{border-radius:50%;background:var(--col-void);}
+ /* .carousel-menu{} */
  .carousel-submenu{flex-direction:column;}
  .panel-menu{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;}
  .panel-menu>.title{font-size:1.5rem;font-weight:bold;text-align:center;height:3rem;display:flex;align-items:center;justify-content:center;color:var(--col-gray-light);}
@@ -340,23 +335,11 @@ Ready for command execution
   $on(document,'contextmenu',e=>e.preventDefault());
 
   $on(document,'keydown',evt=>{
-   const menu_carousel=$q('.carousel-menu');
-   const active_menu=$q('.carousel-menu > li[data-active="true"]');
-   const submenu=active_menu?.querySelector('.carousel-submenu');
-
-   if(evt.key==='ArrowLeft'&&menu_carousel&&caret_map.has(menu_carousel)){
-    evt.preventDefault();
-    caret_map.get(menu_carousel).navigate(-1);
-   }else if(evt.key==='ArrowRight'&&menu_carousel&&caret_map.has(menu_carousel)){
-    evt.preventDefault();
-    caret_map.get(menu_carousel).navigate(1);
-   }else if(evt.key==='ArrowUp'&&submenu&&caret_map.has(submenu)){
-    evt.preventDefault();
-    caret_map.get(submenu).navigate(-1);
-   }else if(evt.key==='ArrowDown'&&submenu&&caret_map.has(submenu)){
-    evt.preventDefault();
-    caret_map.get(submenu).navigate(1);
-   }
+   const menu_carousel=$q('.carousel-menu'),active_menu=$q('.carousel-menu > li[data-active="true"]'),submenu=active_menu?.querySelector('.carousel-submenu');
+   if(evt.key==='ArrowLeft'&&menu_carousel&&caret_map.has(menu_carousel)){evt.preventDefault();caret_map.get(menu_carousel).navigate(-1);}
+   else if(evt.key==='ArrowRight'&&menu_carousel&&caret_map.has(menu_carousel)){evt.preventDefault();caret_map.get(menu_carousel).navigate(1);}
+   else if(evt.key==='ArrowUp'&&submenu&&caret_map.has(submenu)){evt.preventDefault();caret_map.get(submenu).navigate(-1);}
+   else if(evt.key==='ArrowDown'&&submenu&&caret_map.has(submenu)){evt.preventDefault();caret_map.get(submenu).navigate(1);}
   });
  })();
 
@@ -372,15 +355,10 @@ Ready for command execution
   let anim_id=null,delay_min=0,delay_max=50;
   window.animate_log=(on_done)=>{
    if(anim_id)clearTimeout(anim_id);
-   log_elem.textContent='';
-   let idx=0;
+   log_elem.textContent='';let idx=0;
    const append=()=>{
-    if(idx>=log_lines.length){
-     on_done?.();
-     return;
-    }
-    log_elem.textContent+=log_lines[idx++]+'\n';
-    log_elem.scrollTop=log_elem.scrollHeight;
+    if(idx>=log_lines.length){on_done?.();return;}
+    log_elem.textContent+=log_lines[idx++]+'\n';log_elem.scrollTop=log_elem.scrollHeight;
     anim_id=setTimeout(append,Math.random()*(delay_max-delay_min)+delay_min);
    };
    append();
@@ -391,33 +369,27 @@ Ready for command execution
   const main=$q('main'),container_log=$q('.container-log'),log_elem=$q('#log'),root=document.documentElement;
   const inverted_dur=300;
 
-  const flash=()=>{
-    [0,1,2,3].forEach(i=>setTimeout(()=>main.classList.toggle('inverted'),i*inverted_dur/4));
-  };
+  const flash=()=>{[0,1,2,3].forEach(i=>setTimeout(()=>main.classList.toggle('inverted'),i*inverted_dur/4));};
 
   const log_hack=()=>{
+   main.classList.toggle('inverted');
+   setTimeout(()=>{
+    log_elem.textContent='';
+    container_log.style.visibility='visible';
+    container_log.style.pointerEvents='auto';
     main.classList.toggle('inverted');
-    setTimeout(()=>{
-      log_elem.textContent='';
-      container_log.style.visibility='visible';
-      container_log.style.pointerEvents='auto';
-      main.classList.toggle('inverted');
-      window.animate_log(()=>{
-        container_log.style.visibility='hidden';
-        container_log.style.pointerEvents='none';
-        flash();
-      });
-    },100);
+    window.animate_log(()=>{
+     container_log.style.visibility='hidden';
+     container_log.style.pointerEvents='none';
+     flash();
+    });
+   },100);
   };
 
   window.hack_trigger=()=>{
-    const active=$q('.carousel-menu > li[data-active="true"]');
-    const submenu=active?.querySelector('.carousel-submenu');
-    const sub_active=submenu?.querySelector('li[data-active="true"]');
-    const mode=sub_active?.dataset.hackMode||'simple';
-
-    if(mode==='log')log_hack();
-    else flash();
+   const active=$q('.carousel-menu > li[data-active="true"]'),submenu=active?.querySelector('.carousel-submenu'),sub_active=submenu?.querySelector('li[data-active="true"]'),mode=sub_active?.dataset.hackMode||'simple';
+   if(mode==='log')log_hack();
+   else flash();
   };
  })();
 
@@ -436,8 +408,6 @@ Ready for command execution
   $on(document,'keydown',evt=>{if(evt.key==='Enter'){evt.preventDefault();init_hold_key();}});
   $on(document,'keyup',evt=>{if(evt.key==='Enter'){evt.preventDefault();end_hold_key();}});
  })();
-
- setInterval(()=>{const d=new Date();$('clock').textContent=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});},1000);
 
  $on($('button-fullscreen'),'click',()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}});
 </script>
