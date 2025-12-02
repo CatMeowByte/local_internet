@@ -18,7 +18,7 @@
         <div class="title">Network</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">wifi</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Passively captures beacon/probe frames across 2.4/5 GHz bands by converting RSSI/dBm while extracting WPA/WPA2/WPA3 cipher suites via IE parsing and decoding Country IE regulatory domains.">Discover</li>
+         <li class="subtitle" data-description="Passively captures beacon/probe frames across 2.4/5 GHz bands by converting RSSI/dBm while extracting WPA/WPA2/WPA3 cipher suites via IE parsing and decoding Country IE regulatory domains." data-hack-mode="log">Discover</li>
          <li class="subtitle" data-description="Derives client-AP associations through ARP/NDP spoofing and DHCP interception by correlating passive traffic for connection state inference.">Enumerate</li>
          <li class="subtitle" data-description="Captures 802.11 management frames by extracting IE/vendor extensions while detecting TSF clock skew and parsing TIM bitmap data.">Capture Beacons</li>
          <li class="subtitle" data-description="Collects probe requests to perform hidden SSID reconnaissance through response correlation enabling device fingerprinting via Supported Rates/HT parsing.">Collect Probes</li>
@@ -34,7 +34,7 @@
         <div class="title">Wireless</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">bluetooth</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Sweeps 79 Bluetooth Classic and 37 BLE advertising channels by extracting BD_ADDR through Local Name EIR parsing while converting TX Power/RSSI for device class mapping.">Scan</li>
+         <li class="subtitle" data-description="Sweeps 79 Bluetooth Classic and 37 BLE advertising channels by extracting BD_ADDR through Local Name EIR parsing while converting TX Power/RSSI for device class mapping." data-hack-mode="log">Scan</li>
          <li class="subtitle" data-description="Captures ACL/SCO link-layer packets exploiting LAP/UAP for frequency hopping prediction while intercepting LMP/GATT operations and decrypting traffic via observable key material.">Monitor</li>
          <li class="subtitle" data-description="Signature matches HC-05/HC-06/NRF52/CSR8810 peripherals by extracting PM_ADDR then correlating cloning capability with proximity to compromise locations.">Detect Skimmers</li>
          <li class="subtitle" data-description="Generates rapid BLE advertisements across all channels through MAC randomization with 255-octet PDU maximization and sub-20ms interval compression for buffer saturation.">Flood</li>
@@ -48,7 +48,7 @@
         <div class="title">Radio Frequency</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">cell_tower</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Heterodyne tuning across 315/433/868 MHz channels using PLL synthesis with AGC envelope detection for HOS modulation classification (FSK/OOK/GFSK) and duty cycle inference via temporal analysis.">Scan</li>
+         <li class="subtitle" data-description="Heterodyne tuning across 315/433/868 MHz channels using PLL synthesis with AGC envelope detection for HOS modulation classification (FSK/OOK/GFSK) and duty cycle inference via temporal analysis." data-hack-mode="log">Scan</li>
          <li class="subtitle" data-description="Real-time I/Q demodulation observes QAM constellations through FFT spectral density via Welch windowing while measuring ACPR and extracting bitstreams through matched filtering.">Monitor</li>
          <li class="subtitle" data-description="Records RF waveforms by digitizing at Nyquist rate via ADC then down-converting baseband with 8/16/32-bit IQ quantization for RF433/automotive/industrial protocol template matching.">Record</li>
          <li class="subtitle" data-description="Reconstructs signals through IFFT waveform generation and DAC synthesis with LO mixing while maintaining sub-microsecond timing synchronization and frequency offset compensation.">Replay</li>
@@ -63,7 +63,7 @@
         <div class="icon-grow"><div class="icon"><span class="material-icons">cast</span></div></div>
         <ul class="carousel-v carousel-submenu">
          <li class="subtitle" data-description="Extracts data from 13.56 MHz ISO14443 Type A/B and 125/134 kHz EM4100/FDX-B tags through Manchester demodulation while parsing NDEF records from EEPROM sectors.">Read</li>
-         <li class="subtitle" data-description="Enumerates tags by energizing variable-inductance coils to trigger anti-collision cascade protocol then parsing FIO across 106/212/424 kbit/s rates with RSS proximity mapping.">Scan</li>
+         <li class="subtitle" data-description="Enumerates tags by energizing variable-inductance coils to trigger anti-collision cascade protocol then parsing FIO across 106/212/424 kbit/s rates with RSS proximity mapping." data-hack-mode="log">Scan</li>
          <li class="subtitle" data-description="Clones tag memory through authentication bypass exploiting default credentials then provisions blank tags with spoofed UIDs via writable segment manipulation.">Duplicate</li>
          <li class="subtitle" data-description="Writes NDEF/TLV encoded records to tags through sector authentication using derived session keys while recalculating CRC across page boundaries.">Write</li>
          <li class="subtitle" data-description="Emulates ISO14443 tags by implementing APDU state machine execution with challenge/response protocol while simulating power-limited offline behavior.">Emulate</li>
@@ -77,7 +77,7 @@
         <div class="icon-grow"><div class="icon"><span class="material-icons">podcasts</span></div></div>
         <ul class="carousel-v carousel-submenu">
          <li class="subtitle" data-description="Transmits 38 kHz modulated IR codes across RC5/RC6/SIRC/NEC/Samsung/Philips variants while synthesizing duty cycles with ambient interference calibration.">Transmit</li>
-         <li class="subtitle" data-description="Supports RC5 Manchester encoding through SIRC 12/15/20-bit packet variants alongside NEC 42 kHz legacy compatibility, Samsung 38 kHz address capability, and RC6 Mode 0/6 toggle across regional manufacturer templates.">Encode Protocols</li>
+         <li class="subtitle" data-description="Supports RC5 Manchester encoding through SIRC 12/15/20-bit packet variants alongside NEC 42 kHz legacy compatibility, Samsung 38 kHz address capability, and RC6 Mode 0/6 toggle across regional manufacturer templates." data-hack-mode="log">Encode Protocols</li>
          <li class="subtitle" data-description="Captures IR signals through AGC envelope detection by extracting zero-crossing frequency data then decoding pulse trains with timing calibration for protocol heuristic bitstream validation.">Capture</li>
          <li class="subtitle" data-description="Transmits 38 kHz modulated noise while sweeping 30–60 kHz carriers with duty cycle variation to disrupt PLL demodulation synchronization.">Jam</li>
         </ul>
@@ -101,7 +101,7 @@
         <div class="title">Satellite</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">satellite_alt</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Synthesizes L1/L2 PRN code replicas from direct-sequence spread spectrum with artificial ephemeris injection and pseudo-range falsification through coherent clock-bias modulation.">Spoof GPS</li>
+         <li class="subtitle" data-description="Synthesizes L1/L2 PRN code replicas from direct-sequence spread spectrum with artificial ephemeris injection and pseudo-range falsification through coherent clock-bias modulation." data-hack-mode="log">Spoof GPS</li>
          <li class="subtitle" data-description="Achieves EIRP saturation across S/Ku/Ka downlink bands from CW carrier amplification with phase-coherent synthesis suppressing receiver acquisition loop lock.">Jam Signal</li>
          <li class="subtitle" data-description="Injects narrowband interference on satellite command/telemetry from PLL frequency synthesis with carrier-phase modulation enabling selective band denial through matched-filter disruption.">Jam Frequency</li>
         </ul>
@@ -112,7 +112,7 @@
         <div class="title">Sensors</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">router</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Extracts device signatures from passive ZigBee NWK beacon snooping correlating IEEE/NWK address pairs with descriptor TLVs and reconstructing topology from neighbor table interception.">Enumerate</li>
+         <li class="subtitle" data-description="Extracts device signatures from passive ZigBee NWK beacon snooping correlating IEEE/NWK address pairs with descriptor TLVs and reconstructing topology from neighbor table interception." data-hack-mode="log">Enumerate</li>
          <li class="subtitle" data-description="Injects lock state from mesh TCLK extraction within ZigBee handshake interception crafting Door Lock cluster frames and manipulating solenoid state variables.">Unlock Smart Lock</li>
          <li class="subtitle" data-description="Injects Level Control cluster frames from group addressing spoofing ZigBee command frames and modulating brightness/power state through mesh hop forwarding.">Toggle Lighting</li>
          <li class="subtitle" data-description="Injects thermostat commands from mesh key extraction within beacon interception reconstructing CRC-validated HVAC setpoint frames.">Trigger HVAC</li>
@@ -126,7 +126,7 @@
         <div class="title">Industrial</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">precision_manufacturing</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Extracts device signatures from ISM passive sweeps correlating OOK/FSK modulation with duty-cycle variance and frequency-hop prediction across 315/433/868 MHz.">Enumerate</li>
+         <li class="subtitle" data-description="Extracts device signatures from ISM passive sweeps correlating OOK/FSK modulation with duty-cycle variance and frequency-hop prediction across 315/433/868 MHz." data-hack-mode="log">Enumerate</li>
          <li class="subtitle" data-description="Reconstructs OOK/FSK command frames from pulse-width synthesis and envelope shaping across 433 MHz ISM triggering manufacturing state-machine execution.">Control Machinery</li>
          <li class="subtitle" data-description="Injects priority E-stop frames with symbol-timing alignment and CRC bypass forcing safety relay activation.">Trigger Emergency Stop</li>
          <li class="subtitle" data-description="Desynchronizes hoist controller with FSK carrier deviation and phase-discriminator corruption injecting falsified load-cell ADC values into motor command state registers.">Control Crane/Hoist</li>
@@ -138,7 +138,7 @@
         <div class="title">Automotive</div>
         <div class="icon-grow"><div class="icon"><span class="material-icons">directions_car</span></div></div>
         <ul class="carousel-v carousel-submenu">
-         <li class="subtitle" data-description="Manipulates UWB ToA/TDoA through phase-discriminator desynchronization and CSS correlation-peak injection reconstructing proximity verification within distance-bounding gate.">Emulate Keyfob</li>
+         <li class="subtitle" data-description="Manipulates UWB ToA/TDoA through phase-discriminator desynchronization and CSS correlation-peak injection reconstructing proximity verification within distance-bounding gate." data-hack-mode="log">Emulate Keyfob</li>
          <li class="subtitle" data-description="Corrupts brake ECU from CAN FD frame injection spoofing wheel-speed sensor ADC output and modulating ABS pressure-modulation valve solenoid duty-cycle.">Force Brake</li>
          <li class="subtitle" data-description="Corrupts brake redundancy through falsified pressure sensor ADC output preventing fail-safe ABS engagement during deceleration.">Disable Brake</li>
          <li class="subtitle" data-description="Spoofs throttle position through ECM CAN injection reconstructing TPS setpoint frames and modulating fuel injection pulse-width independent of pedal state.">Accelerate</li>
@@ -269,10 +269,10 @@ Ready for command execution
  .container-log{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--col-void);color:var(--col-white);padding:2rem;visibility:hidden;pointer-events:none;}
  #log{height:calc(round(down,calc(100% - var(--log-text-size)),var(--log-text-size)));width:calc(round(down,100%,1ch));font-family:monospace;font-size:var(--log-text-size);line-height:1;overflow:auto;white-space:pre-wrap;scrollbar-width:none;}
  #log::-webkit-scrollbar{display:none;}
- .container-stack{position:relative;width:90cqmin;height:90cqmin;aspect-ratio:1;margin-top:-6rem;}
- @media(orientation:landscape){.container-stack{width:60cqmin;height:60cqmin;}}
- .progress-hack{position:absolute;width:100%;height:100%;border-radius:50%;background:conic-gradient(from 0deg,var(--col-cyan) 0deg,var(--col-cyan) var(--progress-fill),transparent var(--progress-fill));-webkit-mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)));mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)));}
- .container-menu{position:absolute;inset:var(--hack-progress-width);display:flex;align-items:center;justify-content:center;}
+ .container-stack{position:relative;width:100vw;height:90cqmin;aspect-ratio:1;margin-top:-6rem;}
+ @media(orientation:landscape){.container-stack{height:60cqmin;}}
+ .progress-hack{position:absolute;width:100%;height:100%;background:conic-gradient(from 0deg,var(--col-cyan) 0deg,var(--col-cyan) var(--progress-fill),transparent var(--progress-fill));-webkit-mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)), white calc(100% - 1px), transparent 100%);mask:radial-gradient(circle closest-side,transparent calc(100% - 1px - var(--hack-progress-width)),white calc(100% - var(--hack-progress-width)), white calc(100% - 1px), transparent 100%);}
+ .container-menu{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
  .carousel-h,.carousel-h>li,.carousel-v,.carousel-v>li{list-style:none;overflow:hidden;display:flex;}
  .carousel-h>li,.carousel-v>li{flex-shrink:0;width:100%;height:100%;}
  .carousel-menu,.carousel-submenu{width:100%;height:100%;cursor:grab;}
@@ -396,11 +396,12 @@ Ready for command execution
  (function progress(){
   const menu=$q('.container-menu'),root=document.documentElement;
   let progress=0,is_holding=false,hold_timer=null,hold_start=0,hack_triggered=false,drag_sx=0,drag_sy=0,key_hold=false;
+  const toggle_hold_vis=h=>{const a=$q('.carousel-menu > li[data-active="true"]');if(a){const t=$q('.title',a),s=$q('.carousel-submenu',a);if(t)t.style.opacity=h?'0':'';if(s)s.style.opacity=h?'0':'';}};
   const upd_progress=()=>{if(is_holding){const elapsed=Date.now()-hold_start;progress=Math.min((elapsed/2000)*100,100);if(progress>=100&&!hack_triggered){hack_triggered=true;window.hack_trigger();end_hold();}set(root,'--progress-fill',progress+'%');}on_raf(upd_progress);};
-  const init_hold=evt=>{is_holding=false;hack_triggered=false;drag_sx=evt.clientX;drag_sy=evt.clientY;hold_timer=setTimeout(()=>{is_holding=true;hold_start=Date.now();menu.style.pointerEvents='none';const active_menu=$q('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');$on(icon,'animationend',()=>icon.classList.remove('blink'),{once:true});}}},200);upd_progress();};
-  const init_hold_key=()=>{if(key_hold)return;key_hold=true;is_holding=false;hack_triggered=false;hold_timer=setTimeout(()=>{is_holding=true;hold_start=Date.now();menu.style.pointerEvents='none';const active_menu=$q('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');$on(icon,'animationend',()=>icon.classList.remove('blink'),{once:true});}}},200);upd_progress();};
+  const init_hold=evt=>{is_holding=false;hack_triggered=false;drag_sx=evt.clientX;drag_sy=evt.clientY;hold_timer=setTimeout(()=>{is_holding=true;hold_start=Date.now();menu.style.pointerEvents='none';toggle_hold_vis(true);const active_menu=$q('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');$on(icon,'animationend',()=>icon.classList.remove('blink'),{once:true});}}},200);upd_progress();};
+  const init_hold_key=()=>{if(key_hold)return;key_hold=true;is_holding=true;hack_triggered=false;hold_start=Date.now();menu.style.pointerEvents='none';toggle_hold_vis(true);const active_menu=$q('.carousel-menu > li[data-active="true"]');if(active_menu){const icon=active_menu.querySelector('.icon');if(icon){icon.classList.add('blink');$on(icon,'animationend',()=>icon.classList.remove('blink'),{once:true});}}upd_progress();};
   const check_hold=evt=>{if(is_holding)return;const dx=Math.abs(evt.clientX-drag_sx),dy=Math.abs(evt.clientY-drag_sy);if(dx>10||dy>10){is_holding=false;hack_triggered=false;clearTimeout(hold_timer);}};
-  const end_hold=()=>{is_holding=false;progress=0;hack_triggered=false;menu.style.pointerEvents='';set(root,'--progress-fill','0%');clearTimeout(hold_timer);};
+  const end_hold=()=>{is_holding=false;progress=0;hack_triggered=false;menu.style.pointerEvents='';toggle_hold_vis(false);set(root,'--progress-fill','0%');clearTimeout(hold_timer);};
   const end_hold_key=()=>{key_hold=false;end_hold();};
   $on(menu,'pointerdown',init_hold);
   $on(document,'pointermove',check_hold);

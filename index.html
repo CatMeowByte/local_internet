@@ -18,11 +18,10 @@ by CatMeowByte
 <main>
  <div class="container">
   <form class="nav-bar">
-   <button type="button" class="btn-back" id="browser_back"><span class="material-icons">arrow_back</span></button>
-   <button type="button" class="btn-home" id="browser_home"><span class="material-icons">home</span></button>
+   <button type="button" class="button" id="browser_back"><span class="material-icons">arrow_back</span></button>
+   <button type="button" class="button" id="browser_home"><span class="material-icons">home</span></button>
    <input type="text" class="url-input" id="browser_address_bar">
-   <button type="submit" class="btn-search" id="browser_search"><span class="material-icons">search</span></button>
-   <button type="button" class="btn-fullscreen" id="browser_fullscreen"><span class="material-icons">fullscreen</span></button>
+   <button type="submit" class="button" id="browser_search"><span class="material-icons">search</span></button>
   </form>
   <iframe class="content-frame" src="website/glimp.web/"></iframe>
  </div>
@@ -37,9 +36,9 @@ by CatMeowByte
  main{width:100%;height:100%;}
  .container{width:100%;height:100%;display:flex;flex-direction:column;}
  .nav-bar{display:flex;padding:var(--navbar_gap);gap:var(--navbar_gap);background:var(--pal_black);}
- .btn-home,.btn-back,.btn-search,.btn-fullscreen{flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;pointer-events:auto;}
- .btn-home:hover,.btn-home:active,.btn-home:focus,.btn-back:hover,.btn-back:active,.btn-back:focus,.btn-search:hover,.btn-search:active,.btn-search:focus,.btn-fullscreen:hover,.btn-fullscreen:active,.btn-fullscreen:focus{background:transparent;outline:none;}
- .btn-home .material-icons,.btn-back .material-icons,.btn-search .material-icons,.btn-fullscreen .material-icons{color:var(--pal_white);}
+ .button{flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;pointer-events:auto;}
+ .button:hover,.button:active,.button:focus{background:transparent;outline:none;}
+ .button .material-icons{color:var(--pal_white);}
  .url-input{flex:1;background:var(--pal_white);color:var(--pal_black);border:none;padding:4px 8px;border-radius:0.25rem;}
  .content-frame{flex:1;border:none;}
  .nav-bar.nav-bar-hidden{display:none;}
@@ -47,24 +46,26 @@ by CatMeowByte
 <script>
  const $=sel=>document.querySelector(sel);
  const $on=(el,ev,fn)=>el.addEventListener(ev,fn);
- const HOME='glimp.web';
+ const home='glimp.web';
  const frame=$('.content-frame');
  const input=$('.url-input');
- const navForm=$('.nav-bar');
- const btnHome=$('#browser_home');
- const btnBack=$('#browser_back');
- const btnFullscreen=$('#browser_fullscreen');
- const sanitizePath=input=>{if(!input.startsWith('web://'))input='web://'+input.replace(/^web:\/+/,'');input=input.replace(/^web:\/\/+/,'web://');input=input.replace(/([^:])\/\/+/g,'$1/');if(input.endsWith('/')&&input!=='web://')input=input.slice(0,-1);return input;};
- const pathToSrc=path=>{path=path.replace(/^web:\/\//,'');if(path==='')return'website/'+HOME+'/index.html';if(path.endsWith('/'))path=path.slice(0,-1);const slashIndex=path.indexOf('/');let domain,childPath;if(slashIndex===-1){domain=path;childPath='';}else{domain=path.substring(0,slashIndex);childPath=path.substring(slashIndex+1);}let finalPath='website/'+domain;if(childPath===''||!childPath.includes('.')){finalPath+=(childPath?'/'+childPath:'')+'/index.html';}else{finalPath+='/'+childPath;}return finalPath;};
- $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let displayPath=path.replace(/^.*\/website\//,'');input.value=sanitizePath(displayPath);const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href=new URL('icon/material-icons.css',window.location.href).href;frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src=new URL('inject.js',window.location.href).href;frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
- $on(navForm,'submit',e=>{e.preventDefault();const sanitized=sanitizePath(input.value.trim());input.value=sanitized;frame.src=pathToSrc(sanitized);});
- $on(btnHome,'click',()=>{frame.src='website/'+HOME+'/';});
- $on(btnBack,'click',()=>{frame.contentWindow.history.back();});
- $on(btnFullscreen,'click',()=>{if(!document.fullscreenElement){document.documentElement.requestFullscreen();}else{document.exitFullscreen();}});
+ const nav_form=$('.nav-bar');
+ const button_home=$('#browser_home');
+ const button_back=$('#browser_back');
+ let is_address_updating=false;
+ const path_sanitize=input=>{input=input.replace(/^(web:\/\/|#\/)/,'');input=input.replace(/\/\/+/g,'/');if(input.endsWith('/')&&input!=='')input=input.slice(0,-1);input=input.replace(/\/index\.html$/,'');input=input.replace(/\/index$/,'');input=input.replace(/\.html$/,'');return input;};
+ const path_to_src=path=>{path=path.replace(/^web:\/\//,'');if(path==='')return'website/'+home+'/index.html';if(path.endsWith('/'))path=path.slice(0,-1);const slash_index=path.indexOf('/');let domain,path_child;if(slash_index===-1){domain=path;path_child='';}else{domain=path.substring(0,slash_index);path_child=path.substring(slash_index+1);}let path_final='website/'+domain;if(path_child===''||!path_child.includes('.')){path_final+=(path_child?'/'+path_child:'')+'/index.html';}else{path_final+='/'+path_child;}return path_final;};
+ const website_load=clean_path=>{frame.src=path_to_src('web://'+clean_path);};
+ $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let path_display=path.replace(/^.*\/website\//,'');const clean_path=path_sanitize(path_display);is_address_updating=true;input.value='web://'+clean_path;window.location.hash='#/'+clean_path;is_address_updating=false;const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href=new URL('icon/material-icons.css',window.location.href).href;frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src=new URL('inject.js',window.location.href).href;frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
+ $on(nav_form,'submit',e=>{e.preventDefault();const clean_path=path_sanitize(input.value.trim());website_load(clean_path);});
+ $on(button_home,'click',()=>{frame.src='website/'+home+'/';});
+ $on(button_back,'click',()=>{frame.contentWindow.history.back();});
  $on(window,'message',e=>{
-  if(e.data.action==='requestFullscreen'){navForm.classList.add('nav-bar-hidden');frame.contentWindow.postMessage({action:'fullscreenState',value:true},'*');}
-  if(e.data.action==='exitFullscreen'){navForm.classList.remove('nav-bar-hidden');frame.contentWindow.postMessage({action:'fullscreenState',value:false},'*');}
+  if(e.data.action==='requestFullscreen'){nav_form.classList.add('nav-bar-hidden');document.documentElement.requestFullscreen();frame.contentWindow.postMessage({action:'fullscreenState',value:true},'*');}
+  if(e.data.action==='exitFullscreen'){nav_form.classList.remove('nav-bar-hidden');document.exitFullscreen();frame.contentWindow.postMessage({action:'fullscreenState',value:false},'*');}
  });
+ $on(window,'hashchange',()=>{if(is_address_updating)return;const clean_path=path_sanitize(window.location.hash);website_load(clean_path);});
+ if(window.location.hash){const clean_path=path_sanitize(window.location.hash);website_load(clean_path);}else{website_load(home);}
 </script>
 </body>
 </html>
