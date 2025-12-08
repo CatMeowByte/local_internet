@@ -18,54 +18,204 @@ by CatMeowByte
 <main>
  <div class="container">
   <form class="nav-bar">
-   <button type="button" class="button" id="browser_back"><span class="material-icons">arrow_back</span></button>
-   <button type="button" class="button" id="browser_home"><span class="material-icons">home</span></button>
+   <button type="button" class="button" id="browser_back">
+    <span class="material-icons">arrow_back</span>
+   </button>
+   <button type="button" class="button" id="browser_home">
+    <span class="material-icons">home</span>
+   </button>
    <input type="text" class="url-input" id="browser_address_bar">
-   <button type="submit" class="button" id="browser_search"><span class="material-icons">search</span></button>
+   <button type="submit" class="button" id="browser_search">
+    <span class="material-icons">search</span>
+   </button>
   </form>
   <iframe class="content-frame" src="website/glimp.web/"></iframe>
  </div>
 </main>
 <style>
  :root {
-  --pal_black: #000000; --pal_white: #ffffff;
+  --pal_black: #000000;
+  --pal_white: #ffffff;
   --navbar_gap: 0.5rem;
  }
- *{margin:0;padding:0;box-sizing:border-box;}
- html,body{width:100vw;height:100vh;overflow:hidden;}
- main{width:100%;height:100%;}
- .container{width:100%;height:100%;display:flex;flex-direction:column;}
- .nav-bar{display:flex;padding:var(--navbar_gap);gap:var(--navbar_gap);background:var(--pal_black);}
- .button{flex-shrink:0;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;pointer-events:auto;}
- .button:hover,.button:active,.button:focus{background:transparent;outline:none;}
- .button .material-icons{color:var(--pal_white);}
- .url-input{flex:1;background:var(--pal_white);color:var(--pal_black);border:none;padding:4px 8px;border-radius:0.25rem;}
- .content-frame{flex:1;border:none;}
- .nav-bar.nav-bar-hidden{display:none;}
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+ html,
+ body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+ }
+ main {
+  width: 100%;
+  height: 100%;
+ }
+ .container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+ }
+ .nav-bar {
+  display: flex;
+  padding: var(--navbar_gap);
+  gap: var(--navbar_gap);
+  background: var(--pal_black);
+ }
+ .button {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+ }
+ .button:hover,
+ .button:active,
+ .button:focus {
+  background: transparent;
+  outline: none;
+ }
+ .button .material-icons {
+  color: var(--pal_white);
+ }
+ .url-input {
+  flex: 1;
+  background: var(--pal_white);
+  color: var(--pal_black);
+  border: none;
+  padding: 4px 8px;
+  border-radius: 0.25rem;
+ }
+ .content-frame {
+  flex: 1;
+  border: none;
+ }
+ .nav-bar.nav-bar-hidden {
+  display: none;
+ }
 </style>
 <script>
- const $=sel=>document.querySelector(sel);
- const $on=(el,ev,fn)=>el.addEventListener(ev,fn);
- const home='glimp.web';
- const frame=$('.content-frame');
- const input=$('.url-input');
- const nav_form=$('.nav-bar');
- const button_home=$('#browser_home');
- const button_back=$('#browser_back');
- let is_address_updating=false;
- const path_sanitize=input=>{input=input.replace(/^(web:\/\/|#\/)/,'');input=input.replace(/\/\/+/g,'/');if(input.endsWith('/')&&input!=='')input=input.slice(0,-1);input=input.replace(/\/index\.html$/,'');input=input.replace(/\/index$/,'');return input;};
- const path_to_src=path=>{path=path.replace(/^web:\/\//,'');if(path==='')return'website/'+home+'/index.html';if(path.endsWith('/'))path=path.slice(0,-1);const slash_index=path.indexOf('/');let domain,path_child;if(slash_index===-1){domain=path;path_child='';}else{domain=path.substring(0,slash_index);path_child=path.substring(slash_index+1);}let path_final='website/'+domain;if(path_child===''||!path_child.includes('.')){path_final+=(path_child?'/'+path_child:'')+'/index.html';}else{path_final+='/'+path_child;}return path_final;};
- const website_load=clean_path=>{frame.src=path_to_src('web://'+clean_path);};
- $on(frame,'load',()=>{try{const path=frame.contentWindow.location.pathname;let path_display=path.replace(/^.*\/website\//,'');const clean_path=path_sanitize(path_display);is_address_updating=true;input.value='web://'+clean_path;window.location.hash='#/'+clean_path;is_address_updating=false;const link=frame.contentDocument.createElement('link');link.rel='stylesheet';link.href=new URL('icon/material-icons.css',window.location.href).href;frame.contentDocument.head.appendChild(link);const s=frame.contentDocument.createElement('script');s.src=new URL('inject.js',window.location.href).href;frame.contentDocument.head.appendChild(s);}catch(e){input.value='[blocked]';}});
- $on(nav_form,'submit',e=>{e.preventDefault();const clean_path=path_sanitize(input.value.trim());website_load(clean_path);});
- $on(button_home,'click',()=>{frame.src='website/'+home+'/';});
- $on(button_back,'click',()=>{frame.contentWindow.history.back();});
- $on(window,'message',e=>{
-  if(e.data.action==='requestFullscreen'){nav_form.classList.add('nav-bar-hidden');document.documentElement.requestFullscreen();frame.contentWindow.postMessage({action:'fullscreenState',value:true},'*');}
-  if(e.data.action==='exitFullscreen'){nav_form.classList.remove('nav-bar-hidden');document.exitFullscreen();frame.contentWindow.postMessage({action:'fullscreenState',value:false},'*');}
+ const $ = sel => document.querySelector(sel);
+ const $on = (el, ev, fn) => el.addEventListener(ev, fn);
+ const home = 'glimp.web';
+ const frame = $('.content-frame');
+ const input = $('.url-input');
+ const nav_form = $('.nav-bar');
+ const button_home = $('#browser_home');
+ const button_back = $('#browser_back');
+ let is_address_updating = false;
+
+ const path_sanitize = input => {
+  input = input.replace(/^(web:\/\/|#\/)/, '');
+  input = input.replace(/\/\/+/g, '/');
+  if (input.endsWith('/') && input !== '') input = input.slice(0, -1);
+  input = input.replace(/\/index\.html$/, '');
+  input = input.replace(/\/index$/, '');
+  return input;
+ };
+
+ const path_to_src = path => {
+  path = path.replace(/^web:\/\//, '');
+  if (path === '') return 'website/' + home + '/index.html';
+  if (path.endsWith('/')) path = path.slice(0, -1);
+  const slash_index = path.indexOf('/');
+  let domain, path_child;
+  if (slash_index === -1) {
+   domain = path;
+   path_child = '';
+  } else {
+   domain = path.substring(0, slash_index);
+   path_child = path.substring(slash_index + 1);
+  }
+  let path_final = 'website/' + domain;
+  if (path_child === '' || !path_child.includes('.')) {
+   path_final += (path_child ? '/' + path_child : '') + '/index.html';
+  } else {
+   path_final += '/' + path_child;
+  }
+  return path_final;
+ };
+
+ const website_load = clean_path => {
+  frame.src = path_to_src('web://' + clean_path);
+ };
+
+ $on(frame, 'load', () => {
+  try {
+   const path = frame.contentWindow.location.pathname;
+   let path_display = path.replace(/^.*\/website\//, '');
+   const clean_path = path_sanitize(path_display);
+   is_address_updating = true;
+   input.value = 'web://' + clean_path;
+   window.location.hash = '#/' + clean_path;
+   is_address_updating = false;
+
+   const link = frame.contentDocument.createElement('link');
+   link.rel = 'stylesheet';
+   link.href = new URL('icon/material-icons.css', window.location.href).href;
+   frame.contentDocument.head.appendChild(link);
+
+   const s = frame.contentDocument.createElement('script');
+   s.src = new URL('inject.js', window.location.href).href;
+   frame.contentDocument.head.appendChild(s);
+  } catch (e) {
+   input.value = '[blocked]';
+  }
  });
- $on(window,'hashchange',()=>{if(is_address_updating)return;const clean_path=path_sanitize(window.location.hash);website_load(clean_path);});
- if(window.location.hash){const clean_path=path_sanitize(window.location.hash);website_load(clean_path);}else{website_load(home);}
+
+ $on(nav_form, 'submit', e => {
+  e.preventDefault();
+  const clean_path = path_sanitize(input.value.trim());
+  website_load(clean_path);
+ });
+
+ $on(button_home, 'click', () => {
+  frame.src = 'website/' + home + '/';
+ });
+
+ $on(button_back, 'click', () => {
+  frame.contentWindow.history.back();
+ });
+
+ $on(window, 'message', e => {
+  if (e.data.action === 'requestFullscreen') {
+   nav_form.classList.add('nav-bar-hidden');
+   document.documentElement.requestFullscreen();
+   frame.contentWindow.postMessage({ action: 'fullscreenState', value: true }, '*');
+  }
+  if (e.data.action === 'exitFullscreen') {
+   nav_form.classList.remove('nav-bar-hidden');
+   document.exitFullscreen();
+   frame.contentWindow.postMessage({ action: 'fullscreenState', value: false }, '*');
+  }
+  if (e.data.action === 'navigate') {
+   const { url, domain, current_path } = e.data;
+   let r;
+   if (url.startsWith('web://')) r = url;
+   else if (url.startsWith('/')) r = 'web://' + domain + url;
+   else r = 'web://' + domain + '/' + current_path.substring(0, current_path.lastIndexOf('/') + 1).replace(/^.*\/website\/[^\/]+\//, '') + url;
+   website_load(path_sanitize(r));
+  }
+ });
+
+ $on(window, 'hashchange', () => {
+  if (is_address_updating) return;
+  const clean_path = path_sanitize(window.location.hash);
+  website_load(clean_path);
+ });
+
+ if (window.location.hash) {
+  const clean_path = path_sanitize(window.location.hash);
+  website_load(clean_path);
+ } else {
+  website_load(home);
+ }
 </script>
 </body>
 </html>

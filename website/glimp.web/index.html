@@ -43,7 +43,7 @@ by CatMeowByte
    const list = document.getElementById('list');
    lines.forEach(line => {
     const fetchPath = '../' + line + '/index.html';
-    const linkPath = '../' + line;
+    const linkPath = 'web://' + line;
     fetch(fetchPath)
      .then(response => response.text())
      .then(html => {
@@ -51,7 +51,12 @@ by CatMeowByte
       const title = match ? match[1] : line;
       const li = document.createElement('li');
       const a = document.createElement('a');
-      a.href = linkPath;
+      a.href = '';
+      a.onclick = (e) => {
+        e.preventDefault();
+        navigate(linkPath);
+      };
+      a.textContent = title;
       a.textContent = title;
       li.appendChild(a);
       list.appendChild(li);
