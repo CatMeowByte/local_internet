@@ -3,19 +3,37 @@
 Single Page HTML
 by CatMeowByte
 
-+ use 1 space indent
++ 1 space indent
 + all boilerplate unindented
 + html contents inside <main> tag, body should be unmodified
++ script use snake_case
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Search and browse the localized web. A curated collection of independent websites in a self-contained ecosystem.">
 <title>Glimp - the search engine!</title>
 </head>
 <body>
 <main>
- <ul id="list"></ul>
+ <header id="header">
+  <div id="header-wrapper">
+   <h1 id="header-info">Glimp</h1>
+   <div id="search-wrapper">
+    <input type="text" id="search-box" placeholder="Search...">
+    <button id="button-clear"><span class="material-icons">search</span></button>
+   </div>
+  </div>
+ </header>
+ <div id="results"></div>
+ <template id="result-template">
+  <div class="result">
+   <a></a>
+   <div class="result-domain"></div>
+   <div class="result-description"></div>
+  </div>
+ </template>
 </main>
 <style>
  :root {
@@ -33,33 +51,196 @@ by CatMeowByte
   padding: 0;
   box-sizing: border-box;
  }
- /* style contents */
+ main {
+  font-family: sans-serif;
+  color: var(--pal_black);
+  position: relative;
+ }
+ #header {
+  background-color: var(--pal_blue);
+  color: var(--pal_white);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+ }
+ #header-wrapper,
+ #results {
+  max-width: 50rem;
+ }
+ #header-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+ }
+ #header-info {
+  font-size: 2rem;
+ }
+ #search-wrapper {
+  flex: 1 1 auto;
+  position: relative;
+ }
+ #search-box {
+  width: 100%;
+  padding: 0.5rem;
+  padding-right: 2.5rem;
+  border: none;
+  font-size: 1rem;
+ }
+ #button-clear {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.25rem;
+  border: none;
+  background: none;
+  color: var(--pal_gray);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+ #button-clear > span {
+  font-size: 1.5rem;
+ }
+ #results {
+  padding: 1rem;
+ }
+ .result {
+  margin-bottom: 1rem;
+ }
+ .result > a {
+  color: var(--pal_blue);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+ }
+ .result > .result-domain {
+  color: var(--pal_green);
+  font-size: 0.75rem;
+  font-family: monospace;
+  margin-bottom: 0.25rem;
+ }
+ .result > .result-description {
+  font-size: 0.875rem;
+  color: var(--pal_gray);
+ }
 </style>
 <script>
+ const template = document.getElementById('result-template');
+ const results = document.getElementById('results');
+ const search_box = document.getElementById('search-box');
+ const button_clear = document.getElementById('button-clear');
+ let result_items = [];
+
+ function fuzzy_score(search, target) {
+  const target_lower = target.toLowerCase();
+  const search_lower = search.toLowerCase();
+  const exact_idx = target_lower.indexOf(search_lower);
+  if (exact_idx !== -1) {
+   return 10000 + (target.length - exact_idx);
+  }
+  let search_idx = 0;
+  let score = 0;
+  let match_positions = [];
+  for (let i = 0; i < target_lower.length; i++) {
+   if (search_idx < search_lower.length && target_lower[i] === search_lower[search_idx]) {
+    match_positions.push(i);
+    search_idx++;
+   }
+  }
+  if (search_idx !== search_lower.length) return 0;
+  for (let i = 0; i < match_positions.length; i++) {
+   score += (1 - match_positions[i] / target.length) * 100;
+   if (i > 0) {
+    const gap = match_positions[i] - match_positions[i - 1];
+    score -= gap * 2;
+   }
+  }
+  return Math.max(0, score);
+ }
+
+ function filter_and_sort(query) {
+  const q = query.toLowerCase();
+  const scored = result_items.map(item => {
+   let score;
+   if (q === '') {
+    score = Math.random() * 1000;
+   } else {
+    const title_score = fuzzy_score(q, item.title);
+    const desc_score = fuzzy_score(q, item.desc);
+    const link_score = fuzzy_score(q, item.link);
+    score = title_score * 3 + desc_score * 2 + link_score;
+   }
+   return { ...item, score: score, matches: q === '' || score > 0 };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  scored.forEach(item => {
+   if (item.matches) {
+    results.appendChild(item.element);
+    item.element.style.display = 'block';
+   } else {
+    item.element.style.display = 'none';
+   }
+  });
+ }
+
+ search_box.addEventListener('input', (e) => {
+  filter_and_sort(e.target.value);
+  const icon = button_clear.querySelector('span');
+  icon.textContent = e.target.value ? 'close' : 'search';
+ });
+
+ button_clear.addEventListener('click', () => {
+  if (search_box.value) {
+   search_box.value = '';
+   search_box.focus();
+   filter_and_sort('');
+   button_clear.querySelector('span').textContent = 'search';
+  } else {
+   search_box.focus();
+  }
+ });
+
  fetch('../../weblist.txt')
   .then(response => response.text())
   .then(data => {
    const lines = data.trim().split('\n');
-   const list = document.getElementById('list');
+   let loaded = 0;
    lines.forEach(line => {
-    const fetchPath = '../' + line + '/index.html';
-    const linkPath = 'web://' + line;
-    fetch(fetchPath)
+    const fetch_path = '../' + line + '/index.html';
+    const link_path = 'web://' + line;
+    fetch(fetch_path)
      .then(response => response.text())
      .then(html => {
-      const match = html.match(/<title>(.*?)<\/title>/);
-      const title = match ? match[1] : line;
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.href = '';
+      const title_match = html.match(/<title>(.*?)<\/title>/);
+      const desc_match = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*?)["']/);
+      const title = title_match ? title_match[1] : line;
+      const desc = desc_match ? desc_match[1] : 'No description available';
+      const clone = template.content.cloneNode(true);
+      const a = clone.querySelector('a');
+      a.textContent = title;
       a.onclick = (e) => {
-        e.preventDefault();
-        navigate(linkPath);
+       e.preventDefault();
+       navigate(link_path);
       };
-      a.textContent = title;
-      a.textContent = title;
-      li.appendChild(a);
-      list.appendChild(li);
+      clone.querySelector('.result-domain').textContent = 'web://' + line;
+      clone.querySelector('.result-description').textContent = desc;
+      const result_el = clone.querySelector('.result');
+      results.appendChild(clone);
+      result_items.push({
+       title: title,
+       desc: desc,
+       link: line,
+       element: result_el
+      });
+      loaded++;
+      if (loaded === lines.length) {
+       filter_and_sort('');
+      }
      });
    });
   });
