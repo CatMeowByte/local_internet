@@ -29,7 +29,7 @@ by CatMeowByte
  <div id="results"></div>
  <template id="result-template">
   <div class="result">
-   <a></a>
+   <div class="result-title"></div>
    <div class="result-domain"></div>
    <div class="result-description"></div>
   </div>
@@ -108,15 +108,14 @@ by CatMeowByte
  }
  .result {
   margin-bottom: 1rem;
+  cursor: pointer;
  }
- .result > a {
+ .result > .result-title {
   color: var(--pal_blue);
-  text-decoration: none;
   font-size: 1rem;
   font-weight: bold;
   display: block;
   margin-bottom: 0.25rem;
-  cursor: pointer;
  }
  .result > .result-domain {
   color: var(--pal_green);
@@ -221,15 +220,14 @@ by CatMeowByte
       const title = title_match ? title_match[1] : line;
       const desc = desc_match ? desc_match[1] : 'No description available';
       const clone = template.content.cloneNode(true);
-      const a = clone.querySelector('a');
-      a.textContent = title;
-      a.onclick = (e) => {
-       e.preventDefault();
-       navigate(link_path);
-      };
+      const title_el = clone.querySelector('.result-title');
+      title_el.textContent = title;
       clone.querySelector('.result-domain').textContent = 'web://' + line;
       clone.querySelector('.result-description').textContent = desc;
       const result_el = clone.querySelector('.result');
+      result_el.onclick = (e) => {
+       navigate(link_path);
+      };
       results.appendChild(clone);
       result_items.push({
        title: title,
