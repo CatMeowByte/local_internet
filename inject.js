@@ -1,5 +1,5 @@
 // inject
-let _fs = false;
+let _fullscreen = false;
 
 Element.prototype.requestFullscreen = function () {
  window.parent.postMessage({ action: 'requestFullscreen' }, '*');
@@ -10,11 +10,11 @@ document.exitFullscreen = function () {
 };
 
 Object.defineProperty(document, 'fullscreenElement', {
- get: () => _fs ? document.body : null
+ get: () => _fullscreen ? document.body : null
 });
 
 window.addEventListener('message', e => {
- if (e.data.action === 'fullscreenState') _fs = e.data.value;
+ if (e.data.action === 'fullscreenState') _fullscreen = e.data.value;
 });
 
 const get_current_domain = () =>
