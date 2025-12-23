@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
++ script use snake_case
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prayer times dashboard clock in Metro design style.">
+<title>Prayer Times Dashboard - Metro</title>
+</head>
+<body>
+<main>
+ <div class="dashboard">
+  <div class="panel">
+   <div class="panel-clock" style="background: var(--pal_red);">
+    <span class="hour">2</span>
+    <span class="second">∶</span>
+    <span class="minute">28</span>
+    <span class="meridiem">AM</span>
+   </div>
+   <div class="panel-right">
+    <div class="panel-date" style="background: var(--pal_blue);">
+     <span class="weekday">Sunday</span>
+     <span class="day">30</span>
+     <span class="month">June</span>
+     <span class="year">2024</span>
+     <span class="weekday">Ahad</span>
+     <span class="day">23</span>
+     <span class="month">Dhu al-Hijjah</span>
+     <span class="year">1445</span>
+    </div>
+    <div class="panel-blank" style="background: var(--pal_green);">
+     <div class="debug-title">DEBUG</div>
+     <div class="debug-inputs">
+      <label>
+       <span>past</span>
+       <input type="number" id="debug-past" value="10">
+      </label>
+      <label>
+       <span>future</span>
+       <input type="number" id="debug-future" value="80">
+      </label>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="linear" style="background: var(--pal_cyan);">
+   <div class="progress-notch" style="border-top-color: var(--pal_white);"></div>
+   <div class="progress" style="background: var(--pal_blue);">
+    <div class="progress-bar"></div>
+    <div class="station">
+     <div class="station-scroll">
+      <div style="width: 16.665cqw;"></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--pal_red);">1</div></div>
+      <div style="width: 33.33cqw;"></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--pal_red);">2</div></div>
+      <div style="width: 33.33cqw;"></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--pal_gray);">3</div></div>
+      <div style="width: 33.33cqw;"></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--pal_gray);">4</div></div>
+      <div style="width: 16.665cqw;"></div>
+     </div>
+    </div>
+   </div>
+   <div class="info" style="background: var(--pal_gray-light);">
+    <div id="pointer-past" class="pointer" style="background: var(--pal_blue);">
+     <div class="arrow arrow-top" style="border-bottom-color: var(--pal_blue);"></div>
+     <div class="arrow arrow-left" style="border-right-color: var(--pal_blue);"></div>
+     <div class="pointer-name">Past</div>
+     <div class="pointer-row">
+      <span>12∶00 AM</span>
+      <span>-30m</span>
+     </div>
+    </div>
+    <div id="pointer-future" class="pointer" style="background: var(--pal_red);">
+     <div class="arrow arrow-top" style="border-bottom-color: var(--pal_red);"></div>
+     <div class="arrow arrow-right" style="border-left-color: var(--pal_red);"></div>
+     <div class="pointer-name">Future</div>
+     <div class="pointer-row">
+      <span>14∶30 PM</span>
+      <span>+90m</span>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="footer" style="background: var(--pal_gray-dark);" meta-scroll-speed="50">
+The faster the clock runs backward, the more tomorrow remembers yesterday's future.
+Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.
+If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
+  </div>
+ </div>
+ <div class="scaler">
+  <div class="scaler-handle"></div>
+ </div>
+</main>
+<style>
+ @font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/font/RobotoCondensed-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+ }
+ @font-face {
+  font-family: 'Roboto Condensed';
+  src: url('/font/RobotoCondensed-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+ }
+ @font-face {
+  font-family: 'League Gothic';
+  src: url('/font/LeagueGothic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+ }
+ :root {
+  --pal_black: #1a1c2c;
+  --pal_gray-dark: #333c57;
+  --pal_gray: #566c86;
+  --pal_gray-light: #94b0c2;
+  --pal_white: #f4f4f4;
+  --pal_purple: #5d275d;
+  --pal_red: #b13e53;
+  --pal_orange: #ef7d57;
+  --pal_yellow: #ffcd75;
+  --pal_green-light: #a7f070;
+  --pal_green: #38b764;
+  --pal_blue-dark: #29366f;
+  --pal_blue: #3b5dc9;
+  --pal_blue-light: #41a6f6;
+  --pal_teal: #257179;
+  --pal_cyan: #73eff7;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+ }
+ main {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Roboto Condensed', sans-serif;
+ }
+ .dashboard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+ }
+ .panel {
+  flex-grow: 1;
+  display: flex;
+  gap: 0.25rem;
+ }
+ .panel-clock {
+  flex: 1.25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  line-height: 0.75;
+ }
+ .hour,
+ .minute {
+  font-size: 10rem;
+  font-family: 'League Gothic', sans-serif;
+  transform: translateY(0.3rem);
+ }
+ .second {
+  font-size: 8rem;
+  font-weight: bold;
+ }
+ .meridiem {
+  font-size: 2rem;
+  font-weight: bold;
+ }
+ .panel-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+ }
+ .panel-right > * {
+  flex: 1;
+ }
+ .panel-date {
+  flex: 0;
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+ }
+ .panel-blank {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 0.5rem;
+ }
+ .debug-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+ }
+ .debug-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  align-items: center;
+ }
+ .debug-inputs > label {
+  display: contents;
+ }
+ .debug-inputs > label > span {
+  text-align: right;
+ }
+ .debug-inputs > label > input {
+  padding: 0.25rem;
+  border: 1px solid var(--pal_gray);
+  background: var(--pal_white);
+  font-family: inherit;
+ }
+ .weekday {
+  text-align: left;
+ }
+ .day,
+ .month {
+  text-align: center;
+ }
+ .year {
+  text-align: right;
+ }
+ .linear {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ }
+ .progress-notch {
+  width: 0;
+  height: 0;
+  border-left: 1rem solid transparent;
+  border-right: 1rem solid transparent;
+  border-top: 1.125rem solid;
+ }
+ .progress {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  container-type: size;
+ }
+ .progress-bar {
+  width: 100%;
+  height: 1rem;
+  background: linear-gradient(to right,
+   var(--pal_red) 0%,
+   var(--pal_red) 50%,
+   var(--pal_gray) 50%,
+   var(--pal_gray) 100%);
+ }
+ .station {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+ }
+ .station > .station-scroll {
+  width: 133cqw;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+ }
+ .station > .station-scroll > .station-pos {
+  position: relative;
+ }
+ .station > .station-scroll > .station-pos > .station-hour {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+ .info {
+  flex-grow: 1;
+  width: 100%;
+  height: 5rem;
+  position: relative;
+ }
+ .pointer {
+  position: absolute;
+  width: 16.67%;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem;
+ }
+ .pointer-name {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: -0.25rem 0;
+ }
+ .pointer-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+ }
+ .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+ }
+ .arrow-top {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  border-left: 1rem solid transparent;
+  border-right: 1rem solid transparent;
+  border-bottom: 1rem solid;
+ }
+ .arrow-left {
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  border-top: 1rem solid transparent;
+  border-bottom: 1rem solid transparent;
+  border-right: 1rem solid;
+ }
+ .arrow-right {
+  right: 0;
+  top: 50%;
+  transform: translate(100%, -50%);
+  border-top: 1rem solid transparent;
+  border-bottom: 1rem solid transparent;
+  border-left: 1rem solid;
+ }
+ .footer {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: 1.75rem;
+ }
+ .footer > span {
+  white-space: nowrap;
+  animation: footer-scroll linear infinite;
+ }
+ @keyframes footer-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+ }
+ .scaler {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  cursor: ns-resize;
+ }
+ .scaler-handle {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 0.5rem;
+  cursor: ns-resize;
+ }
+</style>
+<script>
+ const $=id=>document.getElementById(id);
+ const $q=(sel,ctx=document)=>ctx.querySelector(sel);
+ const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+ const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+ const $set=(el,key,val)=>el.style.setProperty(key,val);
+
+ $on(document, 'contextmenu', (e) => e.preventDefault());
+
+ const chrono = (function(){
+  const state = {
+   time: {
+    hour: 0,
+    minute: 0,
+    second: 0
+   },
+   date: {
+    g: {
+     weekday: 0,
+     day: 0,
+     month: 0,
+     year: 0
+    },
+    h: {
+     weekday: 0,
+     day: 0,
+     month: 0,
+     year: 0
+    }
+   }
+  };
+
+  function update(){
+   const now = new Date();
+
+   state.time.hour = now.getHours();
+   state.time.minute = now.getMinutes();
+   state.time.second = now.getSeconds();
+
+   state.date.g.weekday = now.getDay();
+   state.date.g.day = now.getDate();
+   state.date.g.month = now.getMonth();
+   state.date.g.year = now.getFullYear();
+
+   // TODO: Hijri conversion logic
+   state.date.h.weekday = now.getDay();
+   state.date.h.day = now.getDate();
+   state.date.h.month = now.getMonth();
+   state.date.h.year = now.getFullYear();
+  }
+
+  update();
+  setInterval(update, 1000);
+
+  return state;
+ })();
+
+ (function clock(){
+  const hour_el = $q('.hour');
+  const minute_el = $q('.minute');
+  const second_el = $q('.second');
+  const meridiem_el = $q('.meridiem');
+
+  function update_clock(){
+   let hour = chrono.time.hour;
+   const minute = chrono.time.minute;
+   const second = chrono.time.second;
+
+   const meridiem = hour >= 12 ? 'PM' : 'AM';
+   hour = hour % 12 || 12;
+
+   hour_el.textContent = hour;
+   minute_el.textContent = String(minute).padStart(2, '0');
+   second_el.style.opacity = second % 2 === 0 ? '1' : '0';
+   meridiem_el.textContent = meridiem;
+  }
+
+  update_clock();
+  setInterval(update_clock, 1000);
+ })();
+
+ (function date(){
+  const weekday_g_list = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const month_g_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const weekday_h_list = ['Ahad', 'Ithnayn', 'Thulatha', "Arbi'a", 'Khamis', "Jum'ah", 'Sabt'];
+  const month_h_list = ['Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani", 'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban", 'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah'];
+
+  const weekday_els = $qa('.weekday');
+  const day_els = $qa('.day');
+  const month_els = $qa('.month');
+  const year_els = $qa('.year');
+
+  function update_date(){
+   weekday_els[0].textContent = weekday_g_list[chrono.date.g.weekday];
+   day_els[0].textContent = chrono.date.g.day;
+   month_els[0].textContent = month_g_list[chrono.date.g.month];
+   year_els[0].textContent = chrono.date.g.year;
+
+   weekday_els[1].textContent = weekday_h_list[chrono.date.h.weekday];
+   day_els[1].textContent = chrono.date.h.day;
+   month_els[1].textContent = month_h_list[chrono.date.h.month];
+   year_els[1].textContent = chrono.date.h.year;
+  }
+
+  update_date();
+  setInterval(update_date, 1000);
+ })();
+
+ (function progress(){
+  const station = $q('.station');
+
+  function update_progress(){
+   const minute = chrono.time.minute;
+   const percent = (minute / 60) * 100;
+   const scroll_width = station.scrollWidth - station.clientWidth;
+   station.scrollLeft = (percent / 100) * scroll_width;
+  }
+
+  update_progress();
+  setInterval(update_progress, 1000);
+ })();
+
+ (function footer_scroll(){
+  const footer = $q('.footer');
+  const speed = parseFloat(footer.getAttribute('meta-scroll-speed')) || 50;
+
+  const text = footer.textContent.trim() + '\u00A0';
+  footer.textContent = '';
+
+  const span1 = document.createElement('span');
+  span1.textContent = text;
+  const span2 = span1.cloneNode(true);
+
+  footer.appendChild(span1);
+  footer.appendChild(span2);
+
+  const width = span1.offsetWidth;
+  const duration = width / speed;
+  span1.style.animationDuration = duration + 's';
+  span2.style.animationDuration = duration + 's';
+ })();
+
+ (function DEBUG_scaler_drag(){
+  let is_dragging = false;
+  const scaler = $q('.scaler');
+  const dashboard = $q('.dashboard');
+
+  $on(scaler, 'mousedown', () => is_dragging = true);
+  $on(document, 'mouseup', () => is_dragging = false);
+  $on(document, 'mousemove', (e) => {
+   if (is_dragging) {
+    dashboard.style.height = e.clientY + 'px';
+   }
+  });
+ })();
+
+ (function DEBUG_input_drag(){
+  const input_past = $('debug-past');
+  const input_future = $('debug-future');
+  const pointer_past = $('pointer-past');
+  const pointer_future = $('pointer-future');
+  const info = $q('.info');
+
+  let dragging = null;
+  let start_value = 0;
+  let start_y = 0;
+
+  const update_pointers = () => {
+   pointer_past.style.left = input_past.value + '%';
+   pointer_future.style.left = input_future.value + '%';
+  };
+
+  const clamp_value = (value, pointer) => {
+   const margin_left = parseFloat(getComputedStyle(pointer).marginLeft);
+   const margin_right = parseFloat(getComputedStyle(pointer).marginRight);
+   const margin_left_percent = (margin_left / info.offsetWidth) * 100;
+   const margin_right_percent = (margin_right / info.offsetWidth) * 100;
+   const half_width_percent = (pointer.offsetWidth / info.offsetWidth) * 50;
+
+   const min = half_width_percent;
+   const max = 100 - margin_left_percent - margin_right_percent - half_width_percent;
+   return Math.max(min, Math.min(max, value));
+  };
+  const handle_drag_start = (input) => (e) => {
+   dragging = input;
+   start_value = parseFloat(input.value);
+   start_y = e.clientY;
+   e.preventDefault();
+  };
+
+  $on(input_past, 'mousedown', handle_drag_start(input_past));
+  $on(input_future, 'mousedown', handle_drag_start(input_future));
+  $on(document, 'mouseup', () => dragging = null);
+  $on(document, 'mousemove', (e) => {
+   if (dragging) {
+    const pointer = dragging === input_past ? pointer_past : pointer_future;
+    dragging.value = clamp_value(start_value + (start_y - e.clientY) * 0.2, pointer).toFixed(2);
+    update_pointers();
+   }
+  });
+
+  $on(input_past, 'input', update_pointers);
+  $on(input_future, 'input', update_pointers);
+
+  update_pointers();
+ })();
+</script>
+</body>
+</html>
