@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
++ script use snake_case
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Metro tile grid with draggable tiles.">
+<title>Metro Tiles</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<main>
+ <div id="desktop">
+  <div id="preview"></div>
+  <div class="icon" data-x="0" data-y="0" data-w="1" data-h="1" data-color="#d77355" data-icon="folder"></div>
+  <div class="icon" data-x="1" data-y="0" data-w="2" data-h="1" data-color="#508cd7" data-icon="image"></div>
+  <div class="icon" data-x="0" data-y="1" data-w="1" data-h="2" data-color="#64b964" data-icon="computer"></div>
+  <div class="icon" data-x="1" data-y="2" data-w="2" data-h="2" data-color="#e6c86e" data-icon="delete"></div>
+ </div>
+</main>
+<style>
+:root {
+ --pal_black: #000000;
+ --pal_dark: #55415f;
+ --pal_gray: #646964;
+ --pal_red: #d77355;
+ --pal_blue: #508cd7;
+ --pal_green: #64b964;
+ --pal_yellow: #e6c86e;
+ --pal_white: #dcf5ff;
+ --tile_size: 8rem;
+ --tile_gap: 1rem;
+ --grid_size: calc(var(--tile_size) + var(--tile_gap));
+}
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+main {
+ width: 100vw;
+ height: 100vh;
+ overflow: hidden;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ background-color: var(--pal_black);
+}
+#desktop {
+ position: relative;
+ background-image: radial-gradient(circle, var(--pal_gray) 0.0625rem, transparent 0.0625rem);
+ background-size: var(--grid_size) var(--grid_size);
+}
+#preview {
+ position: absolute;
+ border: 0.25rem dashed var(--pal_white);
+ pointer-events: none;
+ display: none;
+}
+#preview.active {
+ display: block;
+}
+.icon {
+ position: absolute;
+ cursor: pointer;
+ user-select: none;
+ touch-action: none;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+.icon::before {
+ content: attr(data-icon);
+ font-family: 'Material Icons';
+ font-size: 4rem;
+ background-color: attr(data-color);
+ width: 100%;
+ height: 100%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: var(--pal_white);
+}
+.icon.dragging {
+ opacity: 0.6;
+ z-index: 1000;
+ will-change: transform;
+}
+</style>
+<script>
+const $=id=>document.getElementById(id);
+const $q=(sel,ctx=document)=>ctx.querySelector(sel);
+const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+const $set=(el,key,val)=>el.style.setProperty(key,val);
+
+const root_font_size = parseFloat(getComputedStyle(document.documentElement).fontSize);
+const root_style = getComputedStyle(document.documentElement);
+const tile_size = parseFloat(root_style.getPropertyValue('--tile_size')) * root_font_size;
+const tile_gap = parseFloat(root_style.getPropertyValue('--tile_gap')) * root_font_size;
+const grid_size = tile_size + tile_gap;
+
+let drag_element = null;
+let original_grid_x = 0;
+let original_grid_y = 0;
+let grid_cols = 0;
+let grid_rows = 0;
+let desktop_rect = null;
+
+const preview = $('preview');
+const desktop = $('desktop');
+
+function grid_calculate() {
+ grid_cols = Math.floor(window.innerWidth / grid_size);
+ grid_rows = Math.floor(window.innerHeight / grid_size);
+ desktop.style.width = (grid_cols * grid_size - tile_gap) + 'px';
+ desktop.style.height = (grid_rows * grid_size - tile_gap) + 'px';
+}
+
+function tile_data_get(tile) {
+ return {
+  x: parseInt(tile.dataset.x),
+  y: parseInt(tile.dataset.y),
+  w: parseInt(tile.dataset.w),
+  h: parseInt(tile.dataset.h)
+ };
+}
+
+function tiles_overlap(t1, t2) {
+ return !(t1.x + t1.w <= t2.x || t2.x + t2.w <= t1.x || t1.y + t1.h <= t2.y || t2.y + t2.h <= t1.y);
+}
+
+function position_valid(tile, x, y) {
+ const t = tile_data_get(tile);
+ if (x < 0 || y < 0 || x + t.w > grid_cols || y + t.h > grid_rows) return false;
+
+ const test_pos = {x: x, y: y, w: t.w, h: t.h};
+ const tiles = $qa('.icon');
+ for (let other of tiles) {
+  if (other === tile) continue;
+  const o = tile_data_get(other);
+  if (tiles_overlap(test_pos, o)) return false;
+ }
+ return true;
+}
+
+function tile_has_overlap(tile) {
+ const t = tile_data_get(tile);
+ const tiles = $qa('.icon');
+ for (let other of tiles) {
+  if (other === tile) continue;
+  const o = tile_data_get(other);
+  if (tiles_overlap(t, o)) return true;
+ }
+ return false;
+}
+
+function tiles_resolve_overlaps(max_iterations = 100) {
+ const directions = [
+  {dx: 0, dy: -1},
+  {dx: 1, dy: 0},
+  {dx: 0, dy: 1},
+  {dx: -1, dy: 0}
+ ];
+
+ for (let iteration = 0; iteration < max_iterations; iteration++) {
+  const tiles = $qa('.icon');
+  let has_any_overlap = false;
+
+  for (let tile of tiles) {
+   if (tile_has_overlap(tile)) {
+    has_any_overlap = true;
+    const t = tile_data_get(tile);
+    const dir = directions[Math.floor(Math.random() * directions.length)];
+    const new_x = t.x + dir.dx;
+    const new_y = t.y + dir.dy;
+
+    if (new_x >= 0 && new_y >= 0 && new_x + t.w <= grid_cols && new_y + t.h <= grid_rows) {
+     tile.dataset.x = new_x;
+     tile.dataset.y = new_y;
+     icon_position(tile);
+    }
+   }
+  }
+
+  if (!has_any_overlap) break;
+ }
+}
+
+function tiles_validate() {
+ const tiles = $qa('.icon');
+ tiles.forEach(tile => {
+  tile.style.backgroundColor = tile_has_overlap(tile) ? '#ff0000' : tile.dataset.color;
+ });
+}
+
+function icon_position(icon) {
+ const t = tile_data_get(icon);
+ const width = t.w * tile_size + (t.w - 1) * tile_gap;
+ const height = t.h * tile_size + (t.h - 1) * tile_gap;
+
+ icon.style.width = width + 'px';
+ icon.style.height = height + 'px';
+ icon.style.transform = `translate(${t.x * grid_size}px, ${t.y * grid_size}px)`;
+}
+
+function icons_init() {
+ grid_calculate();
+
+ $qa('.icon').forEach(icon => {
+  icon_position(icon);
+  icon.style.backgroundColor = icon.dataset.color;
+
+  $on(icon, 'pointerdown', (e) => {
+   e.preventDefault();
+   drag_element = icon;
+   const t = tile_data_get(icon);
+   original_grid_x = t.x;
+   original_grid_y = t.y;
+   drag_element.classList.add('dragging');
+   desktop_rect = desktop.getBoundingClientRect();
+  });
+ });
+
+ tiles_resolve_overlaps();
+ tiles_validate();
+}
+
+$on(document, 'pointermove', (e) => {
+ if (!drag_element) return;
+
+ const t = tile_data_get(drag_element);
+ const width = t.w * tile_size + (t.w - 1) * tile_gap;
+ const height = t.h * tile_size + (t.h - 1) * tile_gap;
+
+ const x = e.clientX - desktop_rect.left - width / 2;
+ const y = e.clientY - desktop_rect.top - height / 2;
+ drag_element.style.transform = `translate(${x}px, ${y}px)`;
+
+ let grid_x = Math.max(0, Math.min(grid_cols - t.w, Math.round(x / grid_size)));
+ let grid_y = Math.max(0, Math.min(grid_rows - t.h, Math.round(y / grid_size)));
+
+ preview.style.width = width + 'px';
+ preview.style.height = height + 'px';
+ preview.style.transform = `translate(${grid_x * grid_size}px, ${grid_y * grid_size}px)`;
+ preview.classList.add('active');
+});
+
+$on(document, 'pointerup', (e) => {
+ if (!drag_element) return;
+
+ const t = tile_data_get(drag_element);
+ const width = t.w * tile_size + (t.w - 1) * tile_gap;
+ const height = t.h * tile_size + (t.h - 1) * tile_gap;
+
+ const x = e.clientX - desktop_rect.left - width / 2;
+ const y = e.clientY - desktop_rect.top - height / 2;
+
+ let grid_x = Math.max(0, Math.min(grid_cols - t.w, Math.round(x / grid_size)));
+ let grid_y = Math.max(0, Math.min(grid_rows - t.h, Math.round(y / grid_size)));
+
+ drag_element.dataset.x = grid_x;
+ drag_element.dataset.y = grid_y;
+ icon_position(drag_element);
+
+ drag_element.classList.remove('dragging');
+ drag_element = null;
+ preview.classList.remove('active');
+
+ tiles_resolve_overlaps();
+ tiles_validate();
+});
+
+$on(window, 'resize', () => {
+ grid_calculate();
+ $qa('.icon').forEach(icon => icon_position(icon));
+ tiles_resolve_overlaps();
+ tiles_validate();
+});
+
+icons_init();
+</script>
+</body>
+</html>

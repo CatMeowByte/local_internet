@@ -18,22 +18,23 @@ by CatMeowByte
 <body>
 <main>
  <header id="header">
-  <div id="header-wrapper">
-   <h1 id="header-info">Glimp</h1>
-   <div id="search-wrapper">
-    <input type="text" id="search-box" placeholder="Search...">
-    <button id="button-clear"><span class="material-icons">search</span></button>
-   </div>
+  <h1 id="header-info"><img src="image/glimp.svg" alt="Glimp"></h1>
+  <div id="search-wrapper">
+   <input type="text" id="search-box" placeholder="Search...">
+   <button id="button-clear"><span class="material-icons">search</span></button>
   </div>
  </header>
- <div id="results"></div>
- <template id="result-template">
-  <div class="result">
-   <div class="result-title"></div>
-   <div class="result-domain"></div>
-   <div class="result-description"></div>
-  </div>
- </template>
+ <div id="content">
+  <div id="side">Welcome to Glimp, your personal guide to the information superhighway! We've cataloged millions of web pages so you can find exactly what you're looking for without getting lost in cyberspace. Fast search results, easy navigation, and a growing index that gets bigger every day. Surf smarter with Glimp!</div>
+  <div id="results"></div>
+  <template id="result-template">
+   <div class="result">
+    <div class="result-title"></div>
+    <div class="result-domain"></div>
+    <div class="result-description"></div>
+   </div>
+  </template>
+ </div>
 </main>
 <style>
  :root {
@@ -45,6 +46,10 @@ by CatMeowByte
   --pal_green: #64b964;
   --pal_yellow: #e6c86e;
   --pal_white: #dcf5ff;
+  --pal_purple: #8b5fd7;
+
+  --left-column-width: 8rem;
+  --middle-column-width: 30rem;
  }
  * {
   margin: 0;
@@ -56,24 +61,36 @@ by CatMeowByte
   color: var(--pal_black);
   position: relative;
  }
- #header {
-  background-color: var(--pal_blue);
-  color: var(--pal_white);
+ #header,
+ #content {
+  display: flex;
+ }
+ #results,
+ #search-wrapper {
   padding: 1rem;
+  max-width: var(--middle-column-width);
+ }
+ #header-info,
+ #side {
+  width: var(--left-column-width);
+ }
+ #header {
+  align-items: center;
+  background-color: var(--pal_purple);
+  color: var(--pal_white);
   position: sticky;
   top: 0;
  }
- #header-wrapper,
- #results {
-  max-width: 50rem;
- }
- #header-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
- }
  #header-info {
+  display: flex;
   font-size: 2rem;
+  align-items: center;
+ }
+ #header-info > img {
+  flex: 1;
+  width: auto;
+  height: auto;
+  max-height: 6rem;
  }
  #search-wrapper {
   flex: 1 1 auto;
@@ -91,7 +108,7 @@ by CatMeowByte
   right: 0.25rem;
   top: 50%;
   transform: translateY(-50%);
-  padding: 0.25rem;
+  padding: 1.25rem;
   border: none;
   background: none;
   color: var(--pal_gray);
@@ -103,7 +120,10 @@ by CatMeowByte
  #button-clear > span {
   font-size: 1.5rem;
  }
- #results {
+ #side {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  color: var(--pal_gray);
   padding: 1rem;
  }
  .result {
@@ -126,6 +146,17 @@ by CatMeowByte
  .result > .result-description {
   font-size: 0.875rem;
   color: var(--pal_gray);
+ }
+
+ @media (max-width: 24rem) {
+  #header,
+  #content {
+   flex-direction: column;
+  }
+  #header-info,
+  #side {
+   width: 100%;
+  }
  }
 </style>
 <script>

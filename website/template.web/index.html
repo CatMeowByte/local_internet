@@ -17,28 +17,33 @@ by CatMeowByte
 </head>
 <body>
 <main>
- <!-- markup contents -->
+<!-- markup contents -->
 </main>
 <style>
- :root {
-  --pal_black: #000000;
-  --pal_dark: #55415f;
-  --pal_gray: #646964;
-  --pal_red: #d77355;
-  --pal_blue: #508cd7;
-  --pal_green: #64b964;
-  --pal_yellow: #e6c86e;
-  --pal_white: #dcf5ff;
- }
- * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
- }
- /* style contents */
+:root {
+ --pal_black: #000000;
+ --pal_dark: #55415f;
+ --pal_gray: #646964;
+ --pal_red: #d77355;
+ --pal_blue: #508cd7;
+ --pal_green: #64b964;
+ --pal_yellow: #e6c86e;
+ --pal_white: #dcf5ff;
+}
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+/* style contents */
 </style>
 <script>
- /* script contents */
+const $=id=>document.getElementById(id);
+const $q=(sel,ctx=document)=>ctx.querySelector(sel);
+const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+const $set=(el,key,val)=>el.style.setProperty(key,val);
+/* script contents */
 </script>
 </body>
 </html>

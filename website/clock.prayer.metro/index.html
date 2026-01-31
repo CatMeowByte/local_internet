@@ -16,6 +16,7 @@ by CatMeowByte
 <title>Prayer Times Dashboard - Metro</title>
 </head>
 <body>
+ <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--pal_white); opacity: 0.5; pointer-events: none; z-index: 9999;"></div>
 <main>
  <div class="dashboard">
   <div class="panel">
@@ -40,12 +41,8 @@ by CatMeowByte
      <div class="debug-title">DEBUG</div>
      <div class="debug-inputs">
       <label>
-       <span>past</span>
-       <input type="number" id="debug-past" value="10">
-      </label>
-      <label>
-       <span>future</span>
-       <input type="number" id="debug-future" value="80">
+       <span>time shift</span>
+       <input type="number" id="debug-timeshift" value="0">
       </label>
      </div>
     </div>
@@ -95,9 +92,6 @@ The faster the clock runs backward, the more tomorrow remembers yesterday's futu
 Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.
 If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   </div>
- </div>
- <div class="scaler">
-  <div class="scaler-handle"></div>
  </div>
 </main>
 <style>
@@ -239,7 +233,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   text-align: right;
  }
  .linear {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -273,6 +266,10 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   width: 100%;
   height: 100%;
   overflow-x: auto;
+  scrollbar-width: none;
+ }
+ .station::-webkit-scrollbar {
+  display: none;
  }
  .station > .station-scroll {
   width: 133cqw;
@@ -297,7 +294,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   justify-content: center;
  }
  .info {
-  flex-grow: 1;
   width: 100%;
   height: 5rem;
   position: relative;
@@ -305,10 +301,12 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
  .pointer {
   position: absolute;
   width: 16.67%;
+  min-width: 10rem;
+  min-height: 3.5rem;
   top: 0;
   bottom: 0;
   transform: translateX(-50%);
-  margin: 1rem;
+  margin: 1rem 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -367,20 +365,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
  }
- .scaler {
-  padding: 0.5rem;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  cursor: ns-resize;
- }
- .scaler-handle {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 0.5rem;
-  cursor: ns-resize;
- }
 </style>
 <script>
  const $=id=>document.getElementById(id);
@@ -391,31 +375,312 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
  $on(document, 'contextmenu', (e) => e.preventDefault());
 
+ const tick_speed = 50;
+ let DEBUG_time_override = Date.now();
+
  const chrono = (function(){
   const state = {
-   time: {
-    hour: 0,
-    minute: 0,
-    second: 0
-   },
+   timestamp: 0,
+   time: { hour: 0, minute: 0, second: 0 },
    date: {
-    g: {
-     weekday: 0,
-     day: 0,
-     month: 0,
-     year: 0
-    },
-    h: {
-     weekday: 0,
-     day: 0,
-     month: 0,
-     year: 0
-    }
+    g: { weekday: 0, day: 0, month: 0, year: 0 },
+    h: { weekday: 0, day: 0, month: 0, year: 0 }
+   },
+   prayer: []
+  };
+
+  const PRAYER_METHOD = {
+   MWL: { fajr: 18, isha: 17, maghrib: 0, midnight_jafari: false },
+   ISNA: { fajr: 15, isha: 15, maghrib: 0, midnight_jafari: false },
+   EGYPT: { fajr: 19.5, isha: 17.5, maghrib: 0, midnight_jafari: false },
+   MAKKAH: { fajr: 18.5, isha: 90, maghrib: 0, midnight_jafari: false },
+   KARACHI: { fajr: 18, isha: 18, maghrib: 0, midnight_jafari: false },
+   TEHRAN: { fajr: 17.7, isha: 14, maghrib: 4.5, midnight_jafari: true },
+   JAFARI: { fajr: 16, isha: 14, maghrib: 4, midnight_jafari: true },
+   FRANCE: { fajr: 12, isha: 12, maghrib: 0, midnight_jafari: false },
+   RUSSIA: { fajr: 16, isha: 15, maghrib: 0, midnight_jafari: false },
+   SINGAPORE: { fajr: 20, isha: 18, maghrib: 0, midnight_jafari: false }
+  };
+
+  const ASR_METHOD = {
+   STANDARD: 1,
+   HANAFI: 2
+  };
+
+  const HIGHLAT_METHOD = {
+   NONE: 0,
+   NIGHT_MIDDLE: 1,
+   ONE_SEVENTH: 2,
+   ANGLE_BASED: 3
+  };
+
+  const prayer_config = {
+   lat: -6.2088,
+   lng: 106.8456,
+   method: PRAYER_METHOD.ISNA,
+   asr: ASR_METHOD.STANDARD,
+   highlat: HIGHLAT_METHOD.NIGHT_MIDDLE,
+   tune: {
+    fajr: 0,
+    sunrise: 0,
+    dhuhr: 0,
+    asr: 0,
+    sunset: 0,
+    maghrib: 0,
+    isha: 0,
+    midnight: 0
    }
   };
 
+  const hijri_config = {
+   offset: 0
+  };
+
+  const dtr = d => d * Math.PI / 180;
+  const rtd = r => r * 180 / Math.PI;
+  const sin = d => Math.sin(dtr(d));
+  const cos = d => Math.cos(dtr(d));
+  const tan = d => Math.tan(dtr(d));
+  const arcsin = d => rtd(Math.asin(d));
+  const arccos = d => rtd(Math.acos(d));
+  const arccot = x => rtd(Math.atan(1 / x));
+  const arctan2 = (y, x) => rtd(Math.atan2(y, x));
+  const mod = (a, b) => ((a % b) + b) % b;
+  const gmod = (n, m) => ((n % m) + m) % m;
+
+  function calc_prayer_times(date) {
+   const utc_time = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+
+   const sun_position = (time_decimal) => {
+    const D = utc_time / 864e5 - 10957.5 + time_decimal / 24 - prayer_config.lng / 360;
+    const g = mod(357.529 + 0.98560028 * D, 360);
+    const q = mod(280.459 + 0.98564736 * D, 360);
+    const L = mod(q + 1.915 * sin(g) + 0.020 * sin(2 * g), 360);
+    const e = 23.439 - 0.00000036 * D;
+    const RA = mod(arctan2(cos(e) * sin(L), cos(L)) / 15, 24);
+
+    return {
+     declination: arcsin(sin(e) * sin(L)),
+     equation: q / 15 - RA
+    };
+   };
+
+   const mid_day = (time_decimal) => {
+    const eqt = sun_position(time_decimal).equation;
+    return mod(12 - eqt, 24);
+   };
+
+   const angle_time = (angle, time_decimal, direction = 1) => {
+    const decl = sun_position(time_decimal).declination;
+    const numerator = -sin(angle) - sin(prayer_config.lat) * sin(decl);
+    const diff = arccos(numerator / (cos(prayer_config.lat) * cos(decl))) / 15;
+    return mid_day(time_decimal) + diff * direction;
+   };
+
+   const asr_time = (time_decimal) => {
+    const decl = sun_position(time_decimal).declination;
+    const angle = -arccot(prayer_config.asr + tan(Math.abs(prayer_config.lat - decl)));
+    return angle_time(angle, time_decimal);
+   };
+
+   const times = {
+    fajr: angle_time(prayer_config.method.fajr, 5, -1),
+    sunrise: angle_time(0.833, 6, -1),
+    dhuhr: mid_day(12),
+    asr: asr_time(13),
+    sunset: angle_time(0.833, 18),
+    maghrib: 0,
+    isha: 0,
+    midnight: 0
+   };
+
+   if (prayer_config.method.maghrib === 0) {
+    times.maghrib = times.sunset;
+   } else {
+    times.maghrib = times.sunset + prayer_config.method.maghrib / 60;
+   }
+
+   if (prayer_config.method.isha >= 90) {
+    times.isha = times.maghrib + prayer_config.method.isha / 60;
+   } else {
+    times.isha = angle_time(prayer_config.method.isha, 18);
+   }
+
+   if (prayer_config.method.midnight_jafari) {
+    const next_fajr = angle_time(prayer_config.method.fajr, 29, -1) + 24;
+    times.midnight = (times.sunset + next_fajr) / 2;
+   } else {
+    times.midnight = mid_day(12) + 12;
+   }
+
+   if (prayer_config.highlat !== HIGHLAT_METHOD.NONE) {
+    const night = 24 + times.sunrise - times.sunset;
+
+    const adjust_time = (time, base, angle, direction = 1) => {
+     let portion;
+     if (prayer_config.highlat === HIGHLAT_METHOD.NIGHT_MIDDLE) {
+      portion = night / 2;
+     } else if (prayer_config.highlat === HIGHLAT_METHOD.ONE_SEVENTH) {
+      portion = night / 7;
+     } else if (prayer_config.highlat === HIGHLAT_METHOD.ANGLE_BASED) {
+      portion = (angle / 60) * night;
+     }
+
+     const time_diff = (time - base) * direction;
+     if (isNaN(time) || time_diff > portion) {
+      return base + portion * direction;
+     }
+     return time;
+    };
+
+    times.fajr = adjust_time(times.fajr, times.sunrise, prayer_config.method.fajr, -1);
+    times.isha = adjust_time(times.isha, times.sunset, prayer_config.method.isha, 1);
+    times.maghrib = adjust_time(times.maghrib, times.sunset, prayer_config.method.maghrib, 1);
+   }
+
+   for (let key in times) {
+    times[key] += (prayer_config.tune[key] || 0) / 60;
+   }
+
+   for (let key in times) {
+    const time_hour = times[key] - prayer_config.lng / 15;
+    times[key] = utc_time + Math.floor(time_hour * 36e5);
+   }
+
+   return times;
+  }
+
+  function build_prayer_timeline(now) {
+   const yesterday = new Date(now);
+   yesterday.setDate(now.getDate() - 1);
+   const tomorrow = new Date(now);
+   tomorrow.setDate(now.getDate() + 1);
+   const day_after_tomorrow = new Date(now);
+   day_after_tomorrow.setDate(now.getDate() + 2);
+
+   const times_yesterday = calc_prayer_times(yesterday);
+   const times_today = calc_prayer_times(now);
+   const times_tomorrow = calc_prayer_times(tomorrow);
+   const times_day_after_tomorrow = calc_prayer_times(day_after_tomorrow);
+
+   const calc_last_third = (sunset, next_fajr) => {
+    const night_duration = next_fajr - sunset;
+    return sunset + (2 * night_duration / 3);
+   };
+
+   const timeline = [
+    { name: 'fajr', timestamp: times_yesterday.fajr, day: -1 },
+    { name: 'sunrise', timestamp: times_yesterday.sunrise, day: -1 },
+    { name: 'dhuhr', timestamp: times_yesterday.dhuhr, day: -1 },
+    { name: 'asr', timestamp: times_yesterday.asr, day: -1 },
+    { name: 'sunset', timestamp: times_yesterday.sunset, day: -1 },
+    { name: 'maghrib', timestamp: times_yesterday.maghrib, day: -1 },
+    { name: 'isha', timestamp: times_yesterday.isha, day: -1 },
+    { name: 'midnight', timestamp: times_yesterday.midnight, day: -1 },
+    { name: 'last_third', timestamp: calc_last_third(times_yesterday.sunset, times_today.fajr), day: -1 },
+    { name: 'fajr', timestamp: times_today.fajr, day: 0 },
+    { name: 'sunrise', timestamp: times_today.sunrise, day: 0 },
+    { name: 'dhuhr', timestamp: times_today.dhuhr, day: 0 },
+    { name: 'asr', timestamp: times_today.asr, day: 0 },
+    { name: 'sunset', timestamp: times_today.sunset, day: 0 },
+    { name: 'maghrib', timestamp: times_today.maghrib, day: 0 },
+    { name: 'isha', timestamp: times_today.isha, day: 0 },
+    { name: 'midnight', timestamp: times_today.midnight, day: 0 },
+    { name: 'last_third', timestamp: calc_last_third(times_today.sunset, times_tomorrow.fajr), day: 0 },
+    { name: 'fajr', timestamp: times_tomorrow.fajr, day: 1 },
+    { name: 'sunrise', timestamp: times_tomorrow.sunrise, day: 1 },
+    { name: 'dhuhr', timestamp: times_tomorrow.dhuhr, day: 1 },
+    { name: 'asr', timestamp: times_tomorrow.asr, day: 1 },
+    { name: 'sunset', timestamp: times_tomorrow.sunset, day: 1 },
+    { name: 'maghrib', timestamp: times_tomorrow.maghrib, day: 1 },
+    { name: 'isha', timestamp: times_tomorrow.isha, day: 1 },
+    { name: 'midnight', timestamp: times_tomorrow.midnight, day: 1 },
+    { name: 'last_third', timestamp: calc_last_third(times_tomorrow.sunset, times_day_after_tomorrow.fajr), day: 1 },
+   ];
+
+   return timeline;
+  }
+
+  function calc_hijri(now_timestamp, today_maghrib, offset) {
+   const base_date = now_timestamp >= today_maghrib.timestamp
+    ? new Date(now_timestamp + 86400000)
+    : new Date(now_timestamp);
+
+   if (offset) {
+    base_date.setTime(base_date.getTime() + offset * 86400000);
+   }
+
+   let day = base_date.getDate();
+   let month = base_date.getMonth();
+   let year = base_date.getFullYear();
+   let m = month + 1;
+   let y = year;
+
+   if (m < 3) {
+    y -= 1;
+    m += 12;
+   }
+
+   let a = Math.floor(y / 100);
+   let b = 2 - a + Math.floor(a / 4);
+
+   if (y < 1583) b = 0;
+   if (y == 1582) {
+    if (m > 10) b = -10;
+    if (m == 10) {
+     b = 0;
+     if (day > 4) b = -10;
+    }
+   }
+
+   let jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + b - 1524;
+
+   b = 0;
+   if (jd > 2299160) {
+    a = Math.floor((jd - 1867216.25) / 36524.25);
+    b = 1 + a - Math.floor(a / 4);
+   }
+
+   const bb = jd + b + 1524;
+   const cc = Math.floor((bb - 122.1) / 365.25);
+   const dd = Math.floor(365.25 * cc);
+   const ee = Math.floor((bb - dd) / 30.6001);
+
+   day = (bb - dd) - Math.floor(30.6001 * ee);
+   month = ee - 1;
+   if (ee > 13) {
+    month = ee - 13;
+   }
+   year = cc - 4716;
+
+   const wd = gmod(jd + 1 - (offset || 0), 7);
+
+   const iyear = 10631 / 30;
+   const epochastro = 1948084;
+   const shift1 = 8.01 / 60;
+
+   let z = jd - epochastro;
+   const cyc = Math.floor(z / 10631);
+   z = z - 10631 * cyc;
+   const j = Math.floor((z - shift1) / iyear);
+   const iy = 30 * cyc + j;
+   z = z - Math.floor(j * iyear + shift1);
+   let im = Math.floor((z + 28.5001) / 29.5);
+   if (im == 13) im = 12;
+   const id = z - Math.floor(29.5001 * im - 29);
+
+   return {
+    weekday: wd,
+    day: id,
+    month: im - 1,
+    year: iy
+   };
+  }
+
   function update(){
-   const now = new Date();
+   const now = new Date(DEBUG_time_override);
+
+   state.timestamp = now.getTime();
 
    state.time.hour = now.getHours();
    state.time.minute = now.getMinutes();
@@ -426,15 +691,17 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    state.date.g.month = now.getMonth();
    state.date.g.year = now.getFullYear();
 
-   // TODO: Hijri conversion logic
-   state.date.h.weekday = now.getDay();
-   state.date.h.day = now.getDate();
-   state.date.h.month = now.getMonth();
-   state.date.h.year = now.getFullYear();
+   state.prayer = build_prayer_timeline(now);
+
+   const hijri = calc_hijri(state.timestamp, state.prayer.find(p => p.name === 'maghrib' && p.day === 0), hijri_config.offset);
+   state.date.h.weekday = hijri.weekday;
+   state.date.h.day = hijri.day;
+   state.date.h.month = hijri.month;
+   state.date.h.year = hijri.year;
   }
 
   update();
-  setInterval(update, 1000);
+  setInterval(update, tick_speed);
 
   return state;
  })();
@@ -460,7 +727,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   }
 
   update_clock();
-  setInterval(update_clock, 1000);
+  setInterval(update_clock, tick_speed);
  })();
 
  (function date(){
@@ -487,7 +754,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   }
 
   update_date();
-  setInterval(update_date, 1000);
+  setInterval(update_date, tick_speed);
  })();
 
  (function progress(){
@@ -501,7 +768,113 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   }
 
   update_progress();
-  setInterval(update_progress, 1000);
+  setInterval(update_progress, tick_speed);
+ })();
+
+ (function event_pointer(){
+  const pointer_past = $('pointer-past');
+  const pointer_future = $('pointer-future');
+  const past_name = $q('.pointer-name', pointer_past);
+  const past_time = $q('.pointer-row span:first-child', pointer_past);
+  const past_relative = $q('.pointer-row span:last-child', pointer_past);
+  const past_arrow_top = $q('.arrow-top', pointer_past);
+  const past_arrow_left = $q('.arrow-left', pointer_past);
+  const past_arrow_right = $q('.arrow-right', pointer_past);
+  const future_name = $q('.pointer-name', pointer_future);
+  const future_time = $q('.pointer-row span:first-child', pointer_future);
+  const future_relative = $q('.pointer-row span:last-child', pointer_future);
+  const future_arrow_top = $q('.arrow-top', pointer_future);
+  const future_arrow_left = $q('.arrow-left', pointer_future);
+  const future_arrow_right = $q('.arrow-right', pointer_future);
+
+  function format_time(timestamp) {
+   const date = new Date(timestamp);
+   const hour = date.getHours();
+   const minute = String(date.getMinutes()).padStart(2, '0');
+   const display_hour = hour % 12 || 12;
+   return `${display_hour}∶${minute} ${hour >= 12 ? 'PM' : 'AM'}`;
+  }
+
+  function capitalize(str) {
+   return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
+  function format_relative(timestamp, current) {
+   const diff_ms = Math.abs(timestamp - current);
+   const diff_min = Math.floor(diff_ms / 60000);
+   const direction = timestamp > current ? 'later' : 'ago';
+
+   if (diff_min >= 60) {
+    const hours = Math.floor(diff_min / 60);
+    return `${hours} hour ${direction}`;
+   }
+   return `${diff_min} min ${direction}`;
+  }
+
+  function calculate_position(event_timestamp, current_timestamp) {
+   const offset_ms = event_timestamp - current_timestamp;
+   const window_half = 1.5 * 60 * 60 * 1000;
+   const position = ((offset_ms / window_half) + 1) * 50;
+
+   const pointer_margin = parseFloat(getComputedStyle(pointer_past).marginTop);
+   const pointer_width = pointer_past.offsetWidth;
+   const info_width = $q('.info').offsetWidth;
+   const margin_percent = (pointer_margin / info_width) * 100;
+   const half_width_percent = (pointer_width / info_width) * 50;
+   const min = margin_percent + half_width_percent;
+   const max = 100 - margin_percent - half_width_percent;
+
+   const clamped = Math.max(min, Math.min(max, position));
+
+   return {
+    position: clamped,
+    is_beyond_left: position < min,
+    is_beyond_right: position > max
+   };
+  }
+
+  function update_pointers() {
+   const skip_list = ['sunset', 'midnight']; // maghrib is more important
+   const timeline = chrono.prayer.filter(event => !skip_list.includes(event.name));
+   const current = chrono.timestamp;
+
+   let previous = null;
+   let next = null;
+
+   for (let i = 0; i < timeline.length; i++) {
+    if (timeline[i].timestamp <= current) {
+     previous = timeline[i];
+    } else if (!next) {
+     next = timeline[i];
+     break;
+    }
+   }
+
+   if (previous) {
+    const pos = calculate_position(previous.timestamp, current);
+    past_name.textContent = capitalize(previous.name);
+    past_time.textContent = format_time(previous.timestamp);
+    past_relative.textContent = format_relative(previous.timestamp, current);
+    pointer_past.style.left = pos.position + '%';
+    past_arrow_top.style.display = pos.is_beyond_left || pos.is_beyond_right ? 'none' : '';
+    past_arrow_left.style.display = pos.is_beyond_left ? '' : 'none';
+   }
+
+   if (next) {
+    const pos = calculate_position(next.timestamp, current);
+    future_name.textContent = capitalize(next.name);
+    future_time.textContent = format_time(next.timestamp);
+    future_relative.textContent = format_relative(next.timestamp, current);
+    pointer_future.style.left = pos.position + '%';
+    future_arrow_top.style.display = pos.is_beyond_left || pos.is_beyond_right ? 'none' : '';
+    future_arrow_right.style.display = pos.is_beyond_right ? '' : 'none';
+   }
+
+   // TODO: set pointer position based on prayer timeline
+  }
+
+  update_pointers();
+  setInterval(update_pointers, tick_speed);
  })();
 
  (function footer_scroll(){
@@ -524,69 +897,34 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   span2.style.animationDuration = duration + 's';
  })();
 
- (function DEBUG_scaler_drag(){
-  let is_dragging = false;
-  const scaler = $q('.scaler');
-  const dashboard = $q('.dashboard');
-
-  $on(scaler, 'mousedown', () => is_dragging = true);
-  $on(document, 'mouseup', () => is_dragging = false);
-  $on(document, 'mousemove', (e) => {
-   if (is_dragging) {
-    dashboard.style.height = e.clientY + 'px';
-   }
-  });
- })();
-
  (function DEBUG_input_drag(){
-  const input_past = $('debug-past');
-  const input_future = $('debug-future');
-  const pointer_past = $('pointer-past');
-  const pointer_future = $('pointer-future');
-  const info = $q('.info');
-
-  let dragging = null;
+  const input_timeshift = $('debug-timeshift');
+  let is_dragging = false;
   let start_value = 0;
   let start_y = 0;
 
-  const update_pointers = () => {
-   pointer_past.style.left = input_past.value + '%';
-   pointer_future.style.left = input_future.value + '%';
-  };
+  input_timeshift.value = Date.now();
 
-  const clamp_value = (value, pointer) => {
-   const margin_left = parseFloat(getComputedStyle(pointer).marginLeft);
-   const margin_right = parseFloat(getComputedStyle(pointer).marginRight);
-   const margin_left_percent = (margin_left / info.offsetWidth) * 100;
-   const margin_right_percent = (margin_right / info.offsetWidth) * 100;
-   const half_width_percent = (pointer.offsetWidth / info.offsetWidth) * 50;
-
-   const min = half_width_percent;
-   const max = 100 - margin_left_percent - margin_right_percent - half_width_percent;
-   return Math.max(min, Math.min(max, value));
-  };
-  const handle_drag_start = (input) => (e) => {
-   dragging = input;
-   start_value = parseFloat(input.value);
+  $on(input_timeshift, 'pointerdown', (e) => {
+   is_dragging = true;
+   start_value = parseFloat(input_timeshift.value);
    start_y = e.clientY;
    e.preventDefault();
-  };
+  });
 
-  $on(input_past, 'mousedown', handle_drag_start(input_past));
-  $on(input_future, 'mousedown', handle_drag_start(input_future));
-  $on(document, 'mouseup', () => dragging = null);
-  $on(document, 'mousemove', (e) => {
-   if (dragging) {
-    const pointer = dragging === input_past ? pointer_past : pointer_future;
-    dragging.value = clamp_value(start_value + (start_y - e.clientY) * 0.2, pointer).toFixed(2);
-    update_pointers();
+  $on(document, 'pointerup', () => is_dragging = false);
+
+  $on(document, 'pointermove', (e) => {
+   if (is_dragging) {
+    const delta_ms = (start_y - e.clientY) * 60000;
+    input_timeshift.value = Math.floor(start_value + delta_ms);
+    DEBUG_time_override = parseFloat(input_timeshift.value);
    }
   });
 
-  $on(input_past, 'input', update_pointers);
-  $on(input_future, 'input', update_pointers);
-
-  update_pointers();
+  $on(input_timeshift, 'input', () => {
+   DEBUG_time_override = parseFloat(input_timeshift.value);
+  });
  })();
 </script>
 </body>
