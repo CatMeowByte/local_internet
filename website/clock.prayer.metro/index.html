@@ -16,48 +16,46 @@ by CatMeowByte
 <title>Prayer Times Dashboard - Metro</title>
 </head>
 <body>
- <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--pal_white); opacity: 0.5; pointer-events: none; z-index: 9999;"></div>
 <main>
  <div class="dashboard">
   <div class="panel">
-   <div class="panel-clock" style="background: var(--pal_red);">
-    <span class="hour">2</span>
+   <div class="panel-clock" style="background: var(--pal_white);">
+    <span class="hour">12</span>
     <span class="second">∶</span>
-    <span class="minute">28</span>
+    <span class="minute">34</span>
     <span class="meridiem">AM</span>
    </div>
    <div class="panel-right">
-    <div class="panel-date" style="background: var(--pal_blue);">
+    <div class="panel-date" style="background: var(--pal_gray-light);">
      <span class="weekday">Sunday</span>
-     <span class="day">30</span>
-     <span class="month">June</span>
-     <span class="year">2024</span>
+     <span class="day">31</span>
+     <span class="month">January</span>
+     <span class="year">2045</span>
      <span class="weekday">Ahad</span>
-     <span class="day">23</span>
+     <span class="day">31</span>
      <span class="month">Dhu al-Hijjah</span>
-     <span class="year">1445</span>
+     <span class="year">1440</span>
     </div>
-    <div class="panel-blank" style="background: var(--pal_green);">
-     <div class="debug-title">DEBUG</div>
-     <div class="debug-inputs">
-      <label>
-       <span>time shift</span>
-       <input type="number" id="debug-timeshift" value="0">
-      </label>
+    <div class="panel-list" style="background: var(--pal_gray);">
+    </div>
+    <template id="prayer-list-template">
+     <div class="prayer-list-item">
+      <span></span>
+      <span></span>
      </div>
-    </div>
+    </template>
    </div>
   </div>
-  <div class="linear" style="background: var(--pal_cyan);">
+  <div class="linear" style="background: var(--pal_gray-dark);">
    <div class="progress-notch" style="border-top-color: var(--pal_white);"></div>
-   <div class="progress" style="background: var(--pal_blue);">
+   <div class="progress">
     <div class="progress-bar"></div>
     <div class="station">
      <div class="station-scroll">
       <div style="width: 16.665cqw;"></div>
-      <div class="station-pos"><div class="station-hour" style="background: var(--pal_red);">1</div></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--color_primary);">1</div></div>
       <div style="width: 33.33cqw;"></div>
-      <div class="station-pos"><div class="station-hour" style="background: var(--pal_red);">2</div></div>
+      <div class="station-pos"><div class="station-hour" style="background: var(--color_primary);">2</div></div>
       <div style="width: 33.33cqw;"></div>
       <div class="station-pos"><div class="station-hour" style="background: var(--pal_gray);">3</div></div>
       <div style="width: 33.33cqw;"></div>
@@ -66,19 +64,19 @@ by CatMeowByte
      </div>
     </div>
    </div>
-   <div class="info" style="background: var(--pal_gray-light);">
-    <div id="pointer-past" class="pointer" style="background: var(--pal_blue);">
-     <div class="arrow arrow-top" style="border-bottom-color: var(--pal_blue);"></div>
-     <div class="arrow arrow-left" style="border-right-color: var(--pal_blue);"></div>
+   <div class="info">
+    <div id="pointer-past" class="pointer" style="background: var(--color_primary);">
+     <div class="arrow arrow-top" style="border-bottom-color: var(--color_primary);"></div>
+     <div class="arrow arrow-left" style="border-right-color: var(--color_primary);"></div>
      <div class="pointer-name">Past</div>
      <div class="pointer-row">
       <span>12∶00 AM</span>
       <span>-30m</span>
      </div>
     </div>
-    <div id="pointer-future" class="pointer" style="background: var(--pal_red);">
-     <div class="arrow arrow-top" style="border-bottom-color: var(--pal_red);"></div>
-     <div class="arrow arrow-right" style="border-left-color: var(--pal_red);"></div>
+    <div id="pointer-future" class="pointer" style="background: var(--pal_gray);">
+     <div class="arrow arrow-top" style="border-bottom-color: var(--pal_gray);"></div>
+     <div class="arrow arrow-right" style="border-left-color: var(--pal_gray);"></div>
      <div class="pointer-name">Future</div>
      <div class="pointer-row">
       <span>14∶30 PM</span>
@@ -87,7 +85,7 @@ by CatMeowByte
     </div>
    </div>
   </div>
-  <div class="footer" style="background: var(--pal_gray-dark);" meta-scroll-speed="50">
+  <div class="footer" style="background: var(--pal_black); color: var(--pal_white);" meta-scroll-speed="50">
 The faster the clock runs backward, the more tomorrow remembers yesterday's future.
 Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.
 If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
@@ -130,6 +128,8 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   --pal_blue-light: #41a6f6;
   --pal_teal: #257179;
   --pal_cyan: #73eff7;
+
+  --color_primary: var(--pal_orange);
  }
  * {
   margin: 0;
@@ -160,6 +160,20 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   justify-content: center;
   gap: 0.25rem;
   line-height: 0.75;
+  position: relative;
+ }
+ .panel-clock.debug::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+   45deg,
+   var(--pal_black) 0,
+   var(--pal_black) 0.25rem,
+   var(--pal_yellow) 0.25rem,
+   var(--pal_yellow) 0.5rem
+  );
+  opacity: 0.5;
  }
  .hour,
  .minute {
@@ -194,33 +208,24 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   font-size: 1.25rem;
   font-weight: bold;
  }
- .panel-blank {
+ .panel-list {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  gap: 0.5rem;
  }
- .debug-title {
-  font-weight: bold;
-  font-size: 1.2rem;
- }
- .debug-inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25rem;
+ .prayer-list-item {
+  display: flex;
+  flex-grow: 1;
   align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
  }
- .debug-inputs > label {
-  display: contents;
+ .prayer-list-item:nth-child(1) {
+  color: var(--pal_gray-dark);
  }
- .debug-inputs > label > span {
-  text-align: right;
- }
- .debug-inputs > label > input {
-  padding: 0.25rem;
-  border: 1px solid var(--pal_gray);
-  background: var(--pal_white);
-  font-family: inherit;
+ .prayer-list-item:nth-child(2) {
+  font-weight: bold;
+  background: var(--color_primary);
  }
  .weekday {
   text-align: left;
@@ -246,7 +251,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
  }
  .progress {
   width: 100%;
-  height: 3rem;
+  height: 4rem;
   display: flex;
   align-items: center;
   position: relative;
@@ -254,10 +259,10 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
  }
  .progress-bar {
   width: 100%;
-  height: 1rem;
+  height: 2rem;
   background: linear-gradient(to right,
-   var(--pal_red) 0%,
-   var(--pal_red) 50%,
+   var(--color_primary) 0%,
+   var(--color_primary) 50%,
    var(--pal_gray) 50%,
    var(--pal_gray) 100%);
  }
@@ -286,16 +291,18 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.25rem;
+  font-weight: bold;
  }
  .info {
   width: 100%;
-  height: 5rem;
+  height: 6rem;
   position: relative;
  }
  .pointer {
@@ -375,8 +382,32 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
  $on(document, 'contextmenu', (e) => e.preventDefault());
 
- const tick_speed = 50;
- let DEBUG_time_override = Date.now();
+ const tick_speed = 100;
+ let DEBUG_time_override = null;
+
+ function format_time(timestamp) {
+  const date = new Date(timestamp);
+  const hour = date.getHours();
+  const minute = String(date.getMinutes()).padStart(2, '0');
+  const display_hour = hour % 12 || 12;
+  return `${display_hour}∶${minute} ${hour >= 12 ? 'PM' : 'AM'}`;
+ }
+
+ function format_relative(timestamp, current) {
+  const diff_ms = Math.abs(timestamp - current);
+  const diff_min = Math.floor(diff_ms / 60000);
+  const direction = timestamp > current ? 'later' : 'ago';
+
+  if (diff_min >= 60) {
+   const hours = Math.floor(diff_min / 60);
+   return `${hours} hour ${direction}`;
+  }
+  return `${diff_min} min ${direction}`;
+ }
+
+ function capitalize(str) {
+  return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+ }
 
  const chrono = (function(){
   const state = {
@@ -678,7 +709,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   }
 
   function update(){
-   const now = new Date(DEBUG_time_override);
+   const now = new Date(DEBUG_time_override ?? Date.now());
 
    state.timestamp = now.getTime();
 
@@ -759,12 +790,16 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
  (function progress(){
   const station = $q('.station');
+  const station_hours = $qa('.station-hour');
 
   function update_progress(){
    const minute = chrono.time.minute;
    const percent = (minute / 60) * 100;
    const scroll_width = station.scrollWidth - station.clientWidth;
    station.scrollLeft = (percent / 100) * scroll_width;
+
+   const hour = chrono.time.hour;
+   for (let i = 0; i < 4; i++) {station_hours[i].textContent = ((hour - 1 + i + 24) % 24) % 12 || 12;}
   }
 
   update_progress();
@@ -786,30 +821,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   const future_arrow_top = $q('.arrow-top', pointer_future);
   const future_arrow_left = $q('.arrow-left', pointer_future);
   const future_arrow_right = $q('.arrow-right', pointer_future);
-
-  function format_time(timestamp) {
-   const date = new Date(timestamp);
-   const hour = date.getHours();
-   const minute = String(date.getMinutes()).padStart(2, '0');
-   const display_hour = hour % 12 || 12;
-   return `${display_hour}∶${minute} ${hour >= 12 ? 'PM' : 'AM'}`;
-  }
-
-  function capitalize(str) {
-   return str.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  }
-
-  function format_relative(timestamp, current) {
-   const diff_ms = Math.abs(timestamp - current);
-   const diff_min = Math.floor(diff_ms / 60000);
-   const direction = timestamp > current ? 'later' : 'ago';
-
-   if (diff_min >= 60) {
-    const hours = Math.floor(diff_min / 60);
-    return `${hours} hour ${direction}`;
-   }
-   return `${diff_min} min ${direction}`;
-  }
 
   function calculate_position(event_timestamp, current_timestamp) {
    const offset_ms = event_timestamp - current_timestamp;
@@ -877,6 +888,43 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   setInterval(update_pointers, tick_speed);
  })();
 
+ (function event_list(){
+  const panel_list = $q('.panel-list');
+  const template = $('prayer-list-template');
+  const main_prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+  const prayer_items = [];
+  for (let i = 0; i < 5; i++) {
+   const clone = template.content.cloneNode(true);
+   const item = $q('.prayer-list-item', clone);
+   prayer_items[i] = {name: item.children[0], time: item.children[1]};
+   panel_list.appendChild(clone);
+  }
+
+  function update_list() {
+   const timeline = chrono.prayer.filter(e => main_prayers.includes(e.name));
+   const current = chrono.timestamp;
+   const show_eta = chrono.time.second % 10 < 5;
+
+   let index = 0;
+   for (let i = 0; i < timeline.length; i++) {
+    if (timeline[i].timestamp <= current) {index = i;}
+    else {break;}
+   }
+
+   const start = Math.max(0, index - 1);
+
+   for (let i = 0; i < 5; i++) {
+    const event = timeline[start + i];
+    prayer_items[i].name.textContent = capitalize(event.name);
+    prayer_items[i].time.textContent = show_eta ? format_relative(event.timestamp, current) : format_time(event.timestamp);
+   }
+  }
+
+  update_list();
+  setInterval(update_list, tick_speed);
+ })();
+
  (function footer_scroll(){
   const footer = $q('.footer');
   const speed = parseFloat(footer.getAttribute('meta-scroll-speed')) || 50;
@@ -897,33 +945,39 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   span2.style.animationDuration = duration + 's';
  })();
 
- (function DEBUG_input_drag(){
-  const input_timeshift = $('debug-timeshift');
+ (function DEBUG_time_shift(){
+  const panel_clock = $q('.panel-clock');
   let is_dragging = false;
   let start_value = 0;
-  let start_y = 0;
+  let start_x = 0;
 
-  input_timeshift.value = Date.now();
-
-  $on(input_timeshift, 'pointerdown', (e) => {
-   is_dragging = true;
-   start_value = parseFloat(input_timeshift.value);
-   start_y = e.clientY;
+  $on(panel_clock, 'contextmenu', (e) => {
    e.preventDefault();
-  });
-
-  $on(document, 'pointerup', () => is_dragging = false);
-
-  $on(document, 'pointermove', (e) => {
-   if (is_dragging) {
-    const delta_ms = (start_y - e.clientY) * 60000;
-    input_timeshift.value = Math.floor(start_value + delta_ms);
-    DEBUG_time_override = parseFloat(input_timeshift.value);
+   if (DEBUG_time_override === null) {
+    DEBUG_time_override = chrono.timestamp;
+    panel_clock.classList.add('debug');
+   } else {
+    DEBUG_time_override = null;
+    panel_clock.classList.remove('debug');
    }
   });
 
-  $on(input_timeshift, 'input', () => {
-   DEBUG_time_override = parseFloat(input_timeshift.value);
+  $on(panel_clock, 'pointerdown', (e) => {
+   if (DEBUG_time_override === null) return;
+   is_dragging = true;
+   start_value = DEBUG_time_override;
+   start_x = e.clientX;
+   e.preventDefault();
+  });
+
+  $on(document, 'pointerup', () => {
+   is_dragging = false;
+  });
+
+  $on(document, 'pointermove', (e) => {
+   if (!is_dragging) return;
+   const delta_ms = (e.clientX - start_x) * 60000;
+   DEBUG_time_override = start_value + delta_ms;
   });
  })();
 </script>
