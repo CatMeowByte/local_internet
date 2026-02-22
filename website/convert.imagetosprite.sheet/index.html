@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
++ script use snake_case
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Image to C++ indexed palette array converter for CAT-32 sprite data.">
+<title>Image to Spritesheet</title>
+</head>
+<body>
+<main>
+ <section>
+  <label class="button drop_zone" id="label_file" for="input_file">Open Image</label>
+  <input type="file" id="input_file" accept="image/*">
+
+  <div class="preview">
+   <img id="input_preview">
+  </div>
+
+  <div class="dim_group">
+   <label>W<input type="number" id="width_input" value="128" min="8" step="2"></label>
+   <label>H<input type="number" id="height_input" value="128" min="8" step="2"></label>
+  </div>
+  <label>Palette
+   <select id="palette_select">
+    <option>Sweetie 16</option>
+    <option>PICO-8</option>
+   </select>
+  </label>
+ </section>
+
+ <section>
+  <button id="button_convert">Convert</button>
+  <div class="preview">
+   <canvas id="output_canvas"></canvas>
+  </div>
+  <pre id="code"></pre>
+  <button id="button_copy">Copy</button>
+ </section>
+</main>
+<style>
+@font-face {
+ font-family: 'Jost';
+ src: url('/font/Jost-500-Medium.ttf') format('truetype');
+ font-weight: 500;
+ font-style: normal;
+}
+@font-face {
+ font-family: 'Jost';
+ src: url('/font/Jost-900-Black.ttf') format('truetype');
+ font-weight: 900;
+ font-style: normal;
+}
+:root {
+ --pal_black: #1a1c2c;
+ --pal_gray_dark: #333c57;
+ --pal_gray: #566c86;
+ --pal_gray_light: #94b0c2;
+ --pal_white: #f4f4f4;
+ --pal_purple: #5d275d;
+ --pal_red: #b13e53;
+ --pal_orange: #ef7d57;
+ --pal_yellow: #ffcd75;
+ --pal_green_light: #a7f070;
+ --pal_green: #38b764;
+ --pal_blue_dark: #29366f;
+ --pal_blue: #3b5dc9;
+ --pal_blue_light: #41a6f6;
+ --pal_teal: #257179;
+ --pal_cyan: #73eff7;
+}
+html, body, body * {margin: 0; padding: 0; width: 100%; height: 100%;}
+body * {box-sizing: border-box; inset: 0; font-family: inherit;}
+main {
+ background: var(--pal_black);
+ color: var(--pal_white);
+ font-family: 'Jost', monospace;
+ display: flex;
+ flex-direction: column;
+ gap: 1rem;
+ padding: 1rem;
+}
+section {
+ background: var(--pal_gray_dark);
+ padding: 1rem;
+ border-radius: 1rem;
+ display: grid;
+ gap: 0.75rem;
+ height: min-content;
+}
+#input_file {
+ display: none;
+}
+.preview {
+ aspect-ratio: 1;
+ background: var(--pal_black);
+ border-radius: 0.25rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin: auto;
+}
+#input_preview {
+ object-fit: contain;
+ image-rendering: pixelated;
+ display: none;
+}
+.dim_group {
+ display: flex;
+ gap: 0.5rem;
+}
+.dim_group > label {
+ flex: 1;
+}
+label {
+ color: var(--pal_gray);
+ display: flex;
+ flex-direction: column;
+ gap: 0.25rem;
+}
+input[type="number"],
+select {
+ background: var(--pal_black);
+ color: var(--pal_white);
+ border: 0.125rem solid var(--pal_gray);
+ border-radius: 0.25rem;
+ padding: 0.4rem 0.5rem;
+}
+input[type="number"] {
+ text-align: end;
+ -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+ appearance: none;
+}
+select {
+ text-align: center;
+}
+button,
+.button {
+ display: flex;
+ border: none;
+ border-radius: 0.25rem;
+ padding: 0.6rem 1rem;
+ cursor: pointer;
+ justify-content: center;
+ align-items: center;
+ font-weight: bold;
+}
+input[type="number"],
+select,
+button,
+.button {
+ padding: 1rem;
+ font-size: 1.25rem;
+}
+.drop_zone {
+ background: var(--pal_orange);
+ color: var(--pal_black);
+}
+#button_convert {
+ background: var(--pal_green);
+ color: var(--pal_black);
+}
+#output_canvas {
+ image-rendering: pixelated;
+}
+#code {
+ background: var(--pal_black);
+ border-radius: 0.25rem;
+ overflow: auto;
+ min-height: 4rem;
+ max-height: 16rem;
+ font-family: monospace;
+ font-weight: bold;
+ color: var(--pal_white);
+ white-space: pre;
+}
+#button_copy {
+ background: var(--pal_gray_light);
+ color: var(--pal_black);
+}
+
+@media (orientation: landscape) {
+ main {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+ }
+ section {
+  flex: 1;
+  max-width: 36rem;
+ }
+ .preview {
+  max-width: 24rem;
+  max-height: 24rem;
+ }
+}
+@media (orientation: portrait) {
+ html {
+  height: auto;
+ }
+}
+</style>
+<script>
+const $=id=>document.getElementById(id);
+const $q=(sel,ctx=document)=>ctx.querySelector(sel);
+const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+const $set=(el,key,val)=>el.style.setProperty(key,val);
+
+const palettes={
+ 'Sweetie 16':['#1a1c2c','#5d275d','#b13e53','#ef7d57','#ffcd75','#a7f070','#38b764','#257179','#29366f','#3b5dc9','#41a6f6','#73eff7','#f4f4f4','#94b0c2','#566c86','#333c57'],
+ 'PICO-8':['#000000','#1d2b53','#7e2553','#008751','#ab5236','#5f574f','#c2c3c7','#fff1e8','#ff004d','#ffa300','#ffec27','#00e436','#29adff','#83769c','#ff77a8','#ffccaa'],
+};
+
+(()=>{
+ const input_preview=$('input_preview');
+ const input_file=$('input_file');
+ const load_file=file=>{
+  if(!file)return;
+  $('label_file').textContent=file.name;
+  input_preview.src=URL.createObjectURL(file);
+  input_preview.style.display='block';
+ };
+ $on(input_file,'change',e=>load_file(e.target.files[0]));
+ $on($q('.drop_zone'),'dragover',e=>e.preventDefault());
+ $on($q('.drop_zone'),'drop',e=>{
+  e.preventDefault();
+  load_file(e.dataTransfer.files[0]);
+ });
+})();
+
+(()=>{
+ const lab_rgb=([r,g,b])=>{
+  const lin=c=>{const n=c/255;return n<=0.04045?n/12.92:((n+0.055)/1.055)**2.4;};
+  const f=t=>t>0.008856?t**(1/3):7.787*t+16/116;
+  const rl=lin(r),gl=lin(g),bl=lin(b);
+  const fx=f((rl*0.4124564+gl*0.3575761+bl*0.1804375)/0.95047);
+  const fy=f(rl*0.2126729+gl*0.7151522+bl*0.0721750);
+  const fz=f((rl*0.0193339+gl*0.1191920+bl*0.9503041)/1.08883);
+  return[116*fy-16,500*(fx-fy),200*(fy-fz)];
+ };
+ const rgb_hex=hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+ $on($('button_convert'),'click',()=>{
+  const w=+$('width_input').value,h=+$('height_input').value;
+  const img=$('input_preview');
+  const canvas=$('output_canvas');
+  canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');
+  ctx.imageSmoothingEnabled=true;
+  const scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+  ctx.drawImage(img,(w-img.naturalWidth*scale)/2,(h-img.naturalHeight*scale)/2,img.naturalWidth*scale,img.naturalHeight*scale);
+  const palette_hex=palettes[$('palette_select').value];
+  const palette_lab=palette_hex.map(hex=>lab_rgb(rgb_hex(hex)));
+  const palette_rgb=palette_hex.map(rgb_hex);
+  const data=ctx.getImageData(0,0,w,h);
+  for(let i=0;i<data.data.length;i+=4){
+   const pl=lab_rgb([data.data[i],data.data[i+1],data.data[i+2]]);
+   let min=Infinity,idx=0;
+   palette_lab.forEach(([l,a,b],j)=>{
+    const d=(pl[0]-l)**2+(pl[1]-a)**2+(pl[2]-b)**2;
+    if(d<min){min=d;idx=j;}
+   });
+   [data.data[i],data.data[i+1],data.data[i+2]]=palette_rgb[idx];
+  }
+  ctx.putImageData(data,0,0);
+  const byte_count=(w*h)/2;
+  const bytes=[];
+  for(let i=0;i<data.data.length;i+=8){
+   const lo=palette_rgb.findIndex(([r,g,b])=>r===data.data[i]&&g===data.data[i+1]&&b===data.data[i+2]);
+   const hi=palette_rgb.findIndex(([r,g,b])=>r===data.data[i+4]&&g===data.data[i+5]&&b===data.data[i+6]);
+   bytes.push(lo|(hi<<4));
+  }
+  const hex_byte=b=>'0x'+b.toString(16).toUpperCase().padStart(2,'0');
+  const rows=[];
+  for(let r=0;r<h;r++){
+   const slice=bytes.slice(r*(w/2),(r+1)*(w/2));
+   rows.push(' '+slice.map(hex_byte).join(',')+',');
+  }
+  $('code').textContent=`static constexpr uint8_t image[${byte_count}] = {\n${rows.join('\n')}\n}`;
+ });
+})();
+</script>
+</body>
+</html>

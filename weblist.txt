@@ -7,3 +7,4 @@ event.check
 corner.check
 clock.prayer.metro
 metro.grid
+convert.imagetosprite.sheet
