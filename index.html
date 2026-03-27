@@ -148,14 +148,19 @@ by CatMeowByte
    window.location.hash = '#/' + clean_path;
    is_address_updating = false;
 
-   const link = frame.contentDocument.createElement('link');
-   link.rel = 'stylesheet';
-   link.href = new URL('icon/material-icons.css', window.location.href).href;
-   frame.contentDocument.head.appendChild(link);
+   const icon = frame.contentDocument.createElement('link');
+   icon.rel = 'stylesheet';
+   icon.href = new URL('icon/material-icons.css', window.location.href).href;
+   frame.contentDocument.head.appendChild(icon);
 
-   const s = frame.contentDocument.createElement('script');
-   s.src = new URL('inject.js', window.location.href).href;
-   frame.contentDocument.head.appendChild(s);
+   const font = frame.contentDocument.createElement('link');
+   font.rel = 'stylesheet';
+   font.href = new URL('font/font.css', window.location.href).href;
+   frame.contentDocument.head.appendChild(font);
+
+   const inject = frame.contentDocument.createElement('script');
+   inject.src = new URL('inject.js', window.location.href).href;
+   frame.contentDocument.head.appendChild(inject);
   } catch (e) {
    input.value = '[blocked]';
   }
