@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<!--
+Single Page HTML
+by CatMeowByte
+
++ 1 space indent
++ all boilerplate unindented
++ html contents inside <main> tag, body should be unmodified
++ script use snake_case
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Prayer times dashboard clock in slide design with image background.">
+<title>Prayer Times Dashboard - Slide</title>
+</head>
+<body>
+<main>
+ <div class="dashboard">
+  <div class="panel-left">
+   <div class="clock-card" style="background: var(--pal_blue_dark); color: var(--pal_white);">
+    <span class="clock-date-gregorian">Saturday, 28 March 2026</span>
+    <span class="clock-date-hijri">Sabt, 10 Shawwal 1447</span>
+    <div class="clock-time">
+     <span class="clock-time-hour">8</span>
+     <span class="clock-time-separator">∶</span>
+     <span class="clock-time-minute">57</span>
+     <span class="clock-time-meridiem">AM</span>
+    </div>
+    <div class="clock-event-current">
+     <span class="clock-event-name">Fajr</span>
+     <span style="font-size: 1rem;">6∶45 · 2 hr ago</span>
+    </div>
+    <div class="clock-event-next">
+     <span class="clock-event-name">Dhuhr</span>
+     <span style="font-size: 1rem;">1∶57 · 5 hr later</span>
+    </div>
+   </div>
+   <table class="prayer-list" style="background: var(--theme_secondary); color: var(--theme_on_secondary);">
+    <tr class="prayer-item" style="opacity: 0.5;">
+     <td class="prayer-item-name">Isha</td>
+     <td>10∶30 PM</td>
+     <td>11 hr ago</td>
+    </tr>
+    <tr class="prayer-item" style="background: var(--theme_primary); color: var(--theme_on_primary);">
+     <td class="prayer-item-name">Fajr</td>
+     <td>6∶45 AM</td>
+     <td>2 hr ago</td>
+    </tr>
+    <tr class="prayer-item">
+     <td class="prayer-item-name">Dhuhr</td>
+     <td>1∶57 PM</td>
+     <td>5 hr later</td>
+    </tr>
+    <tr class="prayer-item">
+     <td class="prayer-item-name">Asr</td>
+     <td>4∶45 PM</td>
+     <td>8 hr later</td>
+    </tr>
+    <tr class="prayer-item">
+     <td class="prayer-item-name">Maghrib</td>
+     <td>7∶10 PM</td>
+     <td>11 hr later</td>
+    </tr>
+   </table>
+  </div>
+  <div class="panel-image">
+   <img class="panel-image-photo" src="" alt="">
+   <span class="image-overlay-name">AL MUJAHIDIN INCHEON</span>
+   <div class="image-overlay-marquee">
+    <span>The faster the clock runs backward, the more tomorrow remembers yesterday's future. · · · Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.&nbsp;&nbsp;&nbsp;</span>
+    <span>The faster the clock runs backward, the more tomorrow remembers yesterday's future. · · · Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.&nbsp;&nbsp;&nbsp;</span>
+   </div>
+  </div>
+ </div>
+</main>
+<style>
+ :root {
+  --pal_black: #1a1c2c;
+  --pal_gray_dark: #333c57;
+  --pal_gray: #566c86;
+  --pal_gray_light: #94b0c2;
+  --pal_white: #f4f4f4;
+  --pal_purple: #5d275d;
+  --pal_red: #b13e53;
+  --pal_orange: #ef7d57;
+  --pal_yellow: #ffcd75;
+  --pal_green_light: #a7f070;
+  --pal_green: #38b764;
+  --pal_blue_dark: #29366f;
+  --pal_blue: #3b5dc9;
+  --pal_blue_light: #41a6f6;
+  --pal_teal: #257179;
+  --pal_cyan: #73eff7;
+
+  --theme_primary: #ef7d57;
+  --theme_on_primary: #1a1c2c;
+  --theme_secondary: #566c86;
+  --theme_on_secondary: #f4f4f4;
+ }
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  font-size: inherit;
+ }
+ html {
+  font-size: 200%;
+ }
+ main {
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Roboto Condensed', sans-serif;
+ }
+ .dashboard {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background: var(--pal_black);
+ }
+ .panel-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+ }
+ .clock-card {
+  position: relative;
+  flex: 1;
+ }
+ .clock-date-gregorian {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+ }
+ .clock-date-hijri {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 1rem;
+  color: var(--pal_gray_light);
+ }
+ .clock-time {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  line-height: 0.8;
+ }
+ .clock-time-hour,
+ .clock-time-minute {
+  font-family: 'League Gothic', sans-serif;
+  font-size: 8rem;
+ }
+ .clock-time-separator {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 8rem;
+ }
+ .clock-time-meridiem {
+  font-size: 1rem;
+  color: var(--pal_gray_light);
+ }
+ .clock-event-current {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+ }
+ .clock-event-next {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: var(--pal_gray_light);
+ }
+ .clock-event-name {
+  font-size: 1rem;
+  font-weight: bold;
+ }
+ .clock-event-next > .clock-event-name {
+  font-weight: normal;
+ }
+ .prayer-list {
+  flex: 1;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+ }
+ .prayer-item {
+  height: 20%;
+ }
+ .prayer-item > td {
+  text-align: center;
+  vertical-align: middle;
+ }
+ .prayer-item-name {
+  font-size: 1rem;
+ }
+ .panel-image {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--pal_gray_dark);
+ }
+ .panel-image-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+ }
+ .image-overlay-name {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 0.5rem;
+  font-family: 'League Gothic', sans-serif;
+  font-size: 4rem;
+  color: var(--pal_white);
+  letter-spacing: 0.05em;
+ }
+ .image-overlay-marquee {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  overflow: hidden;
+ }
+ .image-overlay-marquee > span {
+  white-space: nowrap;
+  font-size: 0.5rem;
+  color: var(--pal_white);
+ }
+</style>
+<script>
+ const $=id=>document.getElementById(id);
+ const $q=(sel,ctx=document)=>ctx.querySelector(sel);
+ const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
+ const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+ const $set=(el,key,val)=>el.style.setProperty(key,val);
+</script>
+</body>
+</html>
