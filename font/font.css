@@ -32,3 +32,45 @@
  font-weight: 700;
  font-style: normal;
 }
+
+@font-face {
+ font-family: 'Iosevka Fixed';
+ src: url('IosevkaFixedSS14-Regular.ttf') format('truetype');
+ font-weight: 400;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'Iosevka Fixed';
+ src: url('IosevkaFixedSS14-Bold.ttf') format('truetype');
+ font-weight: 700;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'Iosevka Fixed';
+ src: url('IosevkaFixedSS14-Heavy.ttf') format('truetype');
+ font-weight: 900;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'Iosevka Aile';
+ src: url('IosevkaAile-Regular.ttf') format('truetype');
+ font-weight: 400;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'Iosevka Aile';
+ src: url('IosevkaAile-Bold.ttf') format('truetype');
+ font-weight: 700;
+ font-style: normal;
+}
+
+@font-face {
+ font-family: 'Iosevka Aile';
+ src: url('IosevkaAile-Heavy.ttf') format('truetype');
+ font-weight: 900;
+ font-style: normal;
+}
