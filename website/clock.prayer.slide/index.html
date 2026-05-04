@@ -72,22 +72,49 @@ by CatMeowByte
   </div>
   <div id="settings-popover" popover>
    <div class="settings-tabs">
-    <button data-tab="general"><span class="material-icons">tune</span></button>
+    <button data-tab="location"><span class="material-icons">gps_fixed</span></button>
+    <button data-tab="calculation"><span class="material-icons">explore</span></button>
+    <button data-tab="timing"><span class="material-icons">schedule</span></button>
+    <button data-tab="text"><span class="material-icons">edit</span></button>
     <button data-tab="theme"><span class="material-icons">palette</span></button>
-    <button data-tab="text"><span class="material-icons">text_fields</span></button>
    </div>
-   <div class="settings-panel" data-tab="general">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+   <div class="settings-panels">
+    <div class="settings-panel" data-tab="location"></div>
+    <div class="settings-panel" data-tab="calculation"></div>
+    <div class="settings-panel" data-tab="timing"></div>
+    <div class="settings-panel" data-tab="text"></div>
+    <div class="settings-panel" data-tab="theme"></div>
    </div>
-   <div class="settings-panel" data-tab="theme">
-    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+   <button id="settings-apply">Apply</button>
+   <template id="settings-number-template">
+   <div class="settings-item">
+    <div class="settings-row">
+     <span class="settings-label"></span>
+     <div class="settings-number">
+      <button class="number-left"><span class="material-icons">chevron_left</span></button>
+      <input class="number-input" type="number">
+      <button class="number-right"><span class="material-icons">chevron_right</span></button>
+     </div>
+    </div>
    </div>
-   <div class="settings-panel" data-tab="text">
-    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  </template>
+  <template id="settings-select-template">
+   <div class="settings-item">
+    <div class="settings-row">
+     <span class="settings-label"></span>
+     <div class="settings-select-wrapper">
+      <select class="settings-select"></select>
+      <span class="material-icons">expand_more</span>
+     </div>
+    </div>
    </div>
+  </template>
+  <template id="settings-text-template">
+   <div class="settings-item">
+    <span class="settings-label"></span>
+    <textarea class="settings-textarea"></textarea>
+   </div>
+  </template>
   </div>
  </div>
 </main>
@@ -114,6 +141,8 @@ by CatMeowByte
   --theme_on_primary: #1a1c2c;
   --theme_secondary: #566c86;
   --theme_on_secondary: #f4f4f4;
+  --theme_tertiary: #3b5dc9;
+  --theme_on_tertiary: #f4f4f4;
  }
  * {
   margin: 0;
@@ -225,7 +254,7 @@ by CatMeowByte
   font-size: 1rem;
   text-align: left;
  }
-   .menu-overlay {
+ .menu-overlay {
   position: absolute;
   top: 0;
   left: 50%;
@@ -268,8 +297,8 @@ by CatMeowByte
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: min(calc(100vw - 8rem), calc(100vh - 8rem));
-  height: min(calc(100vw - 8rem), calc(100vh - 8rem));
+  width: min(calc(100vw - 2rem), 32rem);
+  height: min(calc(100vh - 2rem), 32rem);
   margin: 0;
   padding: 0;
   border: none;
@@ -281,16 +310,17 @@ by CatMeowByte
   display: flex;
   gap: 0.5rem;
  }
- .settings-tabs > button {
+ .settings-tabs > button[data-tab] {
   border: none;
   background: var(--pal_white);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
  }
- .settings-tabs > button:not(.active) {
+ .settings-tabs > button[data-tab]:not(.active) {
   background: var(--pal_gray_light);
   margin-top: 0.25rem;
   margin-bottom: -0.25rem;
@@ -298,12 +328,108 @@ by CatMeowByte
  .settings-tabs > button > span {
   font-size: 1.5rem;
  }
- #settings-popover > .settings-panel {
-  display: none;
-  flex: 1;
-  flex-direction: column;
+ #settings-popover > #settings-apply {
+  background: var(--theme_primary);
+  color: var(--theme_on_primary);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 2rem;
+  height: 2rem;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: bold;
+  margin-top: 1rem;
+ }
+ #settings-popover > #settings-apply:hover {
+  background: var(--theme_on_primary);
+  color: var(--theme_primary);
+ }
+ #settings-popover > .settings-panels {
   background: var(--pal_white);
   padding: 1rem;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+ }
+ #settings-popover > .settings-panels > .settings-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: scroll;
+ }
+ .settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem;
+ }
+ .settings-item > .settings-row {
+  display: flex;
+  gap: 0.5rem;
+ }
+ .settings-item > .settings-row > .settings-label {
+  flex: 1;
+  align-content: center;
+ }
+ .settings-item > .settings-row > .settings-number {
+  min-width: 0;
+  flex: 2;
+  display: flex;
+ }
+ .settings-item > .settings-row > .settings-number > .number-left,
+ .settings-item > .settings-row > .settings-number > .number-right {
+  border: none;
+  background: var(--pal_gray_light);
+  cursor: default;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+ .settings-item > .settings-row > .settings-number > .number-input {
+  font-family: 'Roboto Condensed', sans-serif;
+  min-width: 0;
+  flex: 1;
+  border: none;
+  background: var(--pal_gray_light);
+  padding: 0.25rem;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+ }
+ .settings-item > .settings-row > .settings-number > .number-input::-webkit-outer-spin-button,
+ .settings-item > .settings-row > .settings-number > .number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+ }
+ .settings-item > .settings-row > .settings-select-wrapper {
+  flex: 2;
+  position: relative;
+  display: flex;
+  align-items: center;
+ }
+ .settings-item > .settings-row > .settings-select-wrapper > .settings-select {
+  font-family: 'Roboto Condensed', sans-serif;
+  flex: 1;
+  background: var(--pal_gray_light);
+  border: none;
+  padding: 0.25rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+ }
+ .settings-item > .settings-row > .settings-select-wrapper > .material-icons {
+  position: absolute;
+  right: 0.25rem;
+  pointer-events: none;
+  font-size: 1.25rem;
+ }
+ .settings-item > .settings-textarea {
+  min-height: 8rem;
+  resize: vertical;
+  background: var(--pal_gray_light);
+  border: none;
+  padding: 0.5rem;
  }
 </style>
 <script>
@@ -718,7 +844,8 @@ by CatMeowByte
 
    hour_el.textContent = hour;
    minute_el.textContent = String(minute).padStart(2, '0');
-   separator_el.style.opacity = second % 2 === 0 ? '1' : '0';
+   if (second % 2 === 0) separator_el.style.removeProperty('opacity');
+   else separator_el.style.setProperty('opacity', '0');
    meridiem_el.textContent = meridiem;
 
    const g_text = `${weekday_g_list[chrono.date.g.weekday]}, ${chrono.date.g.day} ${month_g_list[chrono.date.g.month]} ${chrono.date.g.year}`;
@@ -810,6 +937,23 @@ by CatMeowByte
     icon_timeshift.textContent = button_timeshift.dataset.iconOn;
    }
   });
+
+  $on(document, 'pointermove', (e) => {
+   const y_percent = (e.clientY / window.innerHeight) * 100;
+
+   let offset;
+   if (y_percent >= 50) {
+    offset = -100;
+   } else if (y_percent <= 12.5) {
+    offset = 0;
+   } else {
+    const range = 50 - 12.5;
+    const progress = (y_percent - 12.5) / range;
+    offset = -100 * progress;
+   }
+
+   $q('.menu-overlay').style.setProperty('transform', `translateX(-50%) translateY(${offset}%)`);
+  });
  })();
 
  (function settings(){
@@ -821,12 +965,237 @@ by CatMeowByte
    $on(btn, 'click', () => {
     const target = btn.dataset.tab;
     tab_buttons.forEach(b => b.classList.remove('active'));
-    tab_panels.forEach(p => p.style.display = p.dataset.tab === target ? 'flex' : 'none');
+    tab_panels.forEach(p => {
+     if (p.dataset.tab === target) p.style.removeProperty('display');
+     else p.style.setProperty('display', 'none');
+    });
     btn.classList.add('active');
    });
   });
 
   if (tab_buttons[0]) tab_buttons[0].click();
+
+  let countries_data = [];
+  const coordinate_items = { country: null, state: null, city: null };
+
+  const palette_options = [
+   { display: 'Black', value: 'var(--pal_black)' },
+   { display: 'Dark', value: 'var(--pal_gray_dark)' },
+   { display: 'Gray', value: 'var(--pal_gray)' },
+   { display: 'Light', value: 'var(--pal_gray_light)' },
+   { display: 'White', value: 'var(--pal_white)' },
+   { display: 'Purple', value: 'var(--pal_purple)' },
+   { display: 'Red', value: 'var(--pal_red)' },
+   { display: 'Orange', value: 'var(--pal_orange)' },
+   { display: 'Yellow', value: 'var(--pal_yellow)' },
+   { display: 'Lime', value: 'var(--pal_green_light)' },
+   { display: 'Green', value: 'var(--pal_green)' },
+   { display: 'Deep', value: 'var(--pal_blue_dark)' },
+   { display: 'Blue', value: 'var(--pal_blue)' },
+   { display: 'Sky', value: 'var(--pal_blue_light)' },
+   { display: 'Teal', value: 'var(--pal_teal)' },
+   { display: 'Cyan', value: 'var(--pal_cyan)' },
+  ];
+
+  const make_color_selector = (label, css_var) => ({
+   type: 'select',
+   label: label,
+   tab: 'theme',
+   options: palette_options,
+   get: () => {
+    const style = getComputedStyle(document.documentElement);
+    const reverse = Object.fromEntries(['--pal_black','--pal_gray_dark','--pal_gray','--pal_gray_light','--pal_white','--pal_purple','--pal_red','--pal_orange','--pal_yellow','--pal_green_light','--pal_green','--pal_blue_dark','--pal_blue','--pal_blue_light','--pal_teal','--pal_cyan'].map(p => [style.getPropertyValue(p).trim(), `var(${p})`]));
+    return reverse[style.getPropertyValue(css_var).trim()];
+   },
+   apply: v => document.documentElement.style.setProperty(css_var, v)
+  });
+
+  const items_def = [
+   { type: 'select', label: 'Country', tab: 'location' },
+   { type: 'select', label: 'State', tab: 'location' },
+   { type: 'select', label: 'City', tab: 'location' },
+   { type: 'select', label: 'Calculation Method', tab: 'calculation', options: [
+    { display: 'Muslim World League', value: PRAYER_METHOD.MWL },
+    { display: 'Islamic Society of North America', value: PRAYER_METHOD.ISNA },
+    { display: 'Egyptian General Authority', value: PRAYER_METHOD.EGYPT },
+    { display: 'Umm al-Qura, Makkah', value: PRAYER_METHOD.MAKKAH },
+    { display: 'University of Islamic Sciences, Karachi', value: PRAYER_METHOD.KARACHI },
+    { display: 'Institute of Geophysics, Tehran', value: PRAYER_METHOD.TEHRAN },
+    { display: 'Shia Ithna Ashari, Jafari', value: PRAYER_METHOD.JAFARI },
+    { display: 'Union des Organisations Islamiques de France', value: PRAYER_METHOD.FRANCE },
+    { display: 'Spiritual Administration of Muslims of Russia', value: PRAYER_METHOD.RUSSIA },
+    { display: 'Majlis Ugama Islam Singapura', value: PRAYER_METHOD.SINGAPORE },
+   ]},
+   { type: 'select', label: 'Asr Method', tab: 'calculation', options: [
+    { display: 'Maddhab (Shafi, Maliki, Hanbali)', value: ASR_METHOD.STANDARD },
+    { display: 'Hanafi', value: ASR_METHOD.HANAFI }
+   ]},
+   { type: 'select', label: 'Latitude Calculation', tab: 'calculation', options: [
+    { display: 'Middle of The Night', value: HIGHLAT_METHOD.NIGHT_MIDDLE },
+    { display: '1/7 Multiplier', value: HIGHLAT_METHOD.ONE_SEVENTH },
+    { display: 'Angle', value: HIGHLAT_METHOD.ANGLE_BASED }
+   ]},
+   { type: 'number', label: 'Hijri Date Offset', tab: 'timing', min: -7, max: 7, step: 1, get: () => hijri_config.offset, apply: v => hijri_config.offset = v },
+   { type: 'number', label: 'Fajr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.fajr, apply: v => prayer_config.tune.fajr = v },
+   { type: 'number', label: 'Dhuhr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.dhuhr, apply: v => prayer_config.tune.dhuhr = v },
+   { type: 'number', label: 'Asr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.asr, apply: v => prayer_config.tune.asr = v },
+   { type: 'number', label: 'Maghrib Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.maghrib, apply: v => prayer_config.tune.maghrib = v },
+   { type: 'number', label: 'Isha Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.isha, apply: v => prayer_config.tune.isha = v },
+   { type: 'text', label: 'Footer Text', tab: 'text' },
+   { type: 'number', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize) || 200, apply: v => document.documentElement.style.fontSize = `${v}%` },
+   make_color_selector('Primary Color', '--theme_primary'),
+   make_color_selector('Primary Accent', '--theme_on_primary'),
+   make_color_selector('Secondary Color', '--theme_secondary'),
+   make_color_selector('Secondary Accent', '--theme_on_secondary'),
+   make_color_selector('Tertiary Color', '--theme_tertiary'),
+   make_color_selector('Tertiary Accent', '--theme_on_tertiary'),
+  ];
+
+  items_def.forEach(def => {
+   const template = $(`settings-${def.type}-template`);
+   const clone = template.content.cloneNode(true);
+   const item = $q('.settings-item', clone);
+   $q('.settings-label', item).textContent = def.label;
+
+   if (def.label === 'Country') coordinate_items.country = { item, select: $q('.settings-select', item) };
+   if (def.label === 'State') coordinate_items.state = { item, select: $q('.settings-select', item) };
+   if (def.label === 'City') coordinate_items.city = { item, select: $q('.settings-select', item) };
+
+   if (def.type === 'select' && def.options) {
+    const select = $q('.settings-select', item);
+    def.options.forEach(opt => {
+     const option = document.createElement('option');
+     option.value = opt.value;
+     option.textContent = opt.display;
+     select.appendChild(option);
+    });
+    if (def.get) {
+     select.value = def.get();
+    }
+    if (def.apply) {
+     $on(select, 'change', () => def.apply(select.value));
+    }
+   }
+
+   if (def.type === 'number') {
+    const input = $q('.number-input', item);
+    const btn_left = $q('.number-left', item);
+    const btn_right = $q('.number-right', item);
+
+    input.min = def.min;
+    input.max = def.max;
+    input.step = def.step;
+    input.value = def.get();
+
+    $on(btn_left, 'click', () => {
+     const current = parseFloat(input.value) || 0;
+     const new_value = Math.max(def.min, current - def.step);
+     input.value = new_value;
+     def.apply(new_value);
+    });
+
+    $on(btn_right, 'click', () => {
+     const current = parseFloat(input.value) || 0;
+     const new_value = Math.min(def.max, current + def.step);
+     input.value = new_value;
+     def.apply(new_value);
+    });
+
+    $on(input, 'change', () => {
+     const value = parseFloat(input.value) || 0;
+     const clamped = Math.max(def.min, Math.min(def.max, value));
+     input.value = clamped;
+     def.apply(clamped);
+    });
+   }
+
+   $q(`.settings-panel[data-tab="${def.tab}"]`).appendChild(item);
+  });
+
+  fetch('countries_states_cities.json').then(r => r.json()).then(data => {
+    countries_data = data;
+
+    const country_select = coordinate_items.country.select;
+    data.forEach(country => {
+     const option = document.createElement('option');
+     option.value = JSON.stringify(country.a);
+     option.textContent = country.a.i;
+     country_select.appendChild(option);
+    });
+
+    $on(country_select, 'change', () => {
+     const country = JSON.parse(country_select.value);
+
+     coordinate_items.state.select.innerHTML = '';
+     coordinate_items.city.select.innerHTML = '';
+
+     if (!country.b || country.b.length === 0) {
+      coordinate_items.state.item.style.setProperty('display', 'none');
+      coordinate_items.city.item.style.setProperty('display', 'none');
+     } else {
+      coordinate_items.state.item.style.removeProperty('display');
+      country.b.forEach(state => {
+       const option = document.createElement('option');
+       option.value = JSON.stringify(state);
+       option.textContent = state.i;
+       coordinate_items.state.select.appendChild(option);
+      });
+      coordinate_items.state.select.dispatchEvent(new Event('change'));
+     }
+
+     if (!country.b || country.b.length === 0) {
+      prayer_config.lat = parseFloat(country.y);
+      prayer_config.lng = parseFloat(country.x);
+     }
+    });
+
+    $on(coordinate_items.state.select, 'change', () => {
+     const state = JSON.parse(coordinate_items.state.select.value);
+
+     coordinate_items.city.select.innerHTML = '';
+
+     if (!state.c || state.c.length === 0) {
+      coordinate_items.city.item.style.setProperty('display', 'none');
+     } else {
+      coordinate_items.city.item.style.removeProperty('display');
+      state.c.forEach(city => {
+       const option = document.createElement('option');
+       option.value = JSON.stringify(city);
+       option.textContent = city.i;
+       coordinate_items.city.select.appendChild(option);
+      });
+     }
+
+     if (!state.c || state.c.length === 0) {
+      prayer_config.lat = parseFloat(state.y);
+      prayer_config.lng = parseFloat(state.x);
+     }
+    });
+
+    $on(coordinate_items.city.select, 'change', () => {
+     const city = JSON.parse(coordinate_items.city.select.value);
+     prayer_config.lat = parseFloat(city.y);
+     prayer_config.lng = parseFloat(city.x);
+    });
+
+    country_select.dispatchEvent(new Event('change'));
+   });
+
+ })();
+
+ (function pointer_autohide(){
+  let last_move = Date.now();
+
+  $on(document, 'pointermove', () => {
+   last_move = Date.now();
+   $q('main').style.removeProperty('cursor');
+  });
+
+  setInterval(() => {
+   if (Date.now() - last_move > 10000) {
+    $q('main').style.setProperty('cursor', 'none');
+   }
+  }, 1000);
  })();
 
  (function debug_timeshift(){
