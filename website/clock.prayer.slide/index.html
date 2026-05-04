@@ -68,7 +68,26 @@ by CatMeowByte
   <div class="menu-overlay">
    <button id="menu-debug-timeshift" aria-pressed="false" data-icon-off="schedule" data-icon-on="history_toggle_off"><span class="material-icons">schedule</span></button>
    <button id="menu-fullscreen"><span class="material-icons">fullscreen</span></button>
-   <button id="menu-settings"><span class="material-icons">settings</span></button>
+   <button id="menu-settings" aria-pressed="false" popovertarget="settings-popover"><span class="material-icons">settings</span></button>
+  </div>
+  <div id="settings-popover" popover>
+   <div class="settings-tabs">
+    <button data-tab="general"><span class="material-icons">tune</span></button>
+    <button data-tab="theme"><span class="material-icons">palette</span></button>
+    <button data-tab="text"><span class="material-icons">text_fields</span></button>
+   </div>
+   <div class="settings-panel" data-tab="general">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+   </div>
+   <div class="settings-panel" data-tab="theme">
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+   </div>
+   <div class="settings-panel" data-tab="text">
+    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+   </div>
   </div>
  </div>
 </main>
@@ -109,7 +128,7 @@ by CatMeowByte
  main {
   width: 100vw;
   height: 100vh;
-  font-family: 'Iosevka Aile', sans-serif;
+  font-family: 'Roboto Condensed', 'Iosevka Aile', sans-serif;
  }
  .dashboard {
   width: 100%;
@@ -156,7 +175,7 @@ by CatMeowByte
   font-size: 8rem;
  }
  .clock-time-separator {
-  font-family: 'Iosevka Fixed', sans-serif;
+  font-family: 'Iosevka Aile', sans-serif;
   font-size: 4rem;
  }
  .clock-time-meridiem {
@@ -239,6 +258,52 @@ by CatMeowByte
  }
  .menu-overlay > button > span {
   font-size: 1.5rem;
+ }
+ #settings-popover::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: brightness(0.5);
+ }
+ #settings-popover:popover-open {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(calc(100vw - 8rem), calc(100vh - 8rem));
+  height: min(calc(100vw - 8rem), calc(100vh - 8rem));
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+ }
+ .settings-tabs {
+  display: flex;
+  gap: 0.5rem;
+ }
+ .settings-tabs > button {
+  border: none;
+  background: var(--pal_white);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ }
+ .settings-tabs > button:not(.active) {
+  background: var(--pal_gray_light);
+  margin-top: 0.25rem;
+  margin-bottom: -0.25rem;
+ }
+ .settings-tabs > button > span {
+  font-size: 1.5rem;
+ }
+ #settings-popover > .settings-panel {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  background: var(--pal_white);
+  padding: 1rem;
  }
 </style>
 <script>
@@ -745,6 +810,23 @@ by CatMeowByte
     icon_timeshift.textContent = button_timeshift.dataset.iconOn;
    }
   });
+ })();
+
+ (function settings(){
+  const popover = $('settings-popover');
+  const tab_buttons = $qa('.settings-tabs > button', popover);
+  const tab_panels = $qa('.settings-panel', popover);
+
+  tab_buttons.forEach(btn => {
+   $on(btn, 'click', () => {
+    const target = btn.dataset.tab;
+    tab_buttons.forEach(b => b.classList.remove('active'));
+    tab_panels.forEach(p => p.style.display = p.dataset.tab === target ? 'flex' : 'none');
+    btn.classList.add('active');
+   });
+  });
+
+  if (tab_buttons[0]) tab_buttons[0].click();
  })();
 
  (function debug_timeshift(){
