@@ -8,7 +8,7 @@ by CatMeowByte
 + html contents inside <main> tag, body should be unmodified
 + script use snake_case
 -->
-<html lang="en">
+<html lang="en" style="font-size: 150%;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@ by CatMeowByte
 <main>
  <div class="dashboard">
   <div class="panel-left">
-   <div class="clock" style="background: var(--pal_blue_dark); color: var(--pal_white);">
+   <div class="clock">
     <span class="clock-date-gregorian">Saturday, 28 March 2026</span>
     <span class="clock-date-hijri">Sabt, 10 Shawwal 1447</span>
     <div class="clock-time">
@@ -38,13 +38,13 @@ by CatMeowByte
      <span style="font-size: 1rem;">1∶57 · 5 hr later</span>
     </div>
    </div>
-   <table class="schedule" style="background: var(--theme_secondary); color: var(--theme_on_secondary);">
+   <table class="schedule">
     <tr class="schedule-item" style="opacity: 0.5;">
      <td class="schedule-item-name">Isha</td>
      <td>10∶30 PM</td>
      <td>11 hr ago</td>
     </tr>
-    <tr class="schedule-item" style="background: var(--theme_primary); color: var(--theme_on_primary);">
+    <tr class="schedule-item" style="background: var(--theme_secondary_highlight);">
      <td class="schedule-item-name">Fajr</td>
      <td>6∶45 AM</td>
      <td>2 hr ago</td>
@@ -69,17 +69,23 @@ by CatMeowByte
   <div class="panel-separator"></div>
   <div class="panel-right">
    <div class="header">
-    <span class="header-text">Title</span>
+    <span class="header-text" style="font-size: 500%;">Title</span>
     <span class="header-channel">Channel Name - IPTV</span>
+   </div>
+   <div class="media">
+    <canvas id="media-noise" width="160" height="90"></canvas>
+    <div id="media-signal" class="flippable">NO SIGNAL</div>
+    <video id="media-video"></video>
+    <div id="media-blinker" class="flippable">
+     <div class="blinker-label">Sekarang waktunya</div>
+     <div class="blinker-name"></div>
+    </div>
    </div>
    <div class="footer" meta-scroll-speed="50"></div>
    <div id="footer-text" hidden>
 The faster the clock runs backward, the more tomorrow remembers yesterday's future.
 Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.
 If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
-   </div>
-   <div class="media">
-    <canvas id="media-noise" width="320" height="180"></canvas>
    </div>
   </div>
   <div class="menu-overlay">
@@ -165,12 +171,15 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   --pal_teal: #257179;
   --pal_cyan: #73eff7;
 
-  --theme_primary: var(--pal_orange);
-  --theme_on_primary: var(--pal_black);
-  --theme_secondary: var(--pal_gray_light);
-  --theme_on_secondary: var(--pal_white);
-  --theme_tertiary: var(--pal_yellow);
-  --theme_on_tertiary: var(--pal_black);
+  --theme_primary_background: var(--pal_white);
+  --theme_primary_text: var(--pal_black);
+  --theme_primary_highlight: var(--pal_green);
+  --theme_secondary_background: var(--pal_gray_dark);
+  --theme_secondary_text: var(--pal_white);
+  --theme_secondary_highlight: var(--pal_green);
+  --theme_tertiary_background: var(--pal_black);
+  --theme_tertiary_text: var(--pal_white);
+  --theme_tertiary_highlight: var(--pal_yellow);
  }
  * {
   margin: 0;
@@ -179,14 +188,13 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   user-select: none;
   font-size: inherit;
  }
- html {
-  font-size: 200%;
- }
  main {
   width: 100vw;
   height: 100vh;
   font-family: 'Roboto Condensed', 'Iosevka Aile', sans-serif;
  }
+ .flippable {color: var(--color); background: var(--background);}
+ .flippable.flipped {color: var(--background); background: var(--color);}
  .dashboard {
   width: 100%;
   height: 100%;
@@ -194,14 +202,14 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   background: var(--pal_black);
  }
  .panel-left {
-  flex: 0 0 40%;
+  flex: 0 0 33%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  gap: 0.5vmax;
  }
  .panel-separator {
-  flex: 0 0 0.25rem;
-  background: var(--pal_black);
+  flex: 0 0 0.5vmax;
   cursor: col-resize;
  }
  .panel-right {
@@ -209,12 +217,16 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  gap: 0.5vmax;
  }
  .clock {
+  background: var(--theme_tertiary_background);
+  color: var(--theme_tertiary_text);
   position: relative;
   flex: 1;
  }
  .clock-date-gregorian {
+  color: var(--theme_tertiary_highlight);
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
@@ -226,7 +238,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   top: 0.5rem;
   right: 0.5rem;
   font-size: 1rem;
-  color: var(--pal_gray_light);
  }
  .clock-time {
   position: absolute;
@@ -236,21 +247,24 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   display: flex;
   align-items: center;
   line-height: 0.8;
+  gap: 0.5rem;
  }
  .clock-time-hour,
  .clock-time-minute {
+  color: var(--theme_tertiary_highlight);
   font-family: 'League Gothic', sans-serif;
-  font-size: 8rem;
+  font-size: 10rem;
  }
  .clock-time-separator {
+  color: var(--theme_tertiary_highlight);
   font-family: 'Iosevka Aile', sans-serif;
-  font-size: 4rem;
+  font-size: 6rem;
  }
  .clock-time-meridiem {
   font-size: 1rem;
-  color: var(--pal_gray_light);
  }
  .clock-event-current {
+  color: var(--theme_tertiary_highlight);
   position: absolute;
   bottom: 0.5rem;
   left: 0.5rem;
@@ -265,7 +279,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  color: var(--pal_gray_light);
  }
  .clock-event-name {
   font-size: 1rem;
@@ -274,7 +287,9 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   font-weight: normal;
  }
  .schedule {
-  flex: 1;
+  background: var(--theme_secondary_background);
+  color: var(--theme_secondary_text);
+  flex: 0 0 40%;
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
@@ -294,15 +309,19 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   text-align: left;
  }
  .header {
+  background: linear-gradient(to bottom right, var(--theme_secondary_highlight) 0%, var(--theme_secondary_background) 40%, var(--theme_secondary_background) 60%, var(--theme_secondary_highlight) 100%);
+  color: var(--theme_secondary_text);
   flex: 1;
+  padding: 1rem;
+  overflow: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 0.5rem;
-  background: var(--pal_gray);
-  overflow: hidden;
+  justify-content: center;
+  align-items: center;
  }
  .header > .header-text {
+  color: var(--theme_secondary_text);
   font-family: 'League Gothic', sans-serif;
   font-size: 4rem;
   font-weight: bold;
@@ -310,31 +329,80 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   text-overflow: ellipsis;
  }
  .header > .header-channel {
-  align-self: flex-end;
-  color: var(--pal_gray_light);
   overflow: hidden;
   text-overflow: ellipsis;
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
  }
  .media {
   flex: 0 0 auto;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: var(--pal_black);
+  position: relative;
  }
  .media > #media-noise {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+ }
+ .media > #media-signal {
+  --color: var(--pal_white);
+  --background: var(--pal_black);
+  font-family: 'Iosevka Fixed', sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.5rem 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+ }
+ .media > #media-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: auto;
+ }
+ .media > #media-blinker {
+  --background: var(--theme_primary_background);
+  --color: var(--theme_primary_highlight);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'League Gothic', sans-serif;
+  font-weight: bold;
+ }
+ .media > #media-blinker > .blinker-label {
+  font-size: 4rem;
+ }
+ .media > #media-blinker > .blinker-name {
+  font-size: 12rem;
  }
  .footer {
+  background: var(--theme_tertiary_background);
   flex: 0 0 3rem;
-  background: var(--pal_black);
   display: flex;
   align-items: center;
   overflow: hidden;
  }
  .footer > span {
-  color: var(--pal_gray_light);
+  color: var(--theme_tertiary_text);
   white-space: nowrap;
   animation: footer-scroll linear infinite;
   font-family: 'League Gothic', sans-serif;
@@ -345,21 +413,22 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   100% { transform: translateX(-100%); }
  }
  .menu-overlay {
+  background: var(--theme_primary_background);
+  color: var(--theme_primary_text);
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  background: var(--theme_primary);
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 0.25rem;
   gap: 0.5rem;
  }
  .menu-overlay > button {
+  background: var(--theme_primary_background);
+  color: var(--theme_primary_text);
   border: none;
   border-radius: 0.5rem;
-  background: var(--theme_primary);
-  color: var(--theme_on_primary);
   cursor: pointer;
   outline: none;
   display: flex;
@@ -368,12 +437,12 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   padding: 0.125rem;
  }
  .menu-overlay > button:hover {
-  background: var(--theme_on_primary);
-  color: var(--theme_primary);
+  background: var(--theme_primary_highlight);
+  color: var(--theme_primary_text);
   outline: none;
  }
  .menu-overlay > button[aria-pressed="true"] {
-  outline: 0.125rem solid var(--theme_on_primary);
+  outline: 0.125rem solid var(--theme_primary_highlight);
  }
  .menu-overlay > button > span {
   font-size: 1.5rem;
@@ -581,6 +650,11 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   midnight: 'Tengah Malam',
   last_third: 'Sepertiga Akhir'
  };
+
+ function get_prayer_name(name) {
+  if (name === 'dhuhr' && chrono.date.h.weekday === 5) return "Jum'at";
+  return prayer_name_map[name];
+ }
 
  const PRAYER_METHOD = {
   MWL: { fajr: 18, isha: 17, maghrib: 0, midnight_jafari: false },
@@ -907,7 +981,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
  })();
 
  (function clock(){
-  const weekday_g_list = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const weekday_g_list = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu'];
   const month_g_list = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
   const weekday_h_list = ['Ahad', 'Isnin', 'Selasa', "Rabu", 'Khamis', "Jumaat", 'Sabtu'];
   const month_h_list = ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Awal', 'Jumadil Akhir', 'Rajab', 'Syakban', 'Ramadan', 'Syawal', 'Dzulkaidah', 'Dzulhijjah'];
@@ -960,12 +1034,12 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    }
 
    if (previous) {
-    current_name.textContent = prayer_name_map[previous.name];
+    current_name.textContent = get_prayer_name(previous.name);
     current_detail.textContent = `${format_time(previous.timestamp)} · ${format_relative(previous.timestamp, current)}`;
    }
 
    if (next) {
-    next_name.textContent = prayer_name_map[next.name];
+    next_name.textContent = get_prayer_name(next.name);
     next_detail.textContent = `${format_time(next.timestamp)} · ${format_relative(next.timestamp, current)}`;
    }
   }
@@ -992,7 +1066,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
    for (let i = 0; i < 5; i++) {
     const event = timeline[start + i];
-    prayer_items[i].children[0].textContent = prayer_name_map[event.name];
+    prayer_items[i].children[0].textContent = get_prayer_name(event.name);
     prayer_items[i].children[1].textContent = format_time(event.timestamp);
     prayer_items[i].children[2].textContent = format_relative(event.timestamp, current);
    }
@@ -1001,7 +1075,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   tick_updates.push(update_schedule);
  })();
 
-  (function panel_separator(){
+ (function panel_separator(){
   const separator = $q('.panel-separator');
   const panel_left = $q('.panel-left');
   let is_dragging = false;
@@ -1028,18 +1102,14 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   });
  })();
 
- (function iptv(){
+ (function media(){
   const canvas = $('media-noise');
   const ctx = canvas.getContext('2d');
-  const image_data = ctx.createImageData(320, 180);
+  const image_data = ctx.createImageData(160, 90);
   const data = image_data.data;
-  const media_container = $q('.panel-right > .media');
-
-  const video = document.createElement('video');
-  video.controls = true;
-  video.style.width = '100%';
-  video.style.height = '100%';
-  media_container.appendChild(video);
+  const signal = $('media-signal');
+  const video = $('media-video');
+  const blinker = $('media-blinker');
 
   let hls = null;
   let last_url = '';
@@ -1053,45 +1123,79 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     data[i + 3] = 255;
    }
    ctx.putImageData(image_data, 0, 0);
-
-   ctx.fillStyle = 'white';
-   ctx.font = 'bold 20px sans-serif';
-   ctx.textAlign = 'center';
-   ctx.textBaseline = 'middle';
-   ctx.fillText('NO SIGNAL', 160, 90);
   }
 
   function tick(){
-   if (!media_stream_url) {
+   const has_url = !!media_stream_url;
+
+   if (!has_url) {
     draw_noise();
-    if (last_url) {
+   }
+
+   if (!has_url) {
+    signal.textContent = 'NO SIGNAL';
+    signal.classList.toggle('flipped', chrono.second_independent % 2 === 0);
+   } else {
+    signal.textContent = 'LOADING...';
+    signal.classList.remove('flipped');
+   }
+
+   if (media_stream_url !== last_url) {
+    if (!media_stream_url) {
      if (hls) hls.destroy();
      video.src = '';
+     video.style.setProperty('display', 'none');
      last_url = '';
-    }
-   } else if (media_stream_url !== last_url) {
-    console.log('Loading stream:', media_stream_url);
-    last_url = media_stream_url;
+    } else {
+     console.log('Loading stream:', media_stream_url);
+     last_url = media_stream_url;
+     video.style.removeProperty('display');
 
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-     console.log('Using native HLS');
-     video.src = media_stream_url;
-     video.play();
-    } else if (Hls.isSupported()) {
-     console.log('Using hls.js');
-     if (hls) hls.destroy();
-     hls = new Hls();
-     hls.loadSource(media_stream_url);
-     hls.attachMedia(video);
-     hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-     hls.on(Hls.Events.ERROR, (event, data) => {
-      if (data.fatal) media_stream_url = '';
-     });
+     if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      console.log('Using native HLS');
+      video.src = media_stream_url;
+      video.play();
+     } else if (Hls.isSupported()) {
+      console.log('Using hls.js');
+      if (hls) hls.destroy();
+      hls = new Hls();
+      hls.loadSource(media_stream_url);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      hls.on(Hls.Events.ERROR, (event, data) => {
+       if (data.fatal) media_stream_url = '';
+      });
+     }
     }
+   }
+
+   const main_prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+   const timeline = chrono.prayer.filter(e => main_prayers.includes(e.name));
+   const current = chrono.timestamp;
+
+   let event_current = null;
+   for (let i = 0; i < timeline.length - 1; i++) {
+    if (current >= timeline[i].timestamp && current < timeline[i + 1].timestamp) {
+     event_current = timeline[i];
+     break;
+    }
+   }
+
+   const is_friday_jumuah = event_current && chrono.date.h.weekday === 5 && event_current.name === 'dhuhr';
+   const blinker_active = event_current && current < event_current.timestamp + 60000 * (is_friday_jumuah ? 90 : 5);
+
+   if (blinker_active) {
+    $q('.blinker-name', blinker).textContent = get_prayer_name(event_current.name).toUpperCase();
+    blinker.style.removeProperty('display');
+    if (!is_friday_jumuah) blinker.classList.toggle('flipped', chrono.second_independent % 2 === 0);
+    video.pause();
+   } else {
+    blinker.style.setProperty('display', 'none');
+    if (has_url) video.play();
    }
   }
 
-  setInterval(tick, 1000 / 15);
+  setInterval(tick, 1000 / 10);
  })();
 
  const footer_scroll = (function(){
@@ -1191,7 +1295,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   let channel_item = null;
 
   const media_config = {
-   playlist_url: '',
+   playlist_url: 'https://iptv-org.github.io/iptv/categories/religious.m3u',
    channels: [],
   };
 
@@ -1244,10 +1348,10 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     { display: 'Majlis Ugama Islam Singapura', value: PRAYER_METHOD.SINGAPORE },
    ]},
    { type: 'select', label: 'Asr Method', tab: 'calculation', options: [
-    { display: 'Maddhab (Shafi, Maliki, Hanbali)', value: ASR_METHOD.MADDHAB },
+    { display: "Maddhab (Shafi'i, Maliki, Hanbali)", value: ASR_METHOD.MADDHAB },
     { display: 'Hanafi', value: ASR_METHOD.HANAFI }
    ]},
-   { type: 'select', label: 'Latitude Calculation', tab: 'calculation', options: [
+   { type: 'select', label: 'Latitude Method', tab: 'calculation', options: [
     { display: 'Middle of The Night', value: HIGHLAT_METHOD.NIGHT_MIDDLE },
     { display: '1/7 Multiplier', value: HIGHLAT_METHOD.ONE_SEVENTH },
     { display: 'Angle', value: HIGHLAT_METHOD.ANGLE_BASED }
@@ -1259,17 +1363,20 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    { type: 'number', label: 'Maghrib Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.maghrib, apply: v => prayer_config.tune.maghrib = v },
    { type: 'number', label: 'Isha Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.isha, apply: v => prayer_config.tune.isha = v },
    { type: 'line', label: 'Header', tab: 'text', get: () => $q('.header-text').textContent, apply: v => $q('.header-text').textContent = v },
-   { type: 'number', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize) || 100, apply: v => $q('.header-text').style.fontSize = `${v}%` },
+   { type: 'number', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize), apply: v => $q('.header-text').style.fontSize = `${v}%` },
    { type: 'text', label: 'Footer', tab: 'text', get: () => $('footer-text').textContent.trim(), apply: v => { $('footer-text').textContent = v; footer_scroll(); } },
    { type: 'line', label: 'Playlist URL', tab: 'media', get: () => media_config.playlist_url, apply: v => { media_config.playlist_url = v; fetch_playlist(v); } },
    { type: 'select', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; $q('.header-channel').textContent = media_config.channels.find(c => c.url === v)?.name || ''; } },
-   { type: 'number', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize) || 200, apply: v => document.documentElement.style.fontSize = `${v}%` },
-   make_color_selector('Primary Color', '--theme_primary'),
-   make_color_selector('Primary Accent', '--theme_on_primary'),
-   make_color_selector('Secondary Color', '--theme_secondary'),
-   make_color_selector('Secondary Accent', '--theme_on_secondary'),
-   make_color_selector('Tertiary Color', '--theme_tertiary'),
-   make_color_selector('Tertiary Accent', '--theme_on_tertiary'),
+   { type: 'number', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize), apply: v => document.documentElement.style.fontSize = `${v}%` },
+   make_color_selector('Primary Background', '--theme_primary_background'),
+   make_color_selector('Primary Text', '--theme_primary_text'),
+   make_color_selector('Primary Highlight', '--theme_primary_highlight'),
+   make_color_selector('Secondary Background', '--theme_secondary_background'),
+   make_color_selector('Secondary Text', '--theme_secondary_text'),
+   make_color_selector('Secondary Highlight', '--theme_secondary_highlight'),
+   make_color_selector('Tertiary Background', '--theme_tertiary_background'),
+   make_color_selector('Tertiary Text', '--theme_tertiary_text'),
+   make_color_selector('Tertiary Highlight', '--theme_tertiary_highlight'),
   ];
 
   items_def.forEach(def => {
@@ -1421,34 +1528,45 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    fetch(url).then(r => r.text()).then(text => {
     const lines = text.split('\n');
     media_config.channels = [];
-    let pending_name = null;
 
-    for (let i = 0; i < lines.length; i++) {
-     const line = lines[i].trim();
+    if (text.includes('#EXT-X-VERSION') || text.includes('#EXT-X-TARGETDURATION')) {
+     media_stream_url = url;
+     $q('.header-channel').textContent = '';
+     channel_item.style.setProperty('display', 'none');
+    } else {
+     let pending_name = null;
 
-     if (line.startsWith('#EXTINF:')) {
-      const parts = line.split(',');
-      pending_name = parts.length > 1 ? parts[parts.length - 1].trim() : 'Unknown';
-     } else if (pending_name && line && !line.startsWith('#')) {
-      media_config.channels.push({ name: pending_name, url: line });
-      pending_name = null;
+     for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      if (line.startsWith('#EXTINF:')) {
+       const parts = line.split(',');
+       pending_name = parts.length > 1 ? parts[parts.length - 1].trim() : 'Unknown';
+      } else if (pending_name && line && !line.startsWith('#')) {
+       media_config.channels.push({ name: pending_name, url: line });
+       pending_name = null;
+      }
+     }
+
+     if (media_config.channels.length === 0) {
+      media_stream_url = url;
+      $q('.header-channel').textContent = '';
+      channel_item.style.setProperty('display', 'none');
+     } else {
+      const select_el = $q('.settings-select', channel_item);
+      select_el.innerHTML = '';
+
+      media_config.channels.forEach(c => {
+       const option = document.createElement('option');
+       option.value = c.url;
+       option.textContent = c.name;
+       select_el.appendChild(option);
+      });
+
+      media_stream_url = media_config.channels[0].url;
+      channel_item.style.removeProperty('display');
      }
     }
-
-    const select_el = $q('.settings-select', channel_item);
-    select_el.innerHTML = '';
-
-    media_config.channels.forEach(c => {
-     const option = document.createElement('option');
-     option.value = c.url;
-     option.textContent = c.name;
-     select_el.appendChild(option);
-    });
-
-    if (media_config.channels.length === 1) media_stream_url = media_config.channels[0].url;
-
-    if (media_config.channels.length === 0) channel_item.style.setProperty('display', 'none');
-    else channel_item.style.removeProperty('display');
 
     console.log('Playlist fetched:', media_config.channels.length);
    })
