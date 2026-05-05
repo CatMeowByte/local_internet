@@ -8,4 +8,4 @@ corner.check
 clock.prayer.metro
 metro.grid
 convert.imagetosprite.sheet
-clock.prayer.slide
+clock.prayer.tv
