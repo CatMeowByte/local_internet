@@ -12,14 +12,15 @@ by CatMeowByte
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Prayer times dashboard clock in slide design with image background.">
-<title>Prayer Times Dashboard - Slide</title>
+<meta name="description" content="Prayer times dashboard clock with IPTV stream.">
+<title>Prayer Times Dashboard - TV</title>
+<script src="./hls.light.min.js"></script>
 </head>
 <body>
 <main>
  <div class="dashboard">
   <div class="panel-left">
-   <div class="clock-card" style="background: var(--pal_blue_dark); color: var(--pal_white);">
+   <div class="clock" style="background: var(--pal_blue_dark); color: var(--pal_white);">
     <span class="clock-date-gregorian">Saturday, 28 March 2026</span>
     <span class="clock-date-hijri">Sabt, 10 Shawwal 1447</span>
     <div class="clock-time">
@@ -37,33 +38,49 @@ by CatMeowByte
      <span style="font-size: 1rem;">1∶57 · 5 hr later</span>
     </div>
    </div>
-   <table class="prayer-list" style="background: var(--theme_secondary); color: var(--theme_on_secondary);">
-    <tr class="prayer-item" style="opacity: 0.5;">
-     <td class="prayer-item-name">Isha</td>
+   <table class="schedule" style="background: var(--theme_secondary); color: var(--theme_on_secondary);">
+    <tr class="schedule-item" style="opacity: 0.5;">
+     <td class="schedule-item-name">Isha</td>
      <td>10∶30 PM</td>
      <td>11 hr ago</td>
     </tr>
-    <tr class="prayer-item" style="background: var(--theme_primary); color: var(--theme_on_primary);">
-     <td class="prayer-item-name">Fajr</td>
+    <tr class="schedule-item" style="background: var(--theme_primary); color: var(--theme_on_primary);">
+     <td class="schedule-item-name">Fajr</td>
      <td>6∶45 AM</td>
      <td>2 hr ago</td>
     </tr>
-    <tr class="prayer-item">
-     <td class="prayer-item-name">Dhuhr</td>
+    <tr class="schedule-item">
+     <td class="schedule-item-name">Dhuhr</td>
      <td>1∶57 PM</td>
      <td>5 hr later</td>
     </tr>
-    <tr class="prayer-item">
-     <td class="prayer-item-name">Asr</td>
+    <tr class="schedule-item">
+     <td class="schedule-item-name">Asr</td>
      <td>4∶45 PM</td>
      <td>8 hr later</td>
     </tr>
-    <tr class="prayer-item">
-     <td class="prayer-item-name">Maghrib</td>
+    <tr class="schedule-item">
+     <td class="schedule-item-name">Maghrib</td>
      <td>7∶10 PM</td>
      <td>11 hr later</td>
     </tr>
    </table>
+  </div>
+  <div class="panel-separator"></div>
+  <div class="panel-right">
+   <div class="header">
+    <span class="header-text">Title</span>
+    <span class="header-channel">Channel Name - IPTV</span>
+   </div>
+   <div class="footer" meta-scroll-speed="50"></div>
+   <div id="footer-text" hidden>
+The faster the clock runs backward, the more tomorrow remembers yesterday's future.
+Seven is heavier than blue, but only on Tuesdays when the alphabet is sleeping.
+If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
+   </div>
+   <div class="media">
+    <canvas id="media-noise" width="320" height="180"></canvas>
+   </div>
   </div>
   <div class="menu-overlay">
    <button id="menu-debug-timeshift" aria-pressed="false" data-icon-off="schedule" data-icon-on="history_toggle_off"><span class="material-icons">schedule</span></button>
@@ -76,6 +93,7 @@ by CatMeowByte
     <button data-tab="calculation"><span class="material-icons">explore</span></button>
     <button data-tab="timing"><span class="material-icons">schedule</span></button>
     <button data-tab="text"><span class="material-icons">edit</span></button>
+    <button data-tab="media"><span class="material-icons">play_circle</span></button>
     <button data-tab="theme"><span class="material-icons">palette</span></button>
    </div>
    <div class="settings-panels">
@@ -83,9 +101,9 @@ by CatMeowByte
     <div class="settings-panel" data-tab="calculation"></div>
     <div class="settings-panel" data-tab="timing"></div>
     <div class="settings-panel" data-tab="text"></div>
+    <div class="settings-panel" data-tab="media"></div>
     <div class="settings-panel" data-tab="theme"></div>
    </div>
-   <button id="settings-apply">Apply</button>
    <template id="settings-number-template">
    <div class="settings-item">
     <div class="settings-row">
@@ -105,6 +123,16 @@ by CatMeowByte
      <div class="settings-select-wrapper">
       <select class="settings-select"></select>
       <span class="material-icons">expand_more</span>
+     </div>
+    </div>
+   </div>
+  </template>
+  <template id="settings-line-template">
+   <div class="settings-item">
+    <div class="settings-row">
+     <span class="settings-label"></span>
+     <div class="settings-line-wrapper">
+      <input class="settings-line" type="text">
      </div>
     </div>
    </div>
@@ -137,12 +165,12 @@ by CatMeowByte
   --pal_teal: #257179;
   --pal_cyan: #73eff7;
 
-  --theme_primary: #ef7d57;
-  --theme_on_primary: #1a1c2c;
-  --theme_secondary: #566c86;
-  --theme_on_secondary: #f4f4f4;
-  --theme_tertiary: #3b5dc9;
-  --theme_on_tertiary: #f4f4f4;
+  --theme_primary: var(--pal_orange);
+  --theme_on_primary: var(--pal_black);
+  --theme_secondary: var(--pal_gray_light);
+  --theme_on_secondary: var(--pal_white);
+  --theme_tertiary: var(--pal_yellow);
+  --theme_on_tertiary: var(--pal_black);
  }
  * {
   margin: 0;
@@ -166,12 +194,23 @@ by CatMeowByte
   background: var(--pal_black);
  }
  .panel-left {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+ }
+ .panel-separator {
+  flex: 0 0 0.25rem;
+  background: var(--pal_black);
+  cursor: col-resize;
+ }
+ .panel-right {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
  }
- .clock-card {
+ .clock {
   position: relative;
   flex: 1;
  }
@@ -234,25 +273,76 @@ by CatMeowByte
  .clock-event-next > .clock-event-name {
   font-weight: normal;
  }
- .prayer-list {
+ .schedule {
   flex: 1;
   width: 100%;
   border-collapse: collapse;
   font-size: 1rem;
   table-layout: fixed;
  }
- .prayer-item {
+ .schedule-item {
   height: 20%;
  }
- .prayer-item > td {
+ .schedule-item > td {
   padding: 0 1rem;
   text-align: right;
   vertical-align: middle;
  }
- .prayer-item > .prayer-item-name {
+ .schedule-item > .schedule-item-name {
   font-weight: bold;
   font-size: 1rem;
   text-align: left;
+ }
+ .header {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: var(--pal_gray);
+  overflow: hidden;
+ }
+ .header > .header-text {
+  font-family: 'League Gothic', sans-serif;
+  font-size: 4rem;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+ }
+ .header > .header-channel {
+  align-self: flex-end;
+  color: var(--pal_gray_light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+ }
+ .media {
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--pal_black);
+ }
+ .media > #media-noise {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+ }
+ .footer {
+  flex: 0 0 3rem;
+  background: var(--pal_black);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+ }
+ .footer > span {
+  color: var(--pal_gray_light);
+  white-space: nowrap;
+  animation: footer-scroll linear infinite;
+  font-family: 'League Gothic', sans-serif;
+  font-size: 2rem;
+ }
+ @keyframes footer-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
  }
  .menu-overlay {
   position: absolute;
@@ -327,23 +417,6 @@ by CatMeowByte
  }
  .settings-tabs > button > span {
   font-size: 1.5rem;
- }
- #settings-popover > #settings-apply {
-  background: var(--theme_primary);
-  color: var(--theme_on_primary);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem 2rem;
-  height: 2rem;
-  font-family: 'Roboto Condensed', sans-serif;
-  font-weight: bold;
-  margin-top: 1rem;
- }
- #settings-popover > #settings-apply:hover {
-  background: var(--theme_on_primary);
-  color: var(--theme_primary);
  }
  #settings-popover > .settings-panels {
   background: var(--pal_white);
@@ -424,6 +497,19 @@ by CatMeowByte
   pointer-events: none;
   font-size: 1.25rem;
  }
+ .settings-item > .settings-row > .settings-line-wrapper {
+  min-width: 0;
+  flex: 2;
+  display: flex;
+ }
+ .settings-item > .settings-row > .settings-line-wrapper > .settings-line {
+  font-family: 'Roboto Condensed', sans-serif;
+  min-width: 0;
+  flex: 1;
+  border: none;
+  background: var(--pal_gray_light);
+  padding: 0.25rem;
+ }
  .settings-item > .settings-textarea {
   min-height: 8rem;
   resize: vertical;
@@ -442,6 +528,7 @@ by CatMeowByte
  const tick_speed_regular = 500;
  const tick_speed_debug = 66;
  let tick_speed = tick_speed_regular;
+ let media_stream_url = '';
  let debug_time_override = null;
  const tick_updates = [];
  let tick_last = 0;
@@ -467,6 +554,9 @@ by CatMeowByte
  function format_relative(timestamp, current) {
   const diff_ms = Math.abs(timestamp - current);
   const diff_min = Math.floor(diff_ms / 60000);
+
+  if (diff_min === 0) return 'sekarang';
+
   const direction = timestamp > current ? 'lagi' : 'lalu';
 
   if (diff_min >= 60) {
@@ -506,7 +596,7 @@ by CatMeowByte
  };
 
  const ASR_METHOD = {
-  STANDARD: 1,
+  MADDHAB: 1,
   HANAFI: 2
  };
 
@@ -520,7 +610,7 @@ by CatMeowByte
   lat: -6.2088,
   lng: 106.8456,
   method: PRAYER_METHOD.MWL,
-  asr: ASR_METHOD.STANDARD,
+  asr: ASR_METHOD.MADDHAB,
   highlat: HIGHLAT_METHOD.NIGHT_MIDDLE,
   tune: {
    fajr: 0,
@@ -885,7 +975,7 @@ by CatMeowByte
 
  (function schedule(){
   const main_prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-  const prayer_items = $qa('.prayer-item');
+  const prayer_items = $qa('.schedule-item');
 
   function update_schedule(){
    const timeline = chrono.prayer.filter(e => main_prayers.includes(e.name));
@@ -911,16 +1001,128 @@ by CatMeowByte
   tick_updates.push(update_schedule);
  })();
 
+  (function panel_separator(){
+  const separator = $q('.panel-separator');
+  const panel_left = $q('.panel-left');
+  let is_dragging = false;
+  let start_x = 0;
+  let start_width = 0;
+
+  $on(separator, 'pointerdown', (e) => {
+   is_dragging = true;
+   start_x = e.clientX;
+   start_width = panel_left.offsetWidth;
+   e.preventDefault();
+  });
+
+  $on(document, 'pointermove', (e) => {
+   if (!is_dragging) return;
+   const delta = e.clientX - start_x;
+   const new_width = start_width + delta;
+   const percent = (new_width / document.body.offsetWidth) * 100;
+   panel_left.style.flexBasis = percent + '%';
+  });
+
+  $on(document, 'pointerup', () => {
+   is_dragging = false;
+  });
+ })();
+
+ (function iptv(){
+  const canvas = $('media-noise');
+  const ctx = canvas.getContext('2d');
+  const image_data = ctx.createImageData(320, 180);
+  const data = image_data.data;
+  const media_container = $q('.panel-right > .media');
+
+  const video = document.createElement('video');
+  video.controls = true;
+  video.style.width = '100%';
+  video.style.height = '100%';
+  media_container.appendChild(video);
+
+  let hls = null;
+  let last_url = '';
+
+  function draw_noise(){
+   for (let i = 0; i < data.length; i += 4) {
+    const value = Math.random() * 255;
+    data[i] = value;
+    data[i + 1] = value;
+    data[i + 2] = value;
+    data[i + 3] = 255;
+   }
+   ctx.putImageData(image_data, 0, 0);
+
+   ctx.fillStyle = 'white';
+   ctx.font = 'bold 20px sans-serif';
+   ctx.textAlign = 'center';
+   ctx.textBaseline = 'middle';
+   ctx.fillText('NO SIGNAL', 160, 90);
+  }
+
+  function tick(){
+   if (!media_stream_url) {
+    draw_noise();
+    if (last_url) {
+     if (hls) hls.destroy();
+     video.src = '';
+     last_url = '';
+    }
+   } else if (media_stream_url !== last_url) {
+    console.log('Loading stream:', media_stream_url);
+    last_url = media_stream_url;
+
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+     console.log('Using native HLS');
+     video.src = media_stream_url;
+     video.play();
+    } else if (Hls.isSupported()) {
+     console.log('Using hls.js');
+     if (hls) hls.destroy();
+     hls = new Hls();
+     hls.loadSource(media_stream_url);
+     hls.attachMedia(video);
+     hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+     hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) media_stream_url = '';
+     });
+    }
+   }
+  }
+
+  setInterval(tick, 1000 / 15);
+ })();
+
+ const footer_scroll = (function(){
+  return function(){
+   const footer = $q('.panel-right > .footer');
+   const speed = parseFloat(footer.getAttribute('meta-scroll-speed')) || 50;
+   footer.innerHTML = '';
+
+   const span1 = document.createElement('span');
+   span1.textContent = $('footer-text').textContent.trim() + '\u00A0';
+   const span2 = span1.cloneNode(true);
+   footer.appendChild(span1);
+   footer.appendChild(span2);
+
+   const duration = span1.offsetWidth / speed;
+   span1.style.animationDuration = duration + 's';
+   span2.style.animationDuration = duration + 's';
+  };
+ })();
+
+ footer_scroll();
+
  (function menu(){
   const button_timeshift = $('menu-debug-timeshift');
   const icon_timeshift = $q('span', button_timeshift);
+  const menu_pointer_min = 1;
+  const menu_pointer_max = 2;
 
   $on($('menu-fullscreen'), 'click', () => {
-   if (document.fullscreenElement) {
-    document.exitFullscreen();
-   } else {
-    document.documentElement.requestFullscreen();
-   }
+   if (document.fullscreenElement) document.exitFullscreen();
+   else document.documentElement.requestFullscreen();
   });
 
   $on(button_timeshift, 'click', () => {
@@ -939,16 +1141,25 @@ by CatMeowByte
   });
 
   $on(document, 'pointermove', (e) => {
-   const y_percent = (e.clientY / window.innerHeight) * 100;
+   const menu = $q('.menu-overlay');
+   const rect = menu.getBoundingClientRect();
+
+   const closest_x = Math.max(rect.left, Math.min(e.clientX, rect.right));
+   const closest_y = Math.max(rect.top, Math.min(e.clientY, rect.bottom));
+   const dx = e.clientX - closest_x;
+   const dy = e.clientY - closest_y;
+   const distance = Math.sqrt(dx * dx + dy * dy);
+
+   const distance_ratio = distance / rect.height;
 
    let offset;
-   if (y_percent >= 50) {
+   if (distance_ratio >= menu_pointer_max) {
     offset = -100;
-   } else if (y_percent <= 12.5) {
+   } else if (distance_ratio <= menu_pointer_min) {
     offset = 0;
    } else {
-    const range = 50 - 12.5;
-    const progress = (y_percent - 12.5) / range;
+    const range = menu_pointer_max - menu_pointer_min;
+    const progress = (distance_ratio - menu_pointer_min) / range;
     offset = -100 * progress;
    }
 
@@ -977,6 +1188,12 @@ by CatMeowByte
 
   let countries_data = [];
   const coordinate_items = { country: null, state: null, city: null };
+  let channel_item = null;
+
+  const media_config = {
+   playlist_url: '',
+   channels: [],
+  };
 
   const palette_options = [
    { display: 'Black', value: 'var(--pal_black)' },
@@ -1027,7 +1244,7 @@ by CatMeowByte
     { display: 'Majlis Ugama Islam Singapura', value: PRAYER_METHOD.SINGAPORE },
    ]},
    { type: 'select', label: 'Asr Method', tab: 'calculation', options: [
-    { display: 'Maddhab (Shafi, Maliki, Hanbali)', value: ASR_METHOD.STANDARD },
+    { display: 'Maddhab (Shafi, Maliki, Hanbali)', value: ASR_METHOD.MADDHAB },
     { display: 'Hanafi', value: ASR_METHOD.HANAFI }
    ]},
    { type: 'select', label: 'Latitude Calculation', tab: 'calculation', options: [
@@ -1041,7 +1258,11 @@ by CatMeowByte
    { type: 'number', label: 'Asr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.asr, apply: v => prayer_config.tune.asr = v },
    { type: 'number', label: 'Maghrib Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.maghrib, apply: v => prayer_config.tune.maghrib = v },
    { type: 'number', label: 'Isha Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.isha, apply: v => prayer_config.tune.isha = v },
-   { type: 'text', label: 'Footer Text', tab: 'text' },
+   { type: 'line', label: 'Header', tab: 'text', get: () => $q('.header-text').textContent, apply: v => $q('.header-text').textContent = v },
+   { type: 'number', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize) || 100, apply: v => $q('.header-text').style.fontSize = `${v}%` },
+   { type: 'text', label: 'Footer', tab: 'text', get: () => $('footer-text').textContent.trim(), apply: v => { $('footer-text').textContent = v; footer_scroll(); } },
+   { type: 'line', label: 'Playlist URL', tab: 'media', get: () => media_config.playlist_url, apply: v => { media_config.playlist_url = v; fetch_playlist(v); } },
+   { type: 'select', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; $q('.header-channel').textContent = media_config.channels.find(c => c.url === v)?.name || ''; } },
    { type: 'number', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize) || 200, apply: v => document.documentElement.style.fontSize = `${v}%` },
    make_color_selector('Primary Color', '--theme_primary'),
    make_color_selector('Primary Accent', '--theme_on_primary'),
@@ -1060,6 +1281,7 @@ by CatMeowByte
    if (def.label === 'Country') coordinate_items.country = { item, select: $q('.settings-select', item) };
    if (def.label === 'State') coordinate_items.state = { item, select: $q('.settings-select', item) };
    if (def.label === 'City') coordinate_items.city = { item, select: $q('.settings-select', item) };
+   if (def.label === 'Channel') channel_item = item;
 
    if (def.type === 'select' && def.options) {
     const select = $q('.settings-select', item);
@@ -1109,10 +1331,22 @@ by CatMeowByte
     });
    }
 
+   if (def.type === 'line') {
+    const input = $q('.settings-line', item);
+    input.value = def.get();
+    $on(input, 'input', () => def.apply(input.value));
+   }
+
+   if (def.type === 'text') {
+    const textarea = $q('.settings-textarea', item);
+    textarea.value = def.get();
+    $on(textarea, 'input', () => def.apply(textarea.value));
+   }
+
    $q(`.settings-panel[data-tab="${def.tab}"]`).appendChild(item);
   });
 
-  fetch('countries_states_cities.json').then(r => r.json()).then(data => {
+  fetch('./countries_states_cities.json').then(r => r.json()).then(data => {
     countries_data = data;
 
     const country_select = coordinate_items.country.select;
@@ -1180,6 +1414,52 @@ by CatMeowByte
 
     country_select.dispatchEvent(new Event('change'));
    });
+
+  function fetch_playlist(url) {
+   if (!url) return;
+
+   fetch(url).then(r => r.text()).then(text => {
+    const lines = text.split('\n');
+    media_config.channels = [];
+    let pending_name = null;
+
+    for (let i = 0; i < lines.length; i++) {
+     const line = lines[i].trim();
+
+     if (line.startsWith('#EXTINF:')) {
+      const parts = line.split(',');
+      pending_name = parts.length > 1 ? parts[parts.length - 1].trim() : 'Unknown';
+     } else if (pending_name && line && !line.startsWith('#')) {
+      media_config.channels.push({ name: pending_name, url: line });
+      pending_name = null;
+     }
+    }
+
+    const select_el = $q('.settings-select', channel_item);
+    select_el.innerHTML = '';
+
+    media_config.channels.forEach(c => {
+     const option = document.createElement('option');
+     option.value = c.url;
+     option.textContent = c.name;
+     select_el.appendChild(option);
+    });
+
+    if (media_config.channels.length === 1) media_stream_url = media_config.channels[0].url;
+
+    if (media_config.channels.length === 0) channel_item.style.setProperty('display', 'none');
+    else channel_item.style.removeProperty('display');
+
+    console.log('Playlist fetched:', media_config.channels.length);
+   })
+   .catch(() => {
+    media_config.channels = [];
+    channel_item.style.setProperty('display', 'none');
+   });
+  }
+
+  if (!media_config.playlist_url) channel_item.style.setProperty('display', 'none');
+  else fetch_playlist(media_config.playlist_url);
 
  })();
 
