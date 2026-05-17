@@ -103,7 +103,13 @@ by CatMeowByte
  const button_back = $('#browser_back');
  let is_address_updating = false;
 
+ const query_extract = input => {
+  const i = input.indexOf('?');
+  return i === -1 ? '' : input.slice(i);
+ };
+
  const path_sanitize = input => {
+  input = input.replace(/\?.*$/, '');
   input = input.replace(/^(web:\/\/|#\/)/, '');
   input = input.replace(/\/\/+/g, '/');
   if (input.endsWith('/') && input !== '') input = input.slice(0, -1);
@@ -134,8 +140,8 @@ by CatMeowByte
   return path_final;
  };
 
- const website_load = clean_path => {
-  frame.src = path_to_src('web://' + clean_path);
+ const website_load = path => {
+  frame.src = path_to_src('web://' + path_sanitize(path)) + query_extract(path);
  };
 
  $on(frame, 'load', () => {
@@ -144,8 +150,9 @@ by CatMeowByte
    let path_display = path.replace(/^.*\/website\//, '');
    const clean_path = path_sanitize(path_display);
    is_address_updating = true;
-   input.value = 'web://' + clean_path;
-   window.location.hash = '#/' + clean_path;
+   const page_query = frame.contentWindow.location.search;
+   input.value = 'web://' + clean_path + page_query;
+   history.replaceState(null, '', '#/' + clean_path + page_query);
    is_address_updating = false;
 
    const icon = frame.contentDocument.createElement('link');
@@ -168,8 +175,7 @@ by CatMeowByte
 
  $on(nav_form, 'submit', e => {
   e.preventDefault();
-  const clean_path = path_sanitize(input.value.trim());
-  website_load(clean_path);
+  website_load(input.value.trim());
  });
 
  $on(button_home, 'click', () => {
@@ -197,19 +203,20 @@ by CatMeowByte
    if (url.startsWith('web://')) r = url;
    else if (url.startsWith('/')) r = 'web://' + domain + url;
    else r = 'web://' + domain + '/' + current_path.substring(0, current_path.lastIndexOf('/') + 1).replace(/^.*\/website\/[^\/]+\//, '') + url;
-   website_load(path_sanitize(r));
+   website_load(r);
+  }
+  if (e.data.action === 'url_changed') {
+   window.location.hash = '#/' + path_sanitize(window.location.hash) + e.data.query;
   }
  });
 
  $on(window, 'hashchange', () => {
   if (is_address_updating) return;
-  const clean_path = path_sanitize(window.location.hash);
-  website_load(clean_path);
+  website_load(window.location.hash);
  });
 
  if (window.location.hash) {
-  const clean_path = path_sanitize(window.location.hash);
-  website_load(clean_path);
+  website_load(window.location.hash);
  }
  else {
   website_load(home);

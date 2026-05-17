@@ -23,3 +23,19 @@ const get_current_domain = () =>
 window.navigate = (url) => {
   window.parent.postMessage({action: 'navigate', url: url}, '*');
 };
+
+const original_replaceState = history.replaceState.bind(history);
+history.replaceState = function(state, title, url) {
+ original_replaceState(state, title, url);
+ if (url && url.startsWith('?')) {
+  window.parent.postMessage({action: 'url_changed', query: url}, '*');
+ }
+};
+
+const original_pushState = history.pushState.bind(history);
+history.pushState = function(state, title, url) {
+ original_pushState(state, title, url);
+ if (url && url.startsWith('?')) {
+  window.parent.postMessage({action: 'url_changed', query: url}, '*');
+ }
+};
