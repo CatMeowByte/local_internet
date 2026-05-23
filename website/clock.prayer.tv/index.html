@@ -1300,84 +1300,93 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   };
 
   const palette_options = [
-   { display: 'Black', value: 'var(--pal_black)' },
-   { display: 'Dark', value: 'var(--pal_gray_dark)' },
-   { display: 'Gray', value: 'var(--pal_gray)' },
-   { display: 'Light', value: 'var(--pal_gray_light)' },
-   { display: 'White', value: 'var(--pal_white)' },
-   { display: 'Purple', value: 'var(--pal_purple)' },
-   { display: 'Red', value: 'var(--pal_red)' },
-   { display: 'Orange', value: 'var(--pal_orange)' },
-   { display: 'Yellow', value: 'var(--pal_yellow)' },
-   { display: 'Lime', value: 'var(--pal_green_light)' },
-   { display: 'Green', value: 'var(--pal_green)' },
-   { display: 'Deep', value: 'var(--pal_blue_dark)' },
-   { display: 'Blue', value: 'var(--pal_blue)' },
-   { display: 'Sky', value: 'var(--pal_blue_light)' },
-   { display: 'Teal', value: 'var(--pal_teal)' },
-   { display: 'Cyan', value: 'var(--pal_cyan)' },
+   { display: 'Black', value: 'black' },
+   { display: 'Dark', value: 'gray_dark' },
+   { display: 'Gray', value: 'gray' },
+   { display: 'Light', value: 'gray_light' },
+   { display: 'White', value: 'white' },
+   { display: 'Purple', value: 'purple' },
+   { display: 'Red', value: 'red' },
+   { display: 'Orange', value: 'orange' },
+   { display: 'Yellow', value: 'yellow' },
+   { display: 'Lime', value: 'green_light' },
+   { display: 'Green', value: 'green' },
+   { display: 'Deep', value: 'blue_dark' },
+   { display: 'Blue', value: 'blue' },
+   { display: 'Sky', value: 'blue_light' },
+   { display: 'Teal', value: 'teal' },
+   { display: 'Cyan', value: 'cyan' },
   ];
 
-  const make_color_selector = (label, css_var) => ({
+  const make_color_selector = (label, css_var, key) => ({
+   key: key,
    type: 'select',
    label: label,
    tab: 'theme',
    options: palette_options,
    get: () => {
     const style = getComputedStyle(document.documentElement);
-    const reverse = Object.fromEntries(['--pal_black','--pal_gray_dark','--pal_gray','--pal_gray_light','--pal_white','--pal_purple','--pal_red','--pal_orange','--pal_yellow','--pal_green_light','--pal_green','--pal_blue_dark','--pal_blue','--pal_blue_light','--pal_teal','--pal_cyan'].map(p => [style.getPropertyValue(p).trim(), `var(${p})`]));
+    const reverse = Object.fromEntries(['--pal_black','--pal_gray_dark','--pal_gray','--pal_gray_light','--pal_white','--pal_purple','--pal_red','--pal_orange','--pal_yellow','--pal_green_light','--pal_green','--pal_blue_dark','--pal_blue','--pal_blue_light','--pal_teal','--pal_cyan'].map(p => [style.getPropertyValue(p).trim(), p.slice(6)]));
     return reverse[style.getPropertyValue(css_var).trim()];
    },
-   apply: v => document.documentElement.style.setProperty(css_var, v)
+   apply: v => document.documentElement.style.setProperty(css_var, `var(--pal_${v})`)
   });
 
   const items_def = [
+   { type: 'number', key: 'x', label: 'Latitude', tab: 'location', min: -90, max: 90, step: 0.0001, get: () => prayer_config.lat, apply: v => prayer_config.lat = parseFloat(parseFloat(v).toFixed(4)) },
+   { type: 'number', key: 'y', label: 'Longitude', tab: 'location', min: -180, max: 180, step: 0.0001, get: () => prayer_config.lng, apply: v => prayer_config.lng = parseFloat(parseFloat(v).toFixed(4)) },
    { type: 'select', label: 'Country', tab: 'location' },
    { type: 'select', label: 'State', tab: 'location' },
    { type: 'select', label: 'City', tab: 'location' },
-   { type: 'select', label: 'Calculation Method', tab: 'calculation', options: [
-    { display: 'Muslim World League', value: PRAYER_METHOD.MWL },
-    { display: 'Islamic Society of North America', value: PRAYER_METHOD.ISNA },
-    { display: 'Egyptian General Authority', value: PRAYER_METHOD.EGYPT },
-    { display: 'Umm al-Qura, Makkah', value: PRAYER_METHOD.MAKKAH },
-    { display: 'University of Islamic Sciences, Karachi', value: PRAYER_METHOD.KARACHI },
-    { display: 'Institute of Geophysics, Tehran', value: PRAYER_METHOD.TEHRAN },
-    { display: 'Shia Ithna Ashari, Jafari', value: PRAYER_METHOD.JAFARI },
-    { display: 'Union des Organisations Islamiques de France', value: PRAYER_METHOD.FRANCE },
-    { display: 'Spiritual Administration of Muslims of Russia', value: PRAYER_METHOD.RUSSIA },
-    { display: 'Majlis Ugama Islam Singapura', value: PRAYER_METHOD.SINGAPORE },
-   ]},
-   { type: 'select', label: 'Asr Method', tab: 'calculation', options: [
-    { display: "Maddhab (Shafi'i, Maliki, Hanbali)", value: ASR_METHOD.MADDHAB },
-    { display: 'Hanafi', value: ASR_METHOD.HANAFI }
-   ]},
-   { type: 'select', label: 'Latitude Method', tab: 'calculation', options: [
-    { display: 'Middle of The Night', value: HIGHLAT_METHOD.NIGHT_MIDDLE },
-    { display: '1/7 Multiplier', value: HIGHLAT_METHOD.ONE_SEVENTH },
-    { display: 'Angle', value: HIGHLAT_METHOD.ANGLE_BASED }
-   ]},
-   { type: 'number', label: 'Hijri Date Offset', tab: 'timing', min: -7, max: 7, step: 1, get: () => hijri_config.offset, apply: v => hijri_config.offset = v },
-   { type: 'number', label: 'Fajr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.fajr, apply: v => prayer_config.tune.fajr = v },
-   { type: 'number', label: 'Dhuhr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.dhuhr, apply: v => prayer_config.tune.dhuhr = v },
-   { type: 'number', label: 'Asr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.asr, apply: v => prayer_config.tune.asr = v },
-   { type: 'number', label: 'Maghrib Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.maghrib, apply: v => prayer_config.tune.maghrib = v },
-   { type: 'number', label: 'Isha Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.isha, apply: v => prayer_config.tune.isha = v },
-   { type: 'line', label: 'Header', tab: 'text', get: () => $q('.header-text').textContent, apply: v => $q('.header-text').textContent = v },
-   { type: 'number', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize), apply: v => $q('.header-text').style.fontSize = `${v}%` },
-   { type: 'text', label: 'Footer', tab: 'text', get: () => $('footer-text').textContent.trim(), apply: v => { $('footer-text').textContent = v; footer_scroll(); } },
-   { type: 'line', label: 'Playlist URL', tab: 'media', get: () => media_config.playlist_url, apply: v => { media_config.playlist_url = v; fetch_playlist(v); } },
-   { type: 'select', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; $q('.header-channel').textContent = media_config.channels.find(c => c.url === v)?.name || ''; } },
-   { type: 'number', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize), apply: v => document.documentElement.style.fontSize = `${v}%` },
-   make_color_selector('Primary Background', '--theme_primary_background'),
-   make_color_selector('Primary Text', '--theme_primary_text'),
-   make_color_selector('Primary Highlight', '--theme_primary_highlight'),
-   make_color_selector('Secondary Background', '--theme_secondary_background'),
-   make_color_selector('Secondary Text', '--theme_secondary_text'),
-   make_color_selector('Secondary Highlight', '--theme_secondary_highlight'),
-   make_color_selector('Tertiary Background', '--theme_tertiary_background'),
-   make_color_selector('Tertiary Text', '--theme_tertiary_text'),
-   make_color_selector('Tertiary Highlight', '--theme_tertiary_highlight'),
+   { type: 'select', key: 'calc_mode', label: 'Calculation Method', tab: 'calculation', options: [
+    { display: 'Muslim World League', value: 'mwl' },
+    { display: 'Islamic Society of North America', value: 'isna' },
+    { display: 'Egyptian General Authority', value: 'egypt' },
+    { display: 'Umm al-Qura, Makkah', value: 'makkah' },
+    { display: 'University of Islamic Sciences, Karachi', value: 'karachi' },
+    { display: 'Institute of Geophysics, Tehran', value: 'tehran' },
+    { display: 'Shia Ithna Ashari, Jafari', value: 'jafari' },
+    { display: 'Union des Organisations Islamiques de France', value: 'france' },
+    { display: 'Spiritual Administration of Muslims of Russia', value: 'russia' },
+    { display: 'Majlis Ugama Islam Singapura', value: 'singapore' },
+   ], get: () => Object.keys(PRAYER_METHOD).find(k => PRAYER_METHOD[k] === prayer_config.method)?.toLowerCase(), apply: v => prayer_config.method = PRAYER_METHOD[v.toUpperCase()] },
+   { type: 'select', key: 'asr_mode', label: 'Asr Method', tab: 'calculation', options: [
+    { display: "Maddhab (Shafi'i, Maliki, Hanbali)", value: 'maddhab' },
+    { display: 'Hanafi', value: 'hanafi' }
+   ], get: () => Object.keys(ASR_METHOD).find(k => ASR_METHOD[k] === prayer_config.asr)?.toLowerCase(), apply: v => prayer_config.asr = ASR_METHOD[v.toUpperCase()] },
+   { type: 'select', key: 'lat_mode', label: 'Latitude Method', tab: 'calculation', options: [
+    { display: 'Middle of The Night', value: 'night_middle' },
+    { display: '1/7 Multiplier', value: 'one_seventh' },
+    { display: 'Angle', value: 'angle_based' }
+   ], get: () => Object.keys(HIGHLAT_METHOD).find(k => HIGHLAT_METHOD[k] === prayer_config.highlat)?.toLowerCase(), apply: v => prayer_config.highlat = HIGHLAT_METHOD[v.toUpperCase()] },
+   { type: 'number', key: 'hijri', label: 'Hijri Date Offset', tab: 'timing', min: -7, max: 7, step: 1, get: () => hijri_config.offset, apply: v => hijri_config.offset = v },
+   { type: 'number', key: 'fajr', label: 'Fajr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.fajr, apply: v => prayer_config.tune.fajr = v },
+   { type: 'number', key: 'dhuhr', label: 'Dhuhr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.dhuhr, apply: v => prayer_config.tune.dhuhr = v },
+   { type: 'number', key: 'asr', label: 'Asr Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.asr, apply: v => prayer_config.tune.asr = v },
+   { type: 'number', key: 'maghrib', label: 'Maghrib Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.maghrib, apply: v => prayer_config.tune.maghrib = v },
+   { type: 'number', key: 'isha', label: 'Isha Offset', tab: 'timing', min: -15, max: 15, step: 1, get: () => prayer_config.tune.isha, apply: v => prayer_config.tune.isha = v },
+   { type: 'line', key: 'head_txt', label: 'Header', tab: 'text', get: () => $q('.header-text').textContent, apply: v => $q('.header-text').textContent = v },
+   { type: 'number', key: 'head_size', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize), apply: v => $q('.header-text').style.fontSize = `${v}%` },
+   { type: 'text', key: 'foot_txt', label: 'Footer', tab: 'text', get: () => $('footer-text').textContent.trim(), apply: v => { $('footer-text').textContent = v; footer_scroll(); } },
+   { type: 'line', key: 'playlist', label: 'Playlist URL', tab: 'media', get: () => media_config.playlist_url, apply: v => { media_config.playlist_url = v; fetch_playlist(v); } },
+   { type: 'select', key: 'channel', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; $q('.header-channel').textContent = media_config.channels.find(c => c.url === v)?.name || ''; } },
+   { type: 'number', key: 'ui_size', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize), apply: v => document.documentElement.style.fontSize = `${v}%` },
+   make_color_selector('Primary Background', '--theme_primary_background', 'col_a_bg'),
+   make_color_selector('Primary Text', '--theme_primary_text', 'col_a_fg'),
+   make_color_selector('Primary Highlight', '--theme_primary_highlight', 'col_a_hl'),
+   make_color_selector('Secondary Background', '--theme_secondary_background', 'col_b_bg'),
+   make_color_selector('Secondary Text', '--theme_secondary_text', 'col_b_fg'),
+   make_color_selector('Secondary Highlight', '--theme_secondary_highlight', 'col_b_hl'),
+   make_color_selector('Tertiary Background', '--theme_tertiary_background', 'col_c_bg'),
+   make_color_selector('Tertiary Text', '--theme_tertiary_text', 'col_c_fg'),
+   make_color_selector('Tertiary Highlight', '--theme_tertiary_highlight', 'col_c_hl'),
   ];
+
+  const save_query = () => {
+   const params = new URLSearchParams();
+   items_def.forEach(d => { if (d.key && d.get) { const val = d.get(); if (val != null) params.set(d.key, val); } });
+   history.replaceState(null, '', '?' + params.toString());
+  };
 
   items_def.forEach(def => {
    const template = $(`settings-${def.type}-template`);
@@ -1385,6 +1394,8 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    const item = $q('.settings-item', clone);
    $q('.settings-label', item).textContent = def.label;
 
+   if (def.label === 'Latitude') coordinate_items.latitude = $q('.number-input', item);
+   if (def.label === 'Longitude') coordinate_items.longitude = $q('.number-input', item);
    if (def.label === 'Country') coordinate_items.country = { item, select: $q('.settings-select', item) };
    if (def.label === 'State') coordinate_items.state = { item, select: $q('.settings-select', item) };
    if (def.label === 'City') coordinate_items.city = { item, select: $q('.settings-select', item) };
@@ -1402,7 +1413,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
      select.value = def.get();
     }
     if (def.apply) {
-     $on(select, 'change', () => def.apply(select.value));
+     $on(select, 'change', () => { def.apply(select.value); save_query(); });
     }
    }
 
@@ -1419,35 +1430,38 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     $on(btn_left, 'click', () => {
      const current = parseFloat(input.value) || 0;
      const new_value = Math.max(def.min, current - def.step);
-     input.value = new_value;
      def.apply(new_value);
+     input.value = def.get();
+     save_query();
     });
 
     $on(btn_right, 'click', () => {
      const current = parseFloat(input.value) || 0;
      const new_value = Math.min(def.max, current + def.step);
-     input.value = new_value;
      def.apply(new_value);
+     input.value = def.get();
+     save_query();
     });
 
     $on(input, 'change', () => {
      const value = parseFloat(input.value) || 0;
      const clamped = Math.max(def.min, Math.min(def.max, value));
-     input.value = clamped;
      def.apply(clamped);
+     input.value = def.get();
+     save_query();
     });
    }
 
    if (def.type === 'line') {
     const input = $q('.settings-line', item);
     input.value = def.get();
-    $on(input, 'input', () => def.apply(input.value));
+    $on(input, 'input', () => { def.apply(input.value); save_query(); });
    }
 
    if (def.type === 'text') {
     const textarea = $q('.settings-textarea', item);
     textarea.value = def.get();
-    $on(textarea, 'input', () => def.apply(textarea.value));
+    $on(textarea, 'input', () => { def.apply(textarea.value); save_query(); });
    }
 
    $q(`.settings-panel[data-tab="${def.tab}"]`).appendChild(item);
@@ -1485,8 +1499,10 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
      }
 
      if (!country.b || country.b.length === 0) {
-      prayer_config.lat = parseFloat(country.y);
-      prayer_config.lng = parseFloat(country.x);
+      coordinate_items.latitude.value = parseFloat(country.y);
+      coordinate_items.latitude.dispatchEvent(new Event('change'));
+      coordinate_items.longitude.value = parseFloat(country.x);
+      coordinate_items.longitude.dispatchEvent(new Event('change'));
      }
     });
 
@@ -1505,18 +1521,23 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
        option.textContent = city.i;
        coordinate_items.city.select.appendChild(option);
       });
+      coordinate_items.city.select.dispatchEvent(new Event('change'));
      }
 
      if (!state.c || state.c.length === 0) {
-      prayer_config.lat = parseFloat(state.y);
-      prayer_config.lng = parseFloat(state.x);
+      coordinate_items.latitude.value = parseFloat(state.y);
+      coordinate_items.latitude.dispatchEvent(new Event('change'));
+      coordinate_items.longitude.value = parseFloat(state.x);
+      coordinate_items.longitude.dispatchEvent(new Event('change'));
      }
     });
 
     $on(coordinate_items.city.select, 'change', () => {
      const city = JSON.parse(coordinate_items.city.select.value);
-     prayer_config.lat = parseFloat(city.y);
-     prayer_config.lng = parseFloat(city.x);
+     coordinate_items.latitude.value = parseFloat(city.y);
+     coordinate_items.latitude.dispatchEvent(new Event('change'));
+     coordinate_items.longitude.value = parseFloat(city.x);
+     coordinate_items.longitude.dispatchEvent(new Event('change'));
     });
 
     country_select.dispatchEvent(new Event('change'));
@@ -1563,11 +1584,14 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
        select_el.appendChild(option);
       });
 
-      media_stream_url = media_config.channels[0].url;
+      const query_channel = new URLSearchParams(location.search).get('channel');
+      media_stream_url = media_config.channels.find(c => c.url === query_channel)?.url ?? media_config.channels[0].url;
+      select_el.value = media_stream_url;
       channel_item.style.removeProperty('display');
      }
     }
 
+    save_query();
     console.log('Playlist fetched:', media_config.channels.length);
    })
    .catch(() => {
