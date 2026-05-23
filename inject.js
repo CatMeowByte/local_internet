@@ -20,8 +20,13 @@ window.addEventListener('message', e => {
 const get_current_domain = () =>
  window.location.pathname.match(/\/website\/([^\/]+)/)?.[1] || '';
 
-window.navigate = (url) => {
-  window.parent.postMessage({action: 'navigate', url: url}, '*');
+window.navigate = url => {
+ window.parent.postMessage({
+  action: 'navigate',
+  url,
+  domain: get_current_domain(),
+  current_path: window.location.pathname
+ }, '*');
 };
 
 const original_replaceState = history.replaceState.bind(history);

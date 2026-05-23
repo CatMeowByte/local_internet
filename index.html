@@ -101,59 +101,70 @@ by CatMeowByte
  const nav_form = $('.nav-bar');
  const button_home = $('#browser_home');
  const button_back = $('#browser_back');
- let is_address_updating = false;
 
- const query_extract = input => {
-  const i = input.indexOf('?');
-  return i === -1 ? '' : input.slice(i);
+ let current_url = '';
+ let is_parent_load = false;
+
+ const query_extract = url => {
+  const i = url.indexOf('?');
+  return i === -1 ? '' : url.slice(i);
  };
 
- const path_sanitize = input => {
-  input = input.replace(/\?.*$/, '');
-  input = input.replace(/^(web:\/\/|#\/)/, '');
-  input = input.replace(/\/\/+/g, '/');
-  if (input.endsWith('/') && input !== '') input = input.slice(0, -1);
-  input = input.replace(/\/index\.html$/, '');
-  input = input.replace(/\/index$/, '');
-  return input;
+ const path_sanitize = url => {
+  url = url.replace(/\?.*$/, '');
+  url = url.replace(/^(web:\/\/|#\/)/, '');
+  url = url.replace(/\/\/+/g, '/');
+  if (url.endsWith('/')) url = url.slice(0, -1);
+  url = url.replace(/\/index\.html$/, '');
+  url = url.replace(/\/index$/, '');
+  return url;
  };
 
  const path_to_src = path => {
-  path = path.replace(/^web:\/\//, '');
   if (path === '') return 'website/' + home + '/index.html';
-  if (path.endsWith('/')) path = path.slice(0, -1);
   const slash_index = path.indexOf('/');
-  let domain, path_child;
+  let domain, child;
   if (slash_index === -1) {
    domain = path;
-   path_child = '';
+   child = '';
   } else {
    domain = path.substring(0, slash_index);
-   path_child = path.substring(slash_index + 1);
+   child = path.substring(slash_index + 1);
   }
-  let path_final = 'website/' + domain;
-  if (path_child === '' || !path_child.includes('.')) {
-   path_final += (path_child ? '/' + path_child : '') + '/index.html';
+  let src = 'website/' + domain;
+  if (child === '' || !child.includes('.')) {
+   src += (child ? '/' + child : '') + '/index.html';
   } else {
-   path_final += '/' + path_child;
+   src += '/' + child;
   }
-  return path_final;
+  return src;
  };
 
- const website_load = path => {
-  frame.src = path_to_src('web://' + path_sanitize(path)) + query_extract(path);
+ const sync = url => {
+  current_url = url;
+  input.value = 'web://' + url;
+  history.replaceState(url, '', '#/' + url);
+ };
+
+ const navigate = url => {
+  current_url = url;
+  input.value = 'web://' + url;
+  history.pushState(url, '', '#/' + url);
+  is_parent_load = true;
+  frame.src = path_to_src(path_sanitize(url)) + query_extract(url);
  };
 
  $on(frame, 'load', () => {
   try {
-   const path = frame.contentWindow.location.pathname;
-   let path_display = path.replace(/^.*\/website\//, '');
-   const clean_path = path_sanitize(path_display);
-   is_address_updating = true;
-   const page_query = frame.contentWindow.location.search;
-   input.value = 'web://' + clean_path + page_query;
-   history.replaceState(null, '', '#/' + clean_path + page_query);
-   is_address_updating = false;
+   const landed_url = path_sanitize(frame.contentWindow.location.pathname.replace(/^.*\/website\//, '')) + frame.contentWindow.location.search;
+   if (is_parent_load) {
+    is_parent_load = false;
+    sync(landed_url);
+   } else {
+    current_url = landed_url;
+    input.value = 'web://' + landed_url;
+    history.pushState(landed_url, '', '#/' + landed_url);
+   }
 
    const icon = frame.contentDocument.createElement('link');
    icon.rel = 'stylesheet';
@@ -175,15 +186,23 @@ by CatMeowByte
 
  $on(nav_form, 'submit', e => {
   e.preventDefault();
-  website_load(input.value.trim());
+  navigate(path_sanitize(input.value) + query_extract(input.value));
  });
 
  $on(button_home, 'click', () => {
-  frame.src = 'website/' + home + '/';
+  navigate(home);
  });
 
  $on(button_back, 'click', () => {
-  frame.contentWindow.history.back();
+  history.back();
+ });
+
+ $on(window, 'popstate', e => {
+  const url = e.state ?? path_sanitize(location.hash) + query_extract(location.hash);
+  current_url = url;
+  input.value = 'web://' + url;
+  is_parent_load = true;
+  frame.src = path_to_src(path_sanitize(url)) + query_extract(url);
  });
 
  $on(window, 'message', e => {
@@ -199,28 +218,21 @@ by CatMeowByte
   }
   if (e.data.action === 'navigate') {
    const { url, domain, current_path } = e.data;
-   let r;
-   if (url.startsWith('web://')) r = url;
-   else if (url.startsWith('/')) r = 'web://' + domain + url;
-   else r = 'web://' + domain + '/' + current_path.substring(0, current_path.lastIndexOf('/') + 1).replace(/^.*\/website\/[^\/]+\//, '') + url;
-   website_load(r);
+   navigate(
+    url.startsWith('web://') ? path_sanitize(url) + query_extract(url) :
+    url.startsWith('/') ? domain + url :
+    domain + '/' + current_path.substring(0, current_path.lastIndexOf('/') + 1).replace(/^.*\/website\/[^\/]+\//, '') + url
+   );
   }
   if (e.data.action === 'url_changed') {
-   window.location.hash = '#/' + path_sanitize(window.location.hash) + e.data.query;
+   sync(path_sanitize(current_url) + e.data.query);
   }
  });
 
- $on(window, 'hashchange', () => {
-  if (is_address_updating) return;
-  website_load(window.location.hash);
- });
-
- if (window.location.hash) {
-  website_load(window.location.hash);
- }
- else {
-  website_load(home);
- }
+ is_parent_load = true;
+ frame.src = location.hash
+  ? path_to_src(path_sanitize(location.hash)) + query_extract(location.hash)
+  : 'website/' + home + '/';
 
  const set_vh = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
  $on(window, 'resize', set_vh);
