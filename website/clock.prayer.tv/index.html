@@ -1388,6 +1388,15 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    history.replaceState(null, '', '?' + params.toString());
   };
 
+  const query_params = new URLSearchParams(location.search);
+  items_def.forEach(({ key, apply, options }) => {
+   if (!key || !apply) return;
+   const query_value = query_params.get(key);
+   if (query_value === null) return;
+   if (options && !options.some(o => o.value === query_value)) return;
+   apply(query_value);
+  });
+
   items_def.forEach(def => {
    const template = $(`settings-${def.type}-template`);
    const clone = template.content.cloneNode(true);
@@ -1478,66 +1487,59 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
      country_select.appendChild(option);
     });
 
-    $on(country_select, 'change', () => {
-     const country = JSON.parse(country_select.value);
-
-     coordinate_items.state.select.innerHTML = '';
+    const populate_city = (state) => {
      coordinate_items.city.select.innerHTML = '';
+     if (!state?.c?.length) {
+      coordinate_items.city.item.style.setProperty('display', 'none');
+      return { x: state.x, y: state.y };
+     }
+     coordinate_items.city.item.style.removeProperty('display');
+     state.c.forEach(city => {
+      const option = document.createElement('option');
+      option.value = JSON.stringify(city);
+      option.textContent = city.i;
+      coordinate_items.city.select.appendChild(option);
+     });
+     return state.c[0];
+    };
 
-     if (!country.b || country.b.length === 0) {
+    const populate_state = (country) => {
+     coordinate_items.state.select.innerHTML = '';
+     if (!country?.b?.length) {
       coordinate_items.state.item.style.setProperty('display', 'none');
       coordinate_items.city.item.style.setProperty('display', 'none');
-     } else {
-      coordinate_items.state.item.style.removeProperty('display');
-      country.b.forEach(state => {
-       const option = document.createElement('option');
-       option.value = JSON.stringify(state);
-       option.textContent = state.i;
-       coordinate_items.state.select.appendChild(option);
-      });
-      coordinate_items.state.select.dispatchEvent(new Event('change'));
+      return { x: country.x, y: country.y };
      }
+     coordinate_items.state.item.style.removeProperty('display');
+     country.b.forEach(state => {
+      const option = document.createElement('option');
+      option.value = JSON.stringify(state);
+      option.textContent = state.i;
+      coordinate_items.state.select.appendChild(option);
+     });
+     return populate_city(country.b[0]);
+    };
 
-     if (!country.b || country.b.length === 0) {
-      coordinate_items.latitude.value = parseFloat(country.y);
-      coordinate_items.latitude.dispatchEvent(new Event('change'));
-      coordinate_items.longitude.value = parseFloat(country.x);
-      coordinate_items.longitude.dispatchEvent(new Event('change'));
-     }
-    });
-
-    $on(coordinate_items.state.select, 'change', () => {
-     const state = JSON.parse(coordinate_items.state.select.value);
-
-     coordinate_items.city.select.innerHTML = '';
-
-     if (!state.c || state.c.length === 0) {
-      coordinate_items.city.item.style.setProperty('display', 'none');
-     } else {
-      coordinate_items.city.item.style.removeProperty('display');
-      state.c.forEach(city => {
-       const option = document.createElement('option');
-       option.value = JSON.stringify(city);
-       option.textContent = city.i;
-       coordinate_items.city.select.appendChild(option);
-      });
-      coordinate_items.city.select.dispatchEvent(new Event('change'));
-     }
-
-     if (!state.c || state.c.length === 0) {
-      coordinate_items.latitude.value = parseFloat(state.y);
-      coordinate_items.latitude.dispatchEvent(new Event('change'));
-      coordinate_items.longitude.value = parseFloat(state.x);
-      coordinate_items.longitude.dispatchEvent(new Event('change'));
-     }
-    });
-
-    $on(coordinate_items.city.select, 'change', () => {
-     const city = JSON.parse(coordinate_items.city.select.value);
-     coordinate_items.latitude.value = parseFloat(city.y);
+    const write_coords = (coords) => {
+     coordinate_items.latitude.value = parseFloat(coords.y);
      coordinate_items.latitude.dispatchEvent(new Event('change'));
-     coordinate_items.longitude.value = parseFloat(city.x);
+     coordinate_items.longitude.value = parseFloat(coords.x);
      coordinate_items.longitude.dispatchEvent(new Event('change'));
+    };
+
+    $on(country_select, 'change', (e) => {
+     const coords = populate_state(JSON.parse(country_select.value));
+     if (e.isTrusted) write_coords(coords);
+    });
+
+    $on(coordinate_items.state.select, 'change', (e) => {
+     const coords = populate_city(JSON.parse(coordinate_items.state.select.value));
+     if (e.isTrusted) write_coords(coords);
+    });
+
+    $on(coordinate_items.city.select, 'change', (e) => {
+     if (!e.isTrusted) return;
+     write_coords(JSON.parse(coordinate_items.city.select.value));
     });
 
     country_select.dispatchEvent(new Event('change'));
@@ -1584,7 +1586,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
        select_el.appendChild(option);
       });
 
-      const query_channel = new URLSearchParams(location.search).get('channel');
+      const query_channel = query_params.get('channel');
       media_stream_url = media_config.channels.find(c => c.url === query_channel)?.url ?? media_config.channels[0].url;
       select_el.value = media_stream_url;
       channel_item.style.removeProperty('display');
