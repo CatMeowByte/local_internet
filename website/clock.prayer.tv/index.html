@@ -70,10 +70,9 @@ by CatMeowByte
   <div class="panel-right">
    <div class="header">
     <span class="header-text" style="font-size: 500%;">Title</span>
-    <span class="header-channel">Channel Name - IPTV</span>
    </div>
    <div class="media">
-    <canvas id="media-noise" width="160" height="90"></canvas>
+    <canvas id="media-noise" width="320" height="180"></canvas>
     <div id="media-signal" class="flippable">NO SIGNAL</div>
     <video id="media-video"></video>
     <div id="media-blinker" class="flippable">
@@ -150,6 +149,12 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    </div>
   </template>
   </div>
+ </div>
+ <div id="splash">
+  <div class="splash-prompt">Click anywhere or press any key to continue</div>
+  <div class="splash-title">Title</div>
+  <div class="splash-description">Description</div>
+  <div class="splash-credit">by CatMeowByte</div>
  </div>
 </main>
 <style>
@@ -328,13 +333,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   overflow: hidden;
   text-overflow: ellipsis;
  }
- .header > .header-channel {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
- }
  .media {
   flex: 0 0 auto;
   width: 100%;
@@ -360,7 +358,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0.5rem 1rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
  }
  .media > #media-video {
@@ -585,6 +583,48 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   background: var(--pal_gray_light);
   border: none;
   padding: 0.5rem;
+ }
+ #splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--theme_tertiary_background);
+  color: var(--theme_tertiary_text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2rem;
+  padding: 4rem;
+ }
+ #splash > .splash-prompt {
+  position: absolute;
+  top: 2rem;
+  font-size: 1rem;
+  animation: splash-blink 1s ease-in-out infinite;
+ }
+ @keyframes splash-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+ }
+ #splash > .splash-title {
+  font-family: 'League Gothic', sans-serif;
+  font-size: 6rem;
+  font-weight: bold;
+  color: var(--theme_tertiary_highlight);
+  text-wrap: balance;
+ }
+ #splash > .splash-description {
+  font-size: 2.5rem;
+  text-wrap: balance;
+ }
+ #splash > .splash-credit {
+  position: absolute;
+  bottom: 2rem;
+  font-size: 1.5rem;
  }
 </style>
 <script>
@@ -1104,8 +1144,12 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
  (function media(){
   const canvas = $('media-noise');
+  const canvas_temp = document.createElement('canvas');
+  canvas_temp.width = 160;
+  canvas_temp.height = 90;
   const ctx = canvas.getContext('2d');
-  const image_data = ctx.createImageData(160, 90);
+  const ctx_temp = canvas_temp.getContext('2d');
+  const image_data = ctx_temp.createImageData(160, 90);
   const data = image_data.data;
   const signal = $('media-signal');
   const video = $('media-video');
@@ -1122,13 +1166,17 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     data[i + 2] = value;
     data[i + 3] = 255;
    }
-   ctx.putImageData(image_data, 0, 0);
+   ctx_temp.putImageData(image_data, 0, 0);
+   ctx.drawImage(canvas_temp, 0, 0);
+   ctx.drawImage(canvas_temp, 160, 0);
+   ctx.drawImage(canvas_temp, 0, 90);
+   ctx.drawImage(canvas_temp, 160, 90);
   }
 
   function tick(){
    const has_url = !!media_stream_url;
 
-   if (!has_url) {
+   if (!has_url || !last_url) {
     draw_noise();
    }
 
@@ -1154,14 +1202,14 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
      if (video.canPlayType('application/vnd.apple.mpegurl')) {
       console.log('Using native HLS');
       video.src = media_stream_url;
-      video.play();
+      video.play().catch(() => {});
      } else if (Hls.isSupported()) {
       console.log('Using hls.js');
       if (hls) hls.destroy();
       hls = new Hls();
       hls.loadSource(media_stream_url);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(() => {}));
       hls.on(Hls.Events.ERROR, (event, data) => {
        if (data.fatal) media_stream_url = '';
       });
@@ -1191,7 +1239,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     video.pause();
    } else {
     blinker.style.setProperty('display', 'none');
-    if (has_url) video.play();
+    if (has_url) video.play().catch(() => {});
    }
   }
 
@@ -1369,7 +1417,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    { type: 'number', key: 'head_size', label: 'Header Scale', tab: 'text', min: 50, max: 1000, step: 50, get: () => parseInt($q('.header-text').style.fontSize), apply: v => $q('.header-text').style.fontSize = `${v}%` },
    { type: 'text', key: 'foot_txt', label: 'Footer', tab: 'text', get: () => $('footer-text').textContent.trim(), apply: v => { $('footer-text').textContent = v; footer_scroll(); } },
    { type: 'line', key: 'playlist', label: 'Playlist URL', tab: 'media', get: () => media_config.playlist_url, apply: v => { media_config.playlist_url = v; fetch_playlist(v); } },
-   { type: 'select', key: 'channel', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; $q('.header-channel').textContent = media_config.channels.find(c => c.url === v)?.name || ''; } },
+   { type: 'select', key: 'channel', label: 'Channel', tab: 'media', options: [], get: () => media_stream_url, apply: v => { media_stream_url = v; } },
    { type: 'number', key: 'ui_size', label: 'UI Scale', tab: 'theme', min: 50, max: 500, step: 5, get: () => parseInt(document.documentElement.style.fontSize), apply: v => document.documentElement.style.fontSize = `${v}%` },
    make_color_selector('Primary Background', '--theme_primary_background', 'col_a_bg'),
    make_color_selector('Primary Text', '--theme_primary_text', 'col_a_fg'),
@@ -1554,7 +1602,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
     if (text.includes('#EXT-X-VERSION') || text.includes('#EXT-X-TARGETDURATION')) {
      media_stream_url = url;
-     $q('.header-channel').textContent = '';
      channel_item.style.setProperty('display', 'none');
     } else {
      let pending_name = null;
@@ -1573,7 +1620,6 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
 
      if (media_config.channels.length === 0) {
       media_stream_url = url;
-      $q('.header-channel').textContent = '';
       channel_item.style.setProperty('display', 'none');
      } else {
       const select_el = $q('.settings-select', channel_item);
@@ -1620,6 +1666,23 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
     $q('main').style.setProperty('cursor', 'none');
    }
   }, 1000);
+ })();
+
+ (function splash(){
+  const overlay = $('splash');
+  const title_el = $q('.splash-title', overlay);
+  const description_el = $q('.splash-description', overlay);
+
+  title_el.textContent = document.title;
+  description_el.textContent = $q('meta[name="description"]').content;
+
+  const close_splash = () => {
+   overlay.style.setProperty('display', 'none');
+   document.documentElement.requestFullscreen();
+  };
+
+  $on(document, 'pointerup', close_splash, { once: true });
+  $on(document, 'keyup', close_splash, { once: true });
  })();
 
  (function debug_timeshift(){
