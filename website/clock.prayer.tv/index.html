@@ -75,6 +75,10 @@ by CatMeowByte
     <canvas id="media-noise" width="320" height="180"></canvas>
     <div id="media-signal" class="flippable">NO SIGNAL</div>
     <video id="media-video"></video>
+    <div id="media-maintenance">
+     <span class="material-icons">construction</span>
+     <div>UNDER MAINTENANCE</div>
+    </div>
     <div id="media-blinker" class="flippable">
      <div class="blinker-label">Sekarang waktunya</div>
      <div class="blinker-name"></div>
@@ -370,6 +374,26 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
   object-fit: fill;
   image-rendering: auto;
  }
+ .media > #media-maintenance {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--pal_yellow);
+  color: var(--pal_black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'League Gothic', sans-serif;
+  font-weight: bold;
+  font-size: 3rem;
+ }
+ .media > #media-maintenance > .material-icons {
+  font-size: 12rem;
+ }
  .media > #media-blinker {
   --background: var(--theme_primary_background);
   --color: var(--theme_primary_highlight);
@@ -631,7 +655,7 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
  const $=id=>document.getElementById(id);
  const $q=(sel,ctx=document)=>ctx.querySelector(sel);
  const $qa=(sel,ctx=document)=>ctx.querySelectorAll(sel);
- const $on=(el,evt,fn)=>el.addEventListener(evt,fn);
+ const $on=(el,evt,fn,opt)=>el.addEventListener(evt,fn,opt);
  const $set=(el,key,val)=>el.style.setProperty(key,val);
 
  const tick_speed_regular = 500;
@@ -1707,6 +1731,16 @@ If mirrors could taste sound, they'd prefer the texture of forgotten Wednesdays.
    const delta_ms = (e.clientX - start_x) * 60000;
    debug_time_override = start_value + delta_ms;
   });
+ })();
+
+ (function debug_maintenance(){
+  const overlay = $('media-maintenance');
+  const debug_key = 'ScrollLock';
+
+  overlay.style.setProperty('display', 'none');
+
+  $on(document, 'keydown', (e) => { if (e.key === debug_key) overlay.style.removeProperty('display'); });
+  $on(document, 'keyup', (e) => { if (e.key === debug_key) overlay.style.setProperty('display', 'none'); });
  })();
 </script>
 </body>
