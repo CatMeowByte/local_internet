@@ -35,6 +35,13 @@ by CatMeowByte
     <option>PICO-8</option>
    </select>
   </label>
+  <label>Output Style
+   <select id="output_style_select">
+   <option>Raw</option>
+   <option>Spritesheet</option>
+   <option>C</option>
+   </select>
+  </label>
  </section>
 
  <section>
@@ -262,6 +269,8 @@ const palettes={
    [data.data[i],data.data[i+1],data.data[i+2]]=palette_rgb[idx];
   }
   ctx.putImageData(data,0,0);
+  const output_style=$('output_style_select').value;
+  let code_text='';
   const byte_count=(w*h)/2;
   const bytes=[];
   for(let i=0;i<data.data.length;i+=8){
@@ -269,13 +278,32 @@ const palettes={
    const hi=palette_rgb.findIndex(([r,g,b])=>r===data.data[i+4]&&g===data.data[i+5]&&b===data.data[i+6]);
    bytes.push((lo<<4)|hi);
   }
-  const hex_byte=b=>'0x'+b.toString(16).toUpperCase().padStart(2,'0');
-  const rows=[];
-  for(let r=0;r<h;r++){
-   const slice=bytes.slice(r*(w/2),(r+1)*(w/2));
-   rows.push(' '+slice.map(hex_byte).join(',')+',');
+  if(output_style==='C'){
+   const hex_byte=b=>'0x'+b.toString(16).toUpperCase().padStart(2,'0');
+   const rows=[];
+   for(let r=0;r<h;r++){
+    const slice=bytes.slice(r*(w/2),(r+1)*(w/2));
+    rows.push(' '+slice.map(hex_byte).join(',')+',');
+   }
+   code_text=`static constexpr uint8_t image[${byte_count}] = {\n${rows.join('\n')}\n}`;
+  }else if(output_style==='Raw'){
+   const hex_row=b=>b.toString(16).toUpperCase().padStart(2,'0');
+   const rows=[];
+   for(let r=0;r<h;r++){
+    const slice=bytes.slice(r*(w/2),(r+1)*(w/2));
+    rows.push(slice.map(hex_row).join(''));
+   }
+   code_text=rows.join('\n');
+  }else if(output_style==='Spritesheet'){
+   const hex_row=b=>b.toString(16).toUpperCase().padStart(2,'0');
+   const rows=[];
+   for(let r=0;r<h;r++){
+    const slice=bytes.slice(r*(w/2),(r+1)*(w/2));
+    rows.push(slice.map(hex_row).join(''));
+   }
+   code_text=`str XDB475AEFX = x"\n${rows.join('\n')}\n"`;
   }
-  $('code').textContent=`static constexpr uint8_t image[${byte_count}] = {\n${rows.join('\n')}\n}`;
+  $('code').textContent=code_text;
  });
  $on($('button_copy'),'click',()=>navigator.clipboard.writeText($('code').textContent));
 })();
